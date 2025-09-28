@@ -1,0 +1,1447 @@
+<html lang="en" class="hydrated"><head>
+    <meta charset="UTF-8"><style data-styles="">ion-icon{visibility:hidden}.hydrated{visibility:inherit}</style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Settings</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- ======= Styles ====== -->
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.js"></script>
+    <style>
+        
+        .setting-container {
+            padding: 15px;
+            margin-top: 64px;
+        }
+        
+        .setting-container .card {
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            border-bottom: solid;
+            background: white;
+            color: green;
+            padding: 1.5rem;
+        }
+        
+        .header h1 {
+            font-size: 1.875rem;
+            font-weight: bold;
+        }
+        
+        .header p {
+            color: #bfdbfe;
+            margin-top: 0.5rem;
+        }
+        
+        .navigationbar {
+            background-color: #f9fafb;
+            padding: 1rem;
+        }
+        
+        .menu-items{
+            display: flex;
+            align-items: center;
+        }
+
+        .menu-item {
+            width: 100%;
+            text-align: left;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .menu-item:hover {
+            background-color: #e5e7eb;
+        }
+        
+        .menu-item.active {
+            background-color: #4be225;
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .menu-item-content {
+            flex: 1;
+        }
+        
+        .menu-item-title {
+            font-weight: 500;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 2rem;
+        }
+        
+        .content-section {
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        .section-header{
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1f2937;
+        }
+
+        .section-desc {
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+            color: #6b7280;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        
+        @media (min-width: 768px) {
+            .form-grid.two-col {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .device-grid {
+                grid-template-columns: 2fr 1fr;
+            }
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-input, .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+        }
+        .profile-pic-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-pic {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ddd;
+        }
+        .status-container {
+            margin-bottom: 1rem;
+        }
+        .add-card {
+            margin-bottom: 10px;
+            font-size: larger;
+            color: white;
+            width: 100%;
+            background: #7b77af;
+            border: 2px solid #f1f5f9;
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .add-card:hover {
+            border-color: white;
+            box-shadow: 0 8px 25px -8px rgba(46, 204, 113, 0.25);
+            transform: translateY(-2px);
+        }
+        
+        .operation-profile-header{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            border-bottom: 1px solid #f1f5f9;
+            background: #fff;
+            margin-bottom: 10px;
+
+        }
+
+        .operation-profile-header h2 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .back-btn {
+            background: transparent;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            color: #667eea;
+            transition: color 0.2s;
+        }
+
+        .back-btn:hover {
+            color: #764ba2;
+        }
+        .user-card {
+            background: white;
+            border: 2px solid #f1f5f9;
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .user-card:hover {
+            border-color: #2ecc71;
+            box-shadow: 0 8px 25px -8px rgba(46, 204, 113, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-pic {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            margin-right: 16px;
+            border: 3px solid #f1f5f9;
+            transition: border-color 0.3s ease;
+        }
+
+        .user-card:hover .profile-pic {
+            border-color: #2ecc71; /* emerald green */
+        }
+
+        .user-info h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .user-role,
+        .user-meta {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .user-meta {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap:5px;
+        }
+
+        .status-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-btn.active {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .status-btn.disactive {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .status-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border: 2px solid #e5e7eb;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #64748b;
+        }
+
+        .action-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+            transform: scale(1.1);
+        }
+
+        .checkbox-group {
+            margin-bottom: 0.75rem;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .checkbox-item input {
+            border-radius: 0.25rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+        
+        .btn-primary {
+            background-color: #2563eb;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+        }
+        
+        .btn-secondary {
+            background-color: #e5e7eb;
+            color: #374151;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #d1d5db;
+        }
+        
+        .btn-block {
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        
+        .actions {
+            display: none;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+        }
+        .actions.active{
+            display: flex;
+        }
+        .placeholder-content {
+            background-color: #f9fafb;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            text-align: center;
+        }
+        
+        .placeholder-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 1rem;
+            color: #6b7280;
+        }
+        
+        .placeholder-text {
+            color: #4b5563;
+            margin-bottom: 0.5rem;
+        }
+        
+        .placeholder-subtext {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .subsection-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .users{
+            display: none;
+        }
+
+        .edit-profile{
+            display: none;
+        }
+        
+        .add-profile{
+            display: none;
+        }
+        .add-profile .profile-pic {
+            width: 200px;
+            height: 200px;
+            margin-right: 16px;
+            border-radius: 0;
+            object-fit: cover;
+        }
+        .users.active{
+            display: block;
+        }
+
+        .edit-profile.active{
+            display: block;
+        }
+
+        .add-profile.active{
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="container">
+      <div class="navigation">
+        <ul>
+          <li>
+            <a href="#">
+              <span class="icon"><ion-icon name="" role="img" class="md hydrated"><template shadowrootmode="open"><div class="icon-inner"></div></template></ion-icon></span> 
+              <span class="title">Menu</span>
+            </a>
+          </li>
+
+                <li>
+                    <a href="/Dashboard">
+                        <span class="icon">
+                            <ion-icon name="home-outline" role="img" class="md hydrated" aria-label="home outline"><template shadowrootmode="open"><div class="icon-inner"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon s-ion-icon" viewBox="0 0 512 512"><title>Home</title><path d="M80 212v236a16 16 0 0016 16h96V328a24 24 0 0124-24h80a24 24 0 0124 24v136h96a16 16 0 0016-16V212" stroke-linecap="round" stroke-linejoin="round" class="ionicon-fill-none ionicon-stroke-width"></path><path d="M480 256L266.89 52c-5-5.28-16.69-5.34-21.78 0L32 256M400 179V64h-48v69" stroke-linecap="round" stroke-linejoin="round" class="ionicon-fill-none ionicon-stroke-width"></path></svg></div></template></ion-icon>
+                        </span>
+                        <span class="title">Dashboard</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/System">
+                        <span class="icon">
+                            <ion-icon name="people-outline" role="img" class="md hydrated" aria-label="people outline"><template shadowrootmode="open"><div class="icon-inner"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon s-ion-icon" viewBox="0 0 512 512"><title>People</title><path d="M402 168c-2.93 40.67-33.1 72-66 72s-63.12-31.32-66-72c-3-42.31 26.37-72 66-72s69 30.46 66 72z" stroke-linecap="round" stroke-linejoin="round" class="ionicon-fill-none ionicon-stroke-width"></path><path d="M336 304c-65.17 0-127.84 32.37-143.54 95.41-2.08 8.34 3.15 16.59 11.72 16.59h263.65c8.57 0 13.77-8.25 11.72-16.59C463.85 335.36 401.18 304 336 304z" stroke-miterlimit="10" class="ionicon-fill-none ionicon-stroke-width"></path><path d="M200 185.94c-2.34 32.48-26.72 58.06-53 58.06s-50.7-25.57-53-58.06C91.61 152.15 115.34 128 147 128s55.39 24.77 53 57.94z" stroke-linecap="round" stroke-linejoin="round" class="ionicon-fill-none ionicon-stroke-width"></path><path d="M206 306c-18.05-8.27-37.93-11.45-59-11.45-52 0-102.1 25.85-114.65 76.2-1.65 6.66 2.53 13.25 9.37 13.25H154" stroke-linecap="round" stroke-miterlimit="10" class="ionicon-fill-none ionicon-stroke-width"></path></svg></div></template></ion-icon>
+                        </span>
+                        <span class="title">System</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/SCADA">
+                        <span class="icon">
+                        </span>
+                        <span class="title">SCADA</span>
+                    </a>
+                </li>
+                <li>
+                      <a href="/Analytics">
+                          <span class="icon">
+                              <ion-icon name="analytics-outline" role="img" class="md hydrated" aria-label="analytics outline"><template shadowrootmode="open"><div class="icon-inner"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon s-ion-icon" viewBox="0 0 512 512"><title>Analytics</title><path stroke-linecap="round" stroke-linejoin="round" d="M344 280l88-88M232 216l64 64M80 320l104-104" class="ionicon-fill-none ionicon-stroke-width"></path><circle cx="456" cy="168" r="24" stroke-linecap="round" stroke-linejoin="round" class="ionicon-fill-none ionicon-stroke-width"></circle><circle cx="320" cy="304" r="24" stroke-linecap="round" stroke-linejoin="round" class="ionicon-fill-none ionicon-stroke-width"></circle><circle cx="208" cy="192" r="24" stroke-linecap="round" stroke-linejoin="round" class="ionicon-fill-none ionicon-stroke-width"></circle><circle cx="56" cy="344" r="24" stroke-linecap="round" stroke-linejoin="round" class="ionicon-fill-none ionicon-stroke-width"></circle></svg></div></template></ion-icon>
+                          </span>
+                          <span class="title">Analytics</span>
+                      </a>
+                </li>
+                <li>
+                    <a href="/Messages">
+
+                        <span class="icon">
+                            <ion-icon name="chatbubble-outline" role="img" class="md hydrated" aria-label="chatbubble outline"><template shadowrootmode="open"><div class="icon-inner"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon s-ion-icon" viewBox="0 0 512 512"><title>Chatbubble</title><path d="M87.49 380c1.19-4.38-1.44-10.47-3.95-14.86a44.86 44.86 0 00-2.54-3.8 199.81 199.81 0 01-33-110C47.65 139.09 140.73 48 255.83 48 356.21 48 440 117.54 459.58 209.85a199 199 0 014.42 41.64c0 112.41-89.49 204.93-204.59 204.93-18.3 0-43-4.6-56.47-8.37s-26.92-8.77-30.39-10.11a31.09 31.09 0 00-11.12-2.07 30.71 30.71 0 00-12.09 2.43l-67.83 24.48a16 16 0 01-4.67 1.22 9.6 9.6 0 01-9.57-9.74 15.85 15.85 0 01.6-3.29z" stroke-linecap="round" stroke-miterlimit="10" class="ionicon-fill-none ionicon-stroke-width"></path></svg></div></template></ion-icon>
+                        </span>
+                        <span class="title">Messages</span>
+                    </a>
+                </li>
+
+                <li>
+             
+                </li><li>
+                    <a href="/Profile">
+                        <span class="icon">
+                            <ion-icon name="person-outline" role="img" class="md hydrated" aria-label="person outline"><template shadowrootmode="open"><div class="icon-inner"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon s-ion-icon" viewBox="0 0 512 512"><title>Person</title><path d="M344 144c-3.92 52.87-44 96-88 96s-84.15-43.12-88-96c-4-55 35-96 88-96s92 42 88 96z" stroke-linecap="round" stroke-linejoin="round" class="ionicon-fill-none ionicon-stroke-width"></path><path d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z" stroke-miterlimit="10" class="ionicon-fill-none ionicon-stroke-width"></path></svg></div></template></ion-icon>
+                        </span>
+                        <span class="title">Profile</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/Settings">
+                        <span class="icon">
+                            <ion-icon name="settings-outline" role="img" class="md hydrated" aria-label="settings outline"><template shadowrootmode="open"><div class="icon-inner"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon s-ion-icon" viewBox="0 0 512 512"><title>Settings</title><path d="M262.29 192.31a64 64 0 1057.4 57.4 64.13 64.13 0 00-57.4-57.4zM416.39 256a154.34 154.34 0 01-1.53 20.79l45.21 35.46a10.81 10.81 0 012.45 13.75l-42.77 74a10.81 10.81 0 01-13.14 4.59l-44.9-18.08a16.11 16.11 0 00-15.17 1.75A164.48 164.48 0 01325 400.8a15.94 15.94 0 00-8.82 12.14l-6.73 47.89a11.08 11.08 0 01-10.68 9.17h-85.54a11.11 11.11 0 01-10.69-8.87l-6.72-47.82a16.07 16.07 0 00-9-12.22 155.3 155.3 0 01-21.46-12.57 16 16 0 00-15.11-1.71l-44.89 18.07a10.81 10.81 0 01-13.14-4.58l-42.77-74a10.8 10.8 0 012.45-13.75l38.21-30a16.05 16.05 0 006-14.08c-.36-4.17-.58-8.33-.58-12.5s.21-8.27.58-12.35a16 16 0 00-6.07-13.94l-38.19-30A10.81 10.81 0 0149.48 186l42.77-74a10.81 10.81 0 0113.14-4.59l44.9 18.08a16.11 16.11 0 0015.17-1.75A164.48 164.48 0 01187 111.2a15.94 15.94 0 008.82-12.14l6.73-47.89A11.08 11.08 0 01213.23 42h85.54a11.11 11.11 0 0110.69 8.87l6.72 47.82a16.07 16.07 0 009 12.22 155.3 155.3 0 0121.46 12.57 16 16 0 0015.11 1.71l44.89-18.07a10.81 10.81 0 0113.14 4.58l42.77 74a10.8 10.8 0 01-2.45 13.75l-38.21 30a16.05 16.05 0 00-6.05 14.08c.33 4.14.55 8.3.55 12.47z" stroke-linecap="round" stroke-linejoin="round" class="ionicon-fill-none ionicon-stroke-width"></path></svg></div></template></ion-icon>
+                        </span>
+                        <span class="title">Settings</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/Password">
+                        <span class="icon">
+                            <ion-icon name="lock-closed-outline" role="img" class="md hydrated" aria-label="lock closed outline"><template shadowrootmode="open"><div class="icon-inner"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon s-ion-icon" viewBox="0 0 512 512"><title>Lock Closed</title><path d="M336 208v-95a80 80 0 00-160 0v95" stroke-linecap="round" stroke-linejoin="round" class="ionicon-fill-none ionicon-stroke-width"></path><rect x="96" y="208" width="320" height="272" rx="48" ry="48" stroke-linecap="round" stroke-linejoin="round" class="ionicon-fill-none ionicon-stroke-width"></rect></svg></div></template></ion-icon>
+                        </span>
+                        <span class="title">Password</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/index">
+                        <span class="icon">
+                            <ion-icon name="log-out-outline" role="img" class="md hydrated" aria-label="log out outline"><template shadowrootmode="open"><div class="icon-inner"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon s-ion-icon" viewBox="0 0 512 512"><title>Log Out</title><path d="M304 336v40a40 40 0 01-40 40H104a40 40 0 01-40-40V136a40 40 0 0140-40h152c22.09 0 48 17.91 48 40v40M368 336l80-80-80-80M176 256h256" stroke-linecap="round" stroke-linejoin="round" class="ionicon-fill-none ionicon-stroke-width"></path></svg></div></template></ion-icon>
+                        </span>
+                        <span class="title">Sign Out</span>
+                    </a>
+                </li>
+            </ul>
+      </div>
+      <!-- ========================= Main ==================== -->
+        <div class="main">
+            <div class="topbar">
+                  <div style="display: inline-flex;align-items: center;gap: 10px;">
+                    <div class="toggle">
+                        <ion-icon name="menu-outline" role="img" class="md hydrated" aria-label="menu outline"><template shadowrootmode="open"><div class="icon-inner"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon s-ion-icon" viewBox="0 0 512 512"><title>Menu</title><path stroke-linecap="round" stroke-miterlimit="10" d="M80 160h352M80 256h352M80 352h352" class="ionicon-fill-none ionicon-stroke-width"></path></svg></div></template></ion-icon>
+                    </div>
+                    <a class="emergencybtn" id="EmergencyStop"><img width="40" height="40" src="https://img.icons8.com/fluency/48/emergency-stop-button.png" alt="emergency-stop-button"></a>
+                  </div>
+                  <div class="silo">
+                      <span class="title">SMART SILO</span>
+                  </div>
+                  <div style="display: inline-flex;align-items: center;gap: 10px;">
+                    <div class="mqtt_status">
+                        MQTT
+                    </div>
+
+                    <div class="user">
+                      <img src="assets/imgs/customer001.jpg" alt="">
+                    </div>
+                  </div>
+            </div>
+            <div class="setting-container">
+                <div class="card">
+                    <div class="header">
+                        <h1>Settings</h1>
+                    </div>
+                    
+                    <div class="main-content">
+                        <!-- Navigation Bar -->
+                        <div class="navigationbar">
+                            <div class="menu-items">
+                                <a class="menu-item" href="/settings">
+                                    <i data-lucide="user"></i>
+                                    <div class="menu-item-content">
+                                        <div class="menu-item-title">My Profile</div>                                    </div>
+                                </a>
+                                <a class="menu-item active" href="/settings/usermanagement">
+                                    <i data-lucide="users"></i>
+                                    <div class="menu-item-content">
+                                        <div class="menu-item-title">User Management</div>
+                                    </div>
+                                </a>
+                             </div>  
+                        </div>
+                        
+                        <!-- Content Area -->
+                        <div class="content-area">
+                            <!-- Profile Section -->
+                            <div class="content-section active">
+                                <div class="section-header">
+                                    <h2 class="section-title">User Management</h2>
+                                    <div class="section-desc">Manage team members and permissions</div>
+                                </div>
+                                <div class="sections">
+                                    <div class="users active">
+                                        <div class="users-container">
+                                            <div class="users-grid" id="usersGrid">
+                                                <button class="add-card" onclick="addUser()">
+                                                    <i class="fa-solid fa-user-plus"></i>
+                                                    <span>Add User</span> 
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Edit Profile Form -->
+                                    <form class="edit-profile" id="edit-profile-form" enctype="multipart/form-data">
+                                        <div class="operation-profile-header">
+                                            <h2>Edit User</h2>
+                                            <button type="button" class="back-btn">&larr; Back</button>
+                                        </div>
+
+                                        <!-- Profile Picture -->
+                                        <div class="profile-pic-wrapper">
+                                        <img id="edit-profile-pic" alt="Profile Picture" class="profile-pic">
+                                        <div class="pic-actions">
+                                            <label for="edit-profile-pic-upload" class="btn btn-secondary">Change Picture</label>
+                                            <button type="button" id="edit-cancel-pic" class="btn btn-danger" style="display:none;">Cancel</button>
+                                        </div>
+                                        <input type="file" id="edit-profile-pic-upload" name="profile_pic" style="display: none;" accept="image/*">
+                                        </div>
+
+                                        <!-- Status -->
+                                        <div class="status-container">
+                                            <label class="form-label" for="edit-status">Account Status</label>
+                                            <select class="form-select" id="edit-status" name="status">
+                                            <option value="Active">Active</option>
+                                            <option value="Disactive">Disactive</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- Profile Fields -->
+                                        <div class="form-grid two-col">
+                                            <div>
+                                            <div class="form-group">
+                                                <label class="form-label">Full Name</label>
+                                                <input type="text" class="form-input" id="edit-full_name" name="full_name">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label">Username</label>
+                                                <input type="text" class="form-input" id="edit-username" name="username">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label">Email Address</label>
+                                                <input type="email" class="form-input" id="edit-email" name="email">
+                                            </div>
+                                            </div>
+                                            <div>
+                                            <div class="form-group">
+                                                <label class="form-label">Phone Number</label>
+                                                <input type="tel" class="form-input" id="edit-phone_number" name="phone_number">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label">Role</label>
+                                                <select class="form-select" id="edit-role" name="role">
+                                                <option>System Administrator</option>
+                                                <option>Plant Engineer</option>
+                                                <option>Data Analyst</option>
+                                                <option>admin</option>
+                                                <option>Operator</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label">Password</label>
+                                                <input type="password" class="form-input" id="edit-password" name="password">
+                                            </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="actions">
+                                            <button class="btn btn-secondary" type="button">Cancel</button>
+                                            <button class="btn btn-primary" type="submit">Save Changes</button>
+                                        </div>
+                                    </form>
+                                    <!-- Add Profile Form -->
+                                    <form class="add-profile" id="add-profile-form" enctype="multipart/form-data">
+                                        <div class="operation-profile-header">
+                                            <h2>Add User</h2>
+                                            <button type="button" class="back-btn">&larr; Back</button>
+                                        </div>
+
+                                        <!-- Profile Picture -->
+                                        <div class="profile-pic-wrapper">
+                                            <img id="add-profile-pic" alt="Profile Picture" class="profile-pic">
+                                            <div class="pic-actions">
+                                                <label for="add-profile-pic-upload" class="btn btn-secondary">Add Picture</label>
+                                                <button type="button" id="add-cancel-pic" class="btn btn-danger" style="display:none;">Cancel</button>
+                                            </div>
+                                            <input type="file" id="add-profile-pic-upload" name="profile_pic" style="display: none;" accept="image/*">
+                                        </div>
+
+                                        <!-- Status -->
+                                        <div class="status-container">
+                                            <label class="form-label" for="add-status">Account Status</label>
+                                            <select class="form-select" id="add-status" name="status" required>
+                                            <option value="">-- Select Status --</option>
+                                            <option value="Active">Active</option>
+                                            <option value="Disactive">Disactive</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- Profile Fields -->
+                                        <div class="form-grid two-col">
+                                            <div>
+                                            <div class="form-group">
+                                                <label class="form-label">Full Name</label>
+                                                <input type="text" class="form-input" id="add-full_name" name="full_name" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label">Username</label>
+                                                <input type="text" class="form-input" id="add-username" name="username" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label">Email Address</label>
+                                                <input type="email" class="form-input" id="add-email" name="email" required>
+                                            </div>
+                                            </div>
+                                            <div>
+                                            <div class="form-group">
+                                                <label class="form-label">Phone Number</label>
+                                                <input type="tel" class="form-input" id="add-phone_number" name="phone_number" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label">Location</label>
+                                                <input type="text" class="form-input" id="add-location" name="location" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label">Role</label>
+                                                <select class="form-select" id="add-role" name="role" required>
+                                                <option value="">-- Select Role --</option>
+                                                <option>System Administrator</option>
+                                                <option>Plant Engineer</option>
+                                                <option>Data Analyst</option>
+                                                <option>admin</option>
+                                                <option>Operator</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label">Password</label>
+                                                <input type="password" class="form-input" id="add-password" name="password" required>
+                                            </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="actions">
+                                            <button class="btn btn-secondary" type="button">Cancel</button>
+                                            <button class="btn btn-primary" type="submit">Save Changes</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>                  
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+    let activeSetting = '';
+    
+    const backBtns = document.querySelectorAll('.back-btn');
+
+    backBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+            // Remove 'active' from .add-profile
+            const addProfile = document.querySelector('.add-profile');
+            if (addProfile) addProfile.classList.remove('active');
+
+            // Remove 'active' from .edit-profile
+            const editProfile = document.querySelector('.edit-profile');
+            if (editProfile) editProfile.classList.remove('active');
+
+            // Add 'active' to .users
+            const usersSection = document.querySelector('.users');
+            if (usersSection) usersSection.classList.add('active');
+        });
+    });
+
+    const profileInputs = document.querySelectorAll('input[type="file"]');
+
+    
+</script>
+<script>
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  
+    function setupEditForm() {
+    const editImg = document.getElementById("edit-profile-pic");
+    const editImgCancel = document.getElementById("edit-cancel-pic");
+    const editImgInput = document.getElementById("edit-profile-pic-upload");
+    const editForm = document.querySelector("#edit-profile-form");
+    if (!editForm) return;
+
+    const editActions = editForm.querySelector(".actions");
+    const editSaveBtn = editActions.querySelector(".btn.btn-primary");
+    const editActionsCancel = editActions.querySelector(".btn.btn-secondary");
+    const editInputs = editForm.querySelectorAll("input, select, textarea");
+
+    function checkEditForm() {
+        let changed = false;
+
+        editInputs.forEach(input => {
+            if (input.type === "file") {
+                if (input.files.length > 0) {
+                    editImg.src = URL.createObjectURL(input.files[0]);
+                    editImgCancel.style.display = "inline-block";
+                    changed = true;
+                }
+            } else {
+                if (input.value !== input.dataset.originalValue) {
+                    changed = true;
+                }
+            }
+        });
+
+        editActions.classList.toggle("active", changed);
+        if (editSaveBtn) editSaveBtn.disabled = !changed;
+    }
+
+    editInputs.forEach(input => {
+        input.addEventListener("input", checkEditForm);
+        input.addEventListener("change", checkEditForm);
+    });
+
+    if (editImgCancel) {
+        editImgCancel.addEventListener("click", () => {
+            if (editImg.dataset.originalSrc) {
+                editImg.src = editImg.dataset.originalSrc;
+            }
+            editImgInput.value = "";
+            editImgCancel.style.display = "none";
+            checkEditForm();
+        });
+    }
+
+    if (editActionsCancel) {
+        editActionsCancel.addEventListener("click", (e) => {
+            e.preventDefault();
+
+            if (editImgCancel) editImgCancel.click();
+
+            editInputs.forEach(input => {
+                if (!input.name) return;
+                if (input.type === "file") {
+                    input.value = "";
+                } else {
+                    const original = input.dataset.originalValue ?? "";
+                    input.value = original;
+                }
+            });
+
+            checkEditForm();
+        });
+    }
+
+   editForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const changedData = {};
+  const userId = editForm.dataset.userId;
+
+  // 1️⃣ Handle normal inputs / selects
+  editInputs.forEach(input => {
+    if (!input.name) return; // skip if no name (buttons)
+
+    if (input.type === "file") {
+      if (input.files.length > 0) {
+        changedData[input.name] = input.files[0]; // keep actual file
+      }
+    } else {
+      const original = input.dataset.originalValue ?? "";
+      if (input.value !== original) {
+        changedData[input.name] = input.value;
+      }
+    }
+  });
+
+  // 2️⃣ If nothing changed
+  if (Object.keys(changedData).length === 0) {
+    console.log("⚠️ No changes detected.");
+    return;
+  }
+
+  // 3️⃣ Disable buttons + show "Saving..."
+  editImgCancel.disabled=true;
+  editActionsCancel.disabled=true;
+  editSaveBtn.disabled=true;
+  editSaveBtn.textContent = "Saving...";
+
+  try {
+    // separate file from fields
+    const { profile_pic, ...fields } = changedData;
+    // 4️⃣ Send fields update if any
+    let resault;
+    if (Object.keys(fields).length > 0) {
+      resault = await updateProfileInfo(userId,fields);
+
+    }
+
+    // 5️⃣ Upload image if changed
+    if (profile_pic) {
+      const formData = new FormData();
+      formData.append("profile", profile_pic);
+
+      const imgRes = await fetch(`/upload-profilePic/${userId}`, {
+        method: "POST",
+        body: formData
+      });
+
+      const imgResult = await imgRes.json();
+
+        if (imgRes.ok) {
+            alert("✅ Profile edit successfully.");
+            const imgEl = document.querySelector("#edit-profile-form #edit-profile-pic");
+            if (!imgEl) return;
+            RenderProfilePic(imgEl.src);
+            const userCard = document.querySelector(`.user-card[data-id="${userId}"]`);
+            const userImg  = userCard.querySelector('.profile-pic');
+            userImg.src=imgEl.src;
+            editActions.classList.remove('active');
+        } else {
+            alert("✅ Profile edit successfully (but profile picture failed).");
+        }
+    } else {
+        alert("✅ Profile edit successfully.");
+        editActions.classList.remove('active');
+    }
+        
+
+    // 6️⃣ Reset cancel image button
+    if (editImgCancel) {
+        editImgCancel.style.display = "none";
+        editImgCancel.disabled=false;}
+  } catch (err) {
+    console.error("Update failed:", err);
+    alert("❌ Internal server error.");
+  } finally {
+    // 7️⃣ Re-enable buttons
+    editSaveBtn.disabled = false;
+    editActionsCancel.disabled = false;
+    editSaveBtn.textContent = "Save Changes";
+  }
+});
+
+}
+
+    setupEditForm();
+    function setupAddForm() {
+        const addForm = document.getElementById("add-profile-form");
+        if (!addForm) return;
+
+        const addImg = document.getElementById("add-profile-pic");
+        const addImgInput = document.getElementById("add-profile-pic-upload");
+        const addImgCancel = document.getElementById("add-cancel-pic");
+        const addActions = addForm.querySelector(".actions");
+        const addActionCancel = addActions.querySelector(".btn.btn-secondary");
+        // select all inputs that are required (skip file input)
+        const addInputs = addForm.querySelectorAll("input[required], select[required], textarea[required]");
+
+        function checkAddForm() {
+            let allValid = true;
+
+            addInputs.forEach(input => {
+                if (!input.value.trim()) {
+                    allValid = false;
+                }
+            });
+
+            addActions.classList.toggle("active", allValid);
+        }
+
+        // Image input (preview + cancel)
+        addImgInput.addEventListener("change", () => {
+            if (addImgInput.files.length > 0) {
+                addImg.src = URL.createObjectURL(addImgInput.files[0]);
+                addImgCancel.style.display = "inline-block";
+            }
+        });
+
+        addImgCancel.addEventListener("click", () => {
+            addImg.src = ""; 
+            addImgInput.value = ""; 
+            addImgCancel.style.display = "none";
+        });
+        if (addActionCancel) {
+            addActionCancel.addEventListener("click", (e) => {
+                e.preventDefault(); // prevent page reload
+
+                // Reset all inputs and selects
+                addInputs.forEach(input => {
+                    if (input.tagName.toLowerCase() === "select") {
+                        input.selectedIndex = 0; // reset to first option
+                    } else {
+                        input.value = "";
+                    }
+                });
+
+                // Reset image
+                addImg.src = "";
+                addImgInput.value = "";
+                addImgCancel.style.display = "none";
+
+                // Hide actions
+                addActions.classList.remove("active");
+            });
+        }
+        // Required inputs (trigger check)
+        addInputs.forEach(input => {
+            input.addEventListener("input", checkAddForm);
+            input.addEventListener("change", checkAddForm);
+        });
+
+        checkAddForm(); // initial state
+        addForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            if (!addForm.checkValidity()) {
+                addForm.reportValidity();
+                return;
+            }
+
+            const submitBtn = addForm.querySelector("button[type='submit']");
+            const allInputs = addForm.querySelectorAll("input, select, textarea, button");
+
+            // Disable form + change button text
+            allInputs.forEach(el => el.disabled = true);
+            const originalBtnText = submitBtn.textContent;
+            submitBtn.textContent = "Saving...";
+
+            try {
+                // Step 1: Collect data (skip file)
+                const payload = {};
+                addInputs.forEach(input => {
+                    if (input.type !== "file") {
+                        payload[input.name] = input.value;
+                    }
+                });
+
+                const res = await fetch("/add-profile", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await res.json();
+                if (!res.ok) {
+                    if (result.error.includes("Username already exists")) {
+                        // Suggest a random number
+                        const suggestion = `${payload.username}${Math.floor(Math.random() * 1000)}`;
+                        alert(`❌ Username already exists. Try something like: ${suggestion}`)
+                        throw new Error(`Username already exists.`);
+                    } else if (result.error.includes("Email already exists")) {
+                        alert('❌ Email already exists. Please use another one.')
+                        throw new Error("Email already exists.");
+                    } else if (result.error.includes("Missing required fields")) {
+                        alert('⚠️ Please fill in all required fields.');
+                        throw new Error("Please fill in all required fields.");
+                    } else if (result.error.includes("Role not supported")) {
+                        throw new Error("⚠️ Role not supported.");
+                    } else {
+                        alert('❌ Failed to add user.');
+                        throw new Error("❌ Failed to add user.");
+                    }
+                } else {
+                const { userId } = await res.json();
+                console.log("✅ New user ID:", userId);
+
+                // Step 2: Upload profile picture if available
+                if (addImgInput.files.length > 0) {
+                    const imgForm = new FormData();
+                    imgForm.append("profile", addImgInput.files[0]); // backend expects 'profile'
+
+                    const imgRes = await fetch(`/upload-profilePic/${userId}`, {
+                        method: "POST",
+                        body: imgForm
+                    });
+                    if (imgRes.ok) {
+                        alert("✅ User added successfully (with profile picture).");
+                    } else {
+                        alert("✅ User added successfully (but profile picture failed).");
+                    }
+                } else {
+                    alert("✅ User added successfully (no profile picture uploaded).");
+                }
+                }
+
+                addForm.reset();
+
+            } catch (err) {
+                console.error("❌ Error: " + err.message);
+            } finally {
+                // Re-enable form + restore button text
+                allInputs.forEach(el => el.disabled = false);
+                submitBtn.textContent = originalBtnText;
+            }
+        });
+
+
+}
+    setupAddForm();
+});
+
+</script>
+<script>
+    function deleteUser(userId) {
+        alert(userId)
+        if (!confirm("Are you sure you want to delete this user?")) {
+            return;
+        }
+
+        fetch(`/profiles/${userId}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(res => {
+            if (!res.ok) {
+                return res.json()
+                    .then(err => {
+                        throw new Error(err.error || `Failed to delete (status ${res.status})`);
+                    })
+                    .catch(() => {
+                        throw new Error(`Failed to delete (status ${res.status})`);
+                    });
+            }
+            return res.json();
+        })
+        .then(data => {
+            console.log("User deleted:", data);
+
+            // remove card from DOM
+            const card = document.querySelector(`.user-card[data-id="${userId}"]`);
+            if (card) {
+                card.remove();
+            }
+        })
+        .catch(err => {
+            console.error("Error deleting user:", err.message);
+            alert("Failed to delete user: " + err.message);
+        });
+    }
+    async function editUser(userId) {
+        // 1. Remove active from the currently active user div
+        const activeUserDiv = document.querySelector(".users.active");
+        if (activeUserDiv) activeUserDiv.classList.remove("active");
+        activeSetting = 'edit-profile'
+        // 2. Make the edit-profile div active
+        const editProfileDiv = document.querySelector(".edit-profile");
+        if (editProfileDiv) editProfileDiv.classList.add("active");
+        const profile = await fetchProfileInfo(userId);
+        if (!profile) return;
+        RenderProfileInfo(profile); 
+        const url = await getProfilePicUrl(userId); // return image URL or null
+        RenderProfilePic(url);
+    }
+    function addUser() {
+        // Remove 'active' from .users
+        const usersSection = document.querySelector('.users');
+        if (usersSection) {
+            usersSection.classList.remove('active');
+        }
+
+        // Remove 'active' from .edit-profile
+        const editProfileSection = document.querySelector('.edit-profile');
+        if (editProfileSection) {
+            editProfileSection.classList.remove('active');
+        }
+
+
+        // Add 'active' to the add-profile section
+        const addProfile = document.querySelector('.add-profile');
+        if (addProfile) {
+            addProfile.classList.add('active');
+        }
+        activeSetting='add-profile'
+    }
+    // Upload profile pic function
+    async function uploadProfilePic(userId, file) {
+        const formData = new FormData();
+        formData.append('profile', file); // 'profile' matches your multer field name
+
+        try {
+            const response = await fetch(`/upload-profilePic/${userId}`, {
+            method: 'POST',
+            body: formData
+            });
+
+            const result = await response.json();
+            if (result.success) {
+            console.log('Profile pic uploaded:', result.profile_pic);
+            return result.profile_pic;
+            } else {
+            console.error('Upload failed:', result.error);
+            return null;
+            }
+        } catch (err) {
+            console.error('Upload error:', err);
+            return null;
+        }
+    }
+    async function updateProfileInfo(userId, updateData) {
+        try {
+            const response = await fetch(`/update-profile/${userId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include", // 👈 ensures cookies are sent
+            body: JSON.stringify(updateData)
+            });
+
+            const result = await response.json();
+            if (!response.ok) {
+                if (result.error.includes("Username already exists")) {
+                const suggestion = `${updateData.username}${Math.floor(Math.random() * 1000)}`;
+                alert(`❌ Username already exists. Try something like: ${suggestion}`)
+                throw new Error(`Username already exists.`);
+                } else if (result.error.includes("Email already exists")) {
+                throw new Error("Email already exists.");
+                alert("❌ Email already exists. Please use another one.")
+                } else if (result.error.includes("Role not supported")) {
+                throw new Error("Role not supported.");
+                } else {
+                throw new Error("Failed to edit user.");
+                alert("❌ Failed to edit user.")
+                }
+                return;
+            }
+            else {
+            console.log("✅ Profile updated:", result);
+            const user = result.user;
+            RenderProfileInfo(user);
+            const userCard = document.querySelector(`.user-card[data-id="${user.id}"]`);
+            const userInfo = userCard.querySelector('.user-info');
+            const statusBtn = userCard.querySelector('.status-btn');
+
+            // Update user info
+            userInfo.innerHTML = `
+                <h3>${user.full_name}</h3>
+                <div class="user-role">${user.role}</div>
+                <div class="user-meta">
+                    <div><i class="fas fa-calendar-alt"></i> ${user.created_date}</div>
+                    <div><i class="fas fa-user-shield"></i> ${user.created_by}</div>
+                </div>
+            `;
+
+            // Update status button
+            statusBtn.onclick = () => toggleStatus(user.id, user.status);
+            statusBtn.innerHTML = `
+                <span class="status-indicator status-${user.status.toLowerCase()}"></span>
+                ${user.status}
+            `;
+            return result;}
+        } catch (err) {
+            console.error("❌ Update error:", err.message);
+            return { success: false, error: err.message };
+        }
+        }
+
+</script>
+<script>
+async function RenderProfilePic(url) {
+  try {
+
+    const imgEl = document.querySelector("#edit-profile-form #edit-profile-pic");
+    if (!imgEl) return;
+    
+    const originalUrl = url || "/images/default-avatar.png";
+
+    // show it
+    imgEl.src = originalUrl;
+    const editImgInput = document.getElementById("edit-profile-pic-upload");
+    editImgInput.value='';
+  } catch (error) {
+    console.error("Failed to load profile pic:", error);
+  }
+}
+
+async function RenderProfileInfo(profile) {
+
+  const form = document.querySelector("#edit-profile-form");
+  if (!form) return;
+
+  // Fill the fields
+  form.dataset.userId = profile.id;
+  form.querySelector("#edit-full_name").value    = profile.full_name || "";
+  form.querySelector("#edit-username").value     = profile.username || "";
+  form.querySelector("#edit-email").value        = profile.email || "";
+  form.querySelector("#edit-phone_number").value = profile.phone_number || "";
+  form.querySelector("#edit-role").value         = profile.role || "";
+  form.querySelector("#edit-status").value       = profile.status || "Active";
+
+  // Save original values in dataset
+  const editInputs = form.querySelectorAll("input, select, textarea");
+  editInputs.forEach(input => {
+    if (input.type === "file") {
+      input.dataset.originalValue = ""; // no original file
+    } else {
+      input.dataset.originalValue = input.value; // store original
+    }
+  });
+
+}
+
+
+
+
+</script>
+<script>
+    function getProfilePicUrl(userId) {
+        return fetch(`/ProfilePic/${userId}`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+            credentials: 'include' // send cookies if you're using cookie auth
+        })
+        .then(res => {
+            if (!res.ok) {
+                // Try to parse error JSON
+                return res.json()
+                .then(err => {
+                    throw new Error(`Failed: ${res.status} - ${err.error || "Unknown error"}`);
+                })
+                .catch(() => {
+                    throw new Error(`Failed: ${res.status} - ${res.statusText}`);
+                });
+            }
+            return res.blob();  // 👈 expect image as blob
+        })
+        .then(blob => URL.createObjectURL(blob)) // ✅ return object URL for <img src="">
+        .catch(err => {
+            console.error("Error fetching profile picture:", err.message);
+            return null;
+        });
+    }
+    async function fetchProfileInfo(userId) {
+        try {
+            const response = await fetch(`/ProfileInfo/${userId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include' // send cookies if you're using cookie auth
+            });
+
+            if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching profile info:', error);
+            return null;
+        }
+    }
+    async function getUsers() {
+        try {
+            const response = await fetch("/Profiles", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+            });
+
+            if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log("Users:", data.users);
+            return data.users;
+        } catch (error) {
+            console.error("Error fetching users:", error);
+            return [];
+        }
+    }
+
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const usersGrid = document.getElementById("usersGrid");
+        getUsers().then(users => {
+            users.forEach(user => {
+            alert(user)
+            const card = document.createElement("div");
+            card.className = "user-card";
+            card.dataset.id = user.id; // put profile_id inside dataset
+
+            card.innerHTML = `
+                <div class="user-profile">
+                <img alt="${user.full_name}"
+                    class="profile-pic">
+                <div class="user-info">
+                    <h3>${user.full_name}</h3>
+                    <div class="user-role">${user.role}</div>
+                    <div class="user-meta">
+                        <div><i class="fas fa-calendar-alt"></i> ${user.created_date}</div>
+                        <div><i class="fas fa-user-shield"></i> ${user.created_by}</div>
+                    </div>
+
+                </div>
+                </div>
+
+                <div class="status-section">
+                <button class="status-btn ${user.status.toLowerCase()}"
+                        onclick="toggleStatus(${user.id}, '${user.status}')">
+                    <span class="status-indicator status-${user.status.toLowerCase()}"></span>
+                    ${user.status}
+                </button>
+                
+                <div class="user-actions">
+                    <button class="action-btn" onclick="editUser('${user.id}')" title="Edit User">✏️</button>
+                    <button class="action-btn" onclick="viewUser('${user.id}')" title="View Details">👁️</button>
+                    <button class="action-btn" onclick="deleteUser('${user.id}')" title="Delete User">🗑️</button>
+                </div>
+                </div>
+            `;
+
+            usersGrid.appendChild(card);
+
+            // 👇 fetch and assign profile picture
+            const imgEl = card.querySelector(".profile-pic");
+            getProfilePicUrl(user.id).then(url => {
+                if (url) {
+                    imgEl.src = url;
+                } else {
+                    imgEl.src = "/default-avatar.jpg"; // fallback image
+                }
+            });
+            });
+        });
+    });
+</script>
+<script src="/assets/js/navigation.js"></script>
+<!-- ====== ionicons ======= -->
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule="" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&amp;icon_names=favorite,home,search,settings" rel="stylesheet">
+
+</body></html>

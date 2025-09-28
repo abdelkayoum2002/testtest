@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Change Status</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      margin: 20px;
+    }
+    h3 {
+      margin-bottom: 10px;
+    }
+    form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      max-width: 450px;
+    }
+    label {
+      font-weight: bold;
+      margin-bottom: 5px;
+      display: block;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    #wordCounter {
+      font-size: 0.9em;
+      color: #555;
+      margin-bottom: 15px;
+    }
+    .drop-zone {
+      border: 2px dashed #bbb;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-bottom: 15px;
+    }
+    .drop-zone.dragover {
+      border-color: #007bff;
+      background: #e9f3ff;
+    }
+    .file-list {
+      font-size: 0.9em;
+      margin-top: 10px;
+    }
+    .file-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 10px;
+      background: #f1f1f1;
+      margin-bottom: 5px;
+      border-radius: 6px;
+    }
+    .file-item span {
+      flex: 1;
+    }
+    .remove-btn {
+      background: #ff4d4d;
+      border: none;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.8em;
+    }
+    button[type="submit"] {
+      background: #06b800;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1em;
+      margin-top: 10px;
+    }
+    button[type="submit"]:hover {
+      background: #02fd02;
+    }
+    #cancelBtn{
+      background: #9b0000;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1em;
+      margin-top: 10px;
+    }
+    #cancelBtn:hover{
+        background-color: #ff0000;
+    }
+    #sizeInfo {
+      font-size: 0.9em;
+      margin-top: 8px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h3>Consigne change</h3>
+  <strong style="font-size:x-large;" id="type">Do you want!</strong>
+  <form id="popupForm">
+    <label for="consigneSelect">Consigne:</label>
+    <select id="consigneSelect" name="consigne">
+    </select>
+    <input type="number" id="consigneValue" name="consigneValue" placeholder="Enter value">
+    <span id="consigne" ></span>
+    <label>Text:</label>
+    <input type="text" id="textInput" placeholder="Enter text here">
+    <div id="wordCounter">0 / 5 words</div>
+    
+    <label>Files (Word, Excel, PowerPoint, PDF):</label>
+    <div class="drop-zone" id="dropZone">
+      Drag & Drop files here or click to select
+      <input type="file" id="fileInput" multiple 
+             accept=".doc,.docx,.xls,.xlsx,.ppt,.pptx,.pdf" hidden>
+    </div>
+    <div class="file-list" id="fileList"></div>
+    <div id="sizeInfo"></div>
+    
+    <button id="setbtn" type="submit">Set</button>
+    <button id="cancelBtn" type="button" onclick="window.close()">Cancel</button>
+  </form>
+
+  <script>
+    const maxWords = 5;      
+    const maxTotalSize = 5* 1024 * 1024 * 1024; // 5 MB total
+    const allowedExtensions = ["doc","docx","xls","xlsx","ppt","pptx","pdf","mp4"];
+
+    const textInput = document.getElementById("textInput");
+    const wordCounter = document.getElementById("wordCounter");
+    const dropZone = document.getElementById("dropZone");
+    const fileInput = document.getElementById("fileInput");
+    const fileList = document.getElementById("fileList");
+    const sizeInfo = document.getElementById("sizeInfo");
+
+    let selectedFiles = [];
+
+    // Format size helper
+    function formatSize(bytes) {
+      if (bytes < 1024) return bytes + " B";
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + " KB";
+      return (bytes / 1024 / 1024).toFixed(2) + " MB";
+    }
+
+    // Word counter
+    textInput.addEventListener("input", () => {
+      const words = textInput.value.trim().split(/\s+/).filter(Boolean);
+      if (words.length > maxWords) {
+        textInput.value = words.slice(0, maxWords).join(" ");
+      }
+      wordCounter.textContent = `${words.length} / ${maxWords} words`;
+    });
+
+    // Drop zone events
+    dropZone.addEventListener("click", () => fileInput.click());
+    dropZone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      dropZone.classList.add("dragover");
+    });
+    dropZone.addEventListener("dragleave", () => dropZone.classList.remove("dragover"));
+    dropZone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      dropZone.classList.remove("dragover");
+      handleFiles(e.dataTransfer.files);
+    });
+
+    fileInput.addEventListener("change", () => handleFiles(fileInput.files));
+
+    function handleFiles(files) {
+      Array.from(files).forEach(file => {
+        const ext = file.name.split(".").pop().toLowerCase();
+        if (!allowedExtensions.includes(ext)) {
+          alert(`File "${file.name}" is not allowed.`);
+          return;
+        }
+        // Check total size
+        const currentTotal = selectedFiles.reduce((sum, f) => sum + f.size, 0);
+        if (currentTotal + file.size > maxTotalSize) {
+          const remaining = maxTotalSize - currentTotal;
+          alert(`Adding "${file.name}" would exceed the total limit (remaining ${formatSize(remaining)}).`);
+          return;
+        }
+        selectedFiles.push(file);
+      });
+      renderFileList();
+    }
+
+    function renderFileList() {
+      fileList.innerHTML = "";
+      selectedFiles.forEach((file, index) => {
+        const div = document.createElement("div");
+        div.className = "file-item";
+        div.innerHTML = `
+          <span>📄 ${file.name} — ${formatSize(file.size)}</span>
+          <button type="button" class="remove-btn" data-index="${index}">X</button>
+        `;
+        fileList.appendChild(div);
+      });
+
+      // attach remove events
+      document.querySelectorAll(".remove-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const idx = btn.getAttribute("data-index");
+          selectedFiles.splice(idx, 1);
+          renderFileList();
+        });
+      });
+
+      // Update size info
+      const used = selectedFiles.reduce((sum, f) => sum + f.size, 0);
+      const remaining = maxTotalSize - used;
+      sizeInfo.textContent = `Used: ${formatSize(used)} / ${formatSize(maxTotalSize)} | Remaining: ${remaining >= 0 ? formatSize(remaining) : "0 B"}`;
+    }
+
+    // Form submit
+    document.getElementById("popupForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const text = textInput.value;
+      const select = document.getElementById("consigneSelect");
+      const input = document.getElementById("consigneValue");
+      const consigneName = select.value;
+      const consigneValue = parseFloat(input.value); // number
+      const consigneOldValue = document.getElementById("consigne").dataset.value;
+      window.opener.postMessage({ oldValue:consigneOldValue,value:consigneValue ,consigneName,text, files: selectedFiles }, window.location.origin);
+      window.close(); // Optional
+    });
+
+    // Listen for messages from main window
+    window.addEventListener("message", (event) => {
+      if (event.origin !== window.location.origin) return;
+      const { type,consignes,consigne } = event?.data;
+      if(type) document.getElementById("type").innerHTML = `Do you want to change ${type} consigns`;
+      if (consignes) {
+        const select = document.getElementById("consigneSelect");
+        select.innerHTML = '<option value="">-- Select consigne --</option>'; // reset
+        // loop over keys (MAX, MIN, TARGET...)
+        Object.entries(consignes).forEach(([key, data]) => {
+          const option = document.createElement("option");
+          option.value = key; // e.g. "MAX"
+          option.textContent = key;
+          option.dataset.value = data.value ?? "—"; // show — if null
+          option.dataset.lastUpdate = data.last_update;
+          select.appendChild(option);
+        });
+      } 
+      if(consigne){
+        const select = document.getElementById("consigneSelect");
+        const option = [...select.options].find(opt => opt.value === consigne.name);
+
+        if (option) {
+          // update the dataset of the option
+          option.dataset.value = consigne.value ?? "—";
+          option.dataset.lastUpdate = consigne.last_update;
+
+          // if this consigne is currently selected, update <span>
+          if (select.value === consigne.name) {
+            const span = document.getElementById("consigne");
+            span.textContent = option.dataset.value;
+            span.dataset.name = consigne.name;
+            span.dataset.value = option.dataset.value;
+            span.dataset.lastUpdate = consigne.last_update;
+          }
+        }
+      }
+    });
+    document.getElementById("consigneSelect").addEventListener("change", (e) => {
+      const selected = e.target.selectedOptions[0];
+      const span = document.getElementById("consigne");
+
+      if (selected) {
+        span.textContent = selected.dataset.value || "";
+        span.dataset.name = selected.value;
+        span.dataset.value = selected.dataset.value;
+        span.title = selected.dataset.lastUpdate;
+      } else {
+        span.textContent = "";
+        span.dataset.name = "";
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMART SILO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100&icon_names=favorite,home,search,settings" rel="stylesheet" />
+
+    <!-- ======= Styles ====== -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .main{
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+       .messages-page {
+            margin-top: 65px;
+            display: flex;
+            flex-direction: column;
+            flex: 1; /* Take all remaining space after topbar */
+            padding: 20px;
+            background-color: #f8f9fa;
+            overflow: hidden; /* Prevent overflow */
+        }
+        .messages-page .header {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+        .messages-page .header .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center; /* aligns h2 and search button vertically */
+        }
+        .messages-page h2 {
+            color: #2c3e50;
+        }
+
+        #messages-container {
+            display: flex;
+            flex-direction: column;
+            flex: 1; /* Take remaining space above pagination */
+            overflow-y: auto; /* Scrollable */
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            background: #fafafa;
+            border: 1px solid #ddd;
+        }
+
+        .messages-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            table-layout: auto; /* Let content decide column widths */
+        }
+
+        .messages-table thead {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            background-color: #f2f2f2;
+        }
+        .messages-table thead th {
+            border-top: none;
+        }
+        .messages-table th,
+        .messages-table td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: left;
+        }
+
+        .messages-table th {
+            font-weight: bold;
+        }
+
+        .messages-table tbody tr:hover {
+        background-color: rgba(57, 95, 8, 0.411); /* mask */
+        background-blend-mode: multiply;
+        }
+
+
+                /* Column sizing */
+        .messages-table th:nth-child(1),
+        .messages-table td:nth-child(1) {
+            text-align: center;
+            white-space: nowrap; /* Don't wrap */
+        }
+
+        .messages-table th:nth-child(2),
+        .messages-table td:nth-child(2) {
+            width: 100%;       /* Fill remaining space */
+            white-space: normal; /* Allow wrapping */
+        }
+
+
+        .messages-table th:nth-child(3),
+        .messages-table td:nth-child(3) {
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        /* Date column */
+        .messages-table th:nth-child(4),
+        .messages-table td:nth-child(4) {
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            gap: 15px;
+            background: white;
+            border-top: 1px solid #ddd;
+            flex-shrink: 0; /* Don't shrink */
+        }
+
+        .pagination button {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .pagination button:hover {
+            background: #f8f9fa;
+        }
+
+        .pagination button:disabled {
+            background: #f8f9fa;
+            color: #6c757d;
+            cursor: not-allowed;
+        }
+
+        /* Scrollbar styling */
+        #messages-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #messages-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        #messages-container::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+
+        #messages-container::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+        .search-bar {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border: 1px solid #ccc;
+    border-radius: 999px;
+    padding: 6px 10px;
+    background: #fff;
+    transition: box-shadow 0.2s ease;
+  }
+  .search-bar:focus-within {
+    box-shadow: 0 0 0 3px rgba(0,0,0,.07);
+  }
+
+  .search-bar input {
+    width: 0;
+    border: none;
+    outline: none;
+    font: 14px/1.2 system-ui, sans-serif;
+    background: transparent;
+    opacity: 0;
+    transition: width 0.25s ease, opacity 0.25s ease;
+  }
+
+  .search-bar.open input {
+    width: 244px;  /* expand size */
+    opacity: 1;
+  }
+
+  .search-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .advSearch-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 15px;
+    height: 15px;
+    opacity: 0.5;
+  }
+  .advSearch-btn ion-icon {
+    transition: transform 0.3s;
+  }
+  .advSearch-btn.rotated ion-icon {
+    transform: rotate(180deg);
+  }
+  .advSearch-btn:hover{
+    opacity: 1;
+  }
+    .hidden {
+        display: none !important; 
+    }
+  .search-btn ion-icon {
+    width: 20px;
+    height: 20px;
+  }
+.advanced-search{
+    display: flex;
+    justify-content:flex-end;
+    height: fit-content;
+    transition: height 0.6s;
+}
+.advanced-search div{
+  display: flex;
+  flex-wrap: wrap;          /* allow wrapping to new lines */
+  gap: 10px;                /* space between items */
+  width: 258px;
+  justify-content: center; /* align it under the search bar */
+  padding: 10px 0 10px 0px;
+}
+
+.advanced-search div label {
+  display: flex;
+  flex-direction: column;   /* label above input */
+  font-size: 10px;
+  align-items: center;
+}
+
+.advanced-search div input {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 112px;         /* minimum box size */
+  flex: 1;
+}
+    .MSG_unreaded{
+    background-color: #b6c3ba;
+    }
+    .MSG-detail{
+        font-size: 12px;
+        overflow: hidden;       /* needed for height animation */
+        max-height: 0;          /* collapsed initially */
+        opacity: 0;
+        transition: max-height 0.5s ease, opacity 0.3s ease;
+    }
+    .MSG-detail.open {
+        opacity: 1;
+        margin-top: 5px;
+    }
+    .MSG-detail span{
+        display: block;
+    }
+    .loading {
+        display: grid;
+        flex: 1;
+        align-items: center;
+        justify-content: center;
+    }
+    .detaiLoading {
+        display: grid;
+        flex: 1;
+        align-items: center;
+        justify-content: center;
+    }
+    .detailFiles{
+        margin-top: 10px;
+        row-gap: 9px;
+        column-gap: 29px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .detailFiles a{
+        display: inline-flex;
+        align-items: center;
+        gap: 6px; /* spacing between icon and text */
+    }
+    .detailFiles a img{
+        height: 2.5em;
+        width: auto;
+    }
+    </style>
+    <style>
+        .INFO {
+            background-color: blue;
+        }
+        .WARNING{
+            background-color: #ffcc00;
+            color: #000000;
+            animation: warningBlink 1s infinite; /* blinking animation */
+        }
+        .ALARM{
+            background-color: #ff0000;   /* red */
+            color: #ffffff;              /* white text */
+            animation: alarmBlink 0.3s infinite;
+        }
+        .read{
+            animation: none;
+        }
+        .ERROR{
+            background-color: red;
+        }
+        @keyframes alarmBlink {
+            0%, 100% {
+                background-color: #ff0000;   /* red */
+                color: #ffffff;              /* white text */
+            }
+            50% {
+                background-color: #ffffff;   /* white */
+                color: #ff0000;              /* red text */
+            }
+        }
+        @keyframes warningBlink {
+            0%, 100% {
+                background-color: #ffcc00;
+                color: #000000;
+            }
+            50% {
+                background-color: #ffffff;
+                color: #ffcc00;
+            }
+        }
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+      <div class="navigation">
+        <ul>
+          <li>
+            <a href="#">
+              <span class="icon"><ion-icon name=""></ion-icon></span> 
+              <span class="title">Menu</span>
+            </a>
+          </li>
+
+                <li>
+                    <a href="/Dashboard">
+                        <span class="icon">
+                            <ion-icon name="home-outline"></ion-icon>
+                        </span>
+                        <span class="title">Dashboard</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/System">
+                        <span class="icon">
+                            <ion-icon name="people-outline"></ion-icon>
+                        </span>
+                        <span class="title">System</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/SCADA">
+                        <span class="icon">
+                        </span>
+                        <span class="title">SCADA</span>
+                    </a>
+                </li>
+                <li>
+                      <a href="/Analytics">
+                          <span class="icon">
+                              <ion-icon name="analytics-outline"></ion-icon>
+                          </span>
+                          <span class="title">Analytics</span>
+                      </a>
+                </li>
+                <li>
+                    <a href="/Messages">
+
+                        <span class="icon">
+                            <ion-icon name="chatbubble-outline"></ion-icon>
+                        </span>
+                        <span class="title">Messages</span>
+                    </a>
+                </li>
+
+                <li>
+             
+                <li>
+                    <a href="/Profile">
+                        <span class="icon">
+                            <ion-icon name="person-outline"></ion-icon>
+                        </span>
+                        <span class="title">Profile</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/Settings">
+                        <span class="icon">
+                            <ion-icon name="settings-outline"></ion-icon>
+                        </span>
+                        <span class="title">Settings</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/Password">
+                        <span class="icon">
+                            <ion-icon name="lock-closed-outline"></ion-icon>
+                        </span>
+                        <span class="title">Password</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/index">
+                        <span class="icon">
+                            <ion-icon name="log-out-outline"></ion-icon>
+                        </span>
+                        <span class="title">Sign Out</span>
+                    </a>
+                </li>
+            </ul>
+      </div>
+      <!-- ========================= Main ==================== -->
+        <div class="main">
+            <div class="topbar">
+                  <div style="display: inline-flex;align-items: center;gap: 10px;">
+                    <div class="toggle">
+                        <ion-icon name="menu-outline"></ion-icon>
+                    </div>
+                    <a class="emergencybtn" id="EmergencyStop"><img width="40" height="40" src="https://img.icons8.com/fluency/48/emergency-stop-button.png" alt="emergency-stop-button"/></a>
+                  </div>
+                  <div class="silo">
+                      <span class="title">SMART SILO</span>
+                  </div>
+                  <div style="display: inline-flex;align-items: center;gap: 10px;">
+                    <div class="mqtt_status">
+                        MQTT
+                    </div>
+
+                    <div class="user">
+                      <img src="assets/imgs/customer001.jpg" alt="">
+                    </div>
+                  </div>
+            </div>
+            <div class="messages-page">
+                <div class="header">
+                <div class="header-top">
+                    <h2>Systeme log</h2>
+                    <div style="gap: 3px;display: flex;flex-direction: row-reverse;align-items: center;">
+                        <div class="search-bar" id="searchBar">
+                        <button class="search-btn" id="toggleBtn" aria-label="Search">
+                            <ion-icon name="search-outline"></ion-icon>
+                        </button>
+                        <input type="text" id="searchInput" placeholder="Search...">
+                        <button class="advSearch-btn hidden" id="advBtn" aria-label="Advanced">
+                            <ion-icon name="chevron-down-outline"></ion-icon>
+                        </button>
+                        </div>
+                            <ion-icon class="hidden" id="searchCancel" style="color: red;" name="close"></ion-icon>
+    
+                    </div>
+                </div>
+                <div class="advanced-search hidden" id="advanced-search">
+                <!-- Advanced search -->
+                <div>
+                    <label>
+                    <input type="text" placeholder="Type">
+                    </label>
+                    <label>
+                    <input type="text" placeholder="Sender">
+                    </label>
+                    <label>
+                    From:
+                    <input type="date" placeholder="From">
+                    </label>
+                    <label>
+                    To:
+                    <input type="date" placeholder="To">
+                    </label>
+                </div>
+                </div>
+                </div>
+
+                <div id="messages-container">
+                    <table class="messages-table" id="myTable">
+                        <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Message</th>
+                            <th>Sender</th>
+                            <th>Date</th>
+                        </tr>
+                        </thead>
+                        <tbody id="logsBody">
+                        </tbody>
+                    </table>
+                    <div class="loading hidden" id='loading'>
+                        <svg style="width:273px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path fill="#8C8888" stroke="#8C8888" stroke-width="21" transform-origin="center" d="m148 84.7 13.8-8-10-17.3-13.8 8a50 50 0 0 0-27.4-15.9v-16h-20v16A50 50 0 0 0 63 67.4l-13.8-8-10 17.3 13.8 8a50 50 0 0 0 0 31.7l-13.8 8 10 17.3 13.8-8a50 50 0 0 0 27.5 15.9v16h20v-16a50 50 0 0 0 27.4-15.9l13.8 8 10-17.3-13.8-8a50 50 0 0 0 0-31.7Zm-47.5 50.8a35 35 0 1 1 0-70 35 35 0 0 1 0 70Z"><animateTransform type="rotate" attributeName="transform" calcMode="spline" dur="2" values="0;120" keyTimes="0;1" keySplines="0 0 1 1" repeatCount="indefinite"></animateTransform></path></svg>
+                    </div>
+                </div>
+                <div class="pagination">
+                    <button id="prev-btn">Previous</button>
+                    <span id="page-info"></span>
+                    <button id="next-btn">Next</button>
+                </div>
+            </div>
+        </div
+    </div>
+<script>
+    const whoIm={
+        first_name:'Admin',
+        last_name:'Admin'
+    }
+</script>
+<!--<script>
+  const socket = io();
+
+    // Request logs from server
+    function loadLogs(callback) {
+    // remove previous listener to avoid duplicates
+    socket.off("system_log");
+
+    socket.on("system_log", (data) => {
+        if (data.error) {
+        console.error(data.error);
+        } else {
+        console.log("Received logs:", data);
+        if (callback) callback(data);
+        }
+    });
+
+    // emit after listener is ready
+    socket.emit("get_system_log", whoIm.first_name, whoIm.last_name, limit, offset);
+    }
+
+  // Initial load
+  loadLogs();
+</script>
+<script>
+  let offset = 0;      // start from first messages
+  const limit = 10;    // messages per page
+  const prevBtn = document.getElementById("prev-btn");
+  const nextBtn = document.getElementById("next-btn");
+  // Pagination controls
+  prevBtn.addEventListener("click", () => {
+    if (offset >= limit) {
+      offset -= limit;
+      loadLogs();
+    }
+  });
+
+  nextBtn.addEventListener("click", () => {
+    offset += limit;
+    loadLogs();
+  });
+</script>-->
+<script> //Shearch
+    const searchBar = document.getElementById('searchBar');
+    const toggleBtn = document.getElementById('toggleBtn');
+    const searchCancel = document.getElementById('searchCancel');
+    const advBtn = document.getElementById('advBtn');
+    const input = document.getElementById('searchInput');
+    const advanced_search = document.getElementById('advanced-search');
+    let is_search = false; 
+    // --- your search action ---
+    function doSearch() {
+    const searchWords=[]
+    const query = input.value.trim() || null;
+    if(query){searchWords.push(query);}
+    // collect advanced search inputs only if panel is open
+    let advValues = {};
+    if (!advanced_search.classList.contains('hidden')) {
+        const advInputs = advanced_search.querySelectorAll('input');
+        advInputs.forEach(el => {
+        if (el.value.trim() !== "") {
+            advValues[el.placeholder || el.name || el.type] = el.value.trim();
+        }
+        });
+    }
+    // build final search object
+    const searchParams = {
+        searchWords,
+        filters: advValues
+    };
+
+    console.log("Searching with:", searchParams);
+    if (searchParams.searchWords.length === 0 && Object.keys(searchParams.filters).length === 0) {
+        return;
+    }
+    is_search=true;
+    searchCancel.classList.remove('hidden');
+    // 👉 replace with your actual search logic
+    search(renderLogs,searchWords,searchParams.filters);
+    }
+    function search(callback,searchWords, filters){
+        loading.classList.remove('hidden');
+        tbody.innerHTML='';
+        socket.off("logs_result");
+        console.log(searchWords)
+        // listen once
+        socket.once("logs_result", (data) => {
+            if (data.error) {
+                console.error(data.error);
+            } else {
+                console.log("Received logs:", data);
+                if (callback) callback(data);
+            }
+        });
+        // emit after listener is ready
+        socket.emit("get_logs", searchWords, filters, search_limit, search_offest);
+    }
+    // --- open/close helpers ---
+    function openSearch() {
+    searchBar.classList.add('open');
+    advBtn.classList.remove('hidden');
+    advBtn.classList.remove('rotated');
+    advanced_search.classList.add('hidden');
+    setTimeout(() => input.focus(), 120);
+    }
+
+    function closeSearch() {
+    searchBar.classList.remove('open');
+    advBtn.classList.add('hidden');
+    advBtn.classList.remove('rotated');
+    advanced_search.classList.add('hidden');
+    input.blur();
+    // ⚡ advanced inputs are NOT cleared
+    }
+    // --- searchCancel logic ---
+    searchCancel.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (is_search) {
+        closeSearch();
+        loadLogs(renderLogs);
+        searchCancel.classList.add('hidden');
+        is_search=false;
+    }
+    });
+    // --- toggleBtn logic ---
+    toggleBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (!searchBar.classList.contains('open')) {
+        openSearch();       // if closed → open
+    } else {
+        doSearch();         // if open → search
+    }
+    });
+
+    // --- advanced search toggle ---
+    advBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        advanced_search.classList.toggle('hidden');
+        advBtn.classList.toggle('rotated');
+    });
+
+    // --- close when click outside (ignore advanced panel) ---
+    document.addEventListener('click', (e) => {
+    const hasValue = input.value.trim() !== "";
+    const advOpen = !advanced_search.classList.contains('hidden'); // ✅ now defined
+
+    if (
+        searchBar.classList.contains('open') &&
+        !searchBar.contains(e.target) &&
+        !advanced_search.contains(e.target) &&
+        !advOpen &&           // do NOT close if advanced is open
+        !hasValue             // do NOT close if main input has value
+    ) {
+        closeSearch();
+    }
+    });
+
+
+    // --- close with Escape key ---
+    document.addEventListener('keydown', (e) => {
+    if (e.key === "Escape" && searchBar.classList.contains('open')) {
+        closeSearch();
+    }
+    if (e.key === "Enter" && searchBar.classList.contains('open')) {
+        e.preventDefault();
+        doSearch();
+    }
+    });
+</script>
+<script>// help fct
+    function cleanFileName(filename) {
+        const dotIndex = filename.lastIndexOf(".");
+        const ext = filename.slice(dotIndex);              // ".docx"
+        const base = filename.slice(0, dotIndex);          // "1756776453009_307014997"
+        const cleanBase = base.split("_")[0];              // "1756776453009"
+        return cleanBase + ext;
+    }
+</script>
+<script>
+  const socket = io();
+  let offset = 0;
+  let search_offest = 0;
+  const limit = 20;
+  const search_limit = 50;
+  const loading = document.getElementById('loading');
+  const tbody = document.getElementById("logsBody");
+  // Request logs from server
+  function loadLogs(callback) {
+    loading.classList.remove('hidden');
+    tbody.innerHTML='';
+    // clear old listener
+    socket.off("system_log");
+    
+    // listen once
+    socket.once("system_log", (data) => {
+      if (data.error) {
+        console.error(data.error);
+      } else {
+        console.log("Received logs:", data);
+        if (callback) callback(data);
+      }
+    });
+
+    // emit after listener is ready
+    socket.emit("get_system_log", limit, offset);
+  }
+  const detailTimers = new Map(); // logId → timer
+  // Render logs into the table
+  function renderLogs(logs) {
+    loading.classList.add('hidden')
+    tbody.innerHTML = "";
+    const detaiLoging =`<div class='detaiLoading hidden'><svg style="width:20px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path fill="#8C8888" stroke="#8C8888" stroke-width="21" transform-origin="center" d="m148 84.7 13.8-8-10-17.3-13.8 8a50 50 0 0 0-27.4-15.9v-16h-20v16A50 50 0 0 0 63 67.4l-13.8-8-10 17.3 13.8 8a50 50 0 0 0 0 31.7l-13.8 8 10 17.3 13.8-8a50 50 0 0 0 27.5 15.9v16h20v-16a50 50 0 0 0 27.4-15.9l13.8 8 10-17.3-13.8-8a50 50 0 0 0 0-31.7Zm-47.5 50.8a35 35 0 1 1 0-70 35 35 0 0 1 0 70Z"><animateTransform type="rotate" attributeName="transform" calcMode="spline" dur="2" values="0;120" keyTimes="0;1" keySplines="0 0 1 1" repeatCount="indefinite"></animateTransform></path></svg></div>`;
+    logs.forEach(log => {
+        const tr = document.createElement("tr");
+        tr.setAttribute("data-id", log.id);
+
+        if (log.is_read === 0) {
+            tr.classList.add("MSG_unreaded");
+        }
+
+        tr.innerHTML = `
+            <td class="${log.type}${log.is_read ? ' read' : ''}">${log.type}</td>
+            <td class="message-cell" style="cursor: pointer;">
+                ${log.message} ${detaiLoging}
+            </td>
+            <td>${log.sender}</td>
+            <td>${log.log_date}</td>
+        `;
+
+        const messageCell = tr.querySelector(".message-cell");
+
+
+    messageCell.addEventListener("click", (e) => {
+    e.stopPropagation();
+
+    // 1. Ignore if text is selected
+    const selection = window.getSelection();
+    if (selection && selection.toString().length > 0) {
+        return;
+    }
+
+    // 2. Ignore if click was on a file link or button
+    if (e.target.closest("a, button")) {
+        return;
+    }
+
+    const tr = messageCell.closest("tr");
+    const typeCell = tr.querySelector("td:first-child");
+
+    if (tr.classList.contains("MSG_unreaded")) {
+        tr.classList.remove("MSG_unreaded");
+        typeCell.classList.add("read");
+        socket.emit('set_system_log_read', log.id, whoIm.full_name);
+    }
+
+    const detailDiv = messageCell.querySelector(".MSG-detail");
+
+    if (detailDiv) {
+        const isOpening = !detailDiv.classList.contains('open');
+        detailDiv.classList.toggle('open');
+        detailDiv.style.maxHeight = isOpening
+            ? detailDiv.scrollHeight + "px"
+            : "0px";
+
+        if (!isOpening) {
+            const timer = setTimeout(() => {
+                if (detailDiv.parentNode) detailDiv.remove();
+                detailTimers.delete(log.id);
+            }, 1 * 60 * 1000);
+            detailTimers.set(log.id, timer);
+        } else {
+            if (detailTimers.has(log.id)) {
+                clearTimeout(detailTimers.get(log.id));
+                detailTimers.delete(log.id);
+            }
+        }
+    } else {
+        loadLogDetaill(renderLogDetaill, log.id);
+    }
+});
+
+
+
+        tbody.appendChild(tr); // append inside the forEach, after setting listeners
+    });
+}
+
+   function loadLogDetaill(callback,id){
+    const detaiLoading = document.querySelector(`tr[data-id='${id}'] .detaiLoading`);
+    detaiLoading.classList.remove('hidden');
+        // clear old listener
+    socket.off("system_log_detail");
+
+    // listen once
+    socket.once("system_log_detail", (data) => {
+      if (data.error) {
+        console.error(data.error);
+      } else {
+        console.log("Received log_detail:", data);
+        if (callback) callback(data);
+      }
+    });
+
+    // emit after listener is ready
+    socket.emit("get_system_log_detail", id);
+   }
+  // Render logs into the table
+    function renderLogDetaill(data) {
+        const tr = document.querySelector(`tr[data-id='${data.id}']`);
+        const detaiLoading = document.querySelector(`tr[data-id='${data.id}'] .detaiLoading`);
+        if (!tr) return;
+        detaiLoading.classList.add('hidden')
+        const messageCell = tr.querySelector(".message-cell");
+
+        // prevent duplicate detail
+        if (messageCell.querySelector(".MSG-detail")) return;
+
+        const detailDiv = document.createElement("div");
+        detailDiv.classList.add("MSG-detail");
+
+        // "Detail:" bold, same as cell
+        const boldPart = document.createElement("strong");
+        boldPart.textContent = "Detail: ";
+
+        // Detail content smaller
+        const contentPart = document.createElement("span");
+        contentPart.textContent = data.detail;
+
+        const files = document.createElement("div");
+        files.classList.add('detailFiles');
+
+        if (data.extra_files) {
+            data.extra_files.split(",").forEach(fileName => {
+                const cleanName = fileName.trim();
+                const link = document.createElement("a");
+                
+                link.textContent = cleanFileName(fileName);
+
+                // adjust path to where your Express serves files
+                link.href = `/download/${fileName.trim()}`;  
+
+                link.target = "_blank";      // open in new tab
+                link.download = fileName;    // suggest download instead of open
+                const ext = cleanName.split(".").pop().toLowerCase();
+                let icon = "";
+                switch (ext) {
+                    case "pdf":
+                        icon = `<img src="/resource/fillesLogo/pdflogo.svg">`; // you can replace with <img src="pdf.svg">
+                        break;
+                    case "doc":
+                    case "docx":
+                        icon = `<img src="/resource/fillesLogo/wordlogo.svg">`;
+                        break;
+                    case "xls":
+                    case "xlsx":
+                        icon = `<img src="/resource/fillesLogo/excellogo.svg">`;
+                        break;
+                    case "ppt":
+                    case "pptx":
+                        icon = `<img src="/resource/fillesLogo/powerpointlogo.svg">`;
+                        break;
+                    case "png":
+                    case "jpg":
+                    case "jpeg":
+                    case "gif":
+                        icon = "🖼️";
+                        break;
+                    default:
+                        icon = "📁";
+                }
+                link.innerHTML = `${icon} ${cleanFileName(fileName)}`;
+                files.appendChild(link);
+            });
+        }
+
+        // Append both parts
+        detailDiv.appendChild(boldPart);
+        detailDiv.appendChild(contentPart);
+        detailDiv.appendChild(files);
+        messageCell.appendChild(detailDiv);
+        const height = detailDiv.scrollHeight;
+        requestAnimationFrame(() => {
+            detailDiv.style.maxHeight = height + "px";
+            detailDiv.classList.add("open");
+        });
+    }
+
+  // First load
+  loadLogs(renderLogs);
+</script>
+<script>// Pagination
+  const prevBtn = document.getElementById("prev-btn");
+  const nextBtn = document.getElementById("next-btn");
+
+  prevBtn.addEventListener("click", () => {
+    if(is_search){
+        if (search_offest >= limit) {
+            search_offest -= limit;
+            doSearch();
+        }
+    }
+    else {
+        if (offset >= limit) {
+        offset -= limit;
+        loadLogs(renderLogs);
+        }
+    }
+  });
+
+  nextBtn.addEventListener("click", () => {
+    if(is_search){
+        search_offest += limit;
+        doSearch();
+    }
+    else{
+        offset += limit;
+        loadLogs(renderLogs);
+    }
+  });
+</script>
+<button onclick="printTable()">Print Table</button>
+
+<table id="myTable" class="styled-table">
+  <thead>
+    <tr>
+      <th style="background: lightblue;">Name</th>
+      <th style="background: lightblue;">Age</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="background: lightyellow;">Ahmed</td>
+      <td style="background: lightyellow;">25</td>
+    </tr>
+    <tr>
+      <td style="background: lightgreen;">Sara</td>
+      <td style="background: lightgreen;">30</td>
+    </tr>
+  </tbody>
+</table>
+
+<style>
+.styled-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.styled-table th, .styled-table td {
+  border: 1px solid black;
+  padding: 8px;
+  text-align: center;
+}
+</style>
+
+<script>
+function printTable(type) {
+// Clone the table so original stays untouched
+const tableClone = document.getElementById("myTable").cloneNode(true);
+
+// Remove specific divs from 2nd column
+tableClone.querySelectorAll("tr").forEach(tr => {
+  const td = tr.cells[1]; // second column
+  if (td) {
+    td.querySelectorAll("div.detaiLoading").forEach(div => div.remove());
+  }
+});
+
+// Remove all inline styles
+tableClone.querySelectorAll("*").forEach(el => {
+  el.removeAttribute("style");
+  el.removeAttribute("class"); // also drop all class-based styles
+});
+
+// Get clean HTML
+const table = tableClone.outerHTML;
+
+
+  // Copy all styles from current page
+  const styles = Array.from(document.styleSheets)
+    .map(styleSheet => {
+      try {
+        return Array.from(styleSheet.cssRules)
+          .map(rule => rule.cssText)
+          .join("");
+      } catch (e) {
+        // some stylesheets may be blocked (CORS), just skip them
+        return "";
+      }
+    })
+    .join("\n");
+    let tabStyle;
+    if(type==='color'){
+        tabStyle=`
+            @media print {
+            /* Disable hover styles on table rows */
+            
+            .messages-table tbody tr:hover {
+                background: inherit !important;
+                color: inherit !important;
+            }
+
+            /* Disable animations in the first column */
+            tr td:first-child {
+                animation: none !important;
+                transition: none !important;
+            }
+
+            /* Keep background colors */
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            }
+        `
+    }
+  const newWin = window.open("");
+  newWin.document.write(`
+    <html>
+      <head>
+        <title>Print Table</title>
+        <style>
+          ${styles}
+          ${tabStyle}
+        </style>
+      </head>
+      <body>
+        ${table}
+      </body>
+    </html>
+  `);
+  newWin.document.close();
+  newWin.print();
+}
+</script>
+
+
+
+<script src="assets/js/navigation.js"></script>
+<!-- ====== ionicons ======= -->
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&icon_names=favorite,home,search,settings" rel="stylesheet" />
+</body>
+</html>

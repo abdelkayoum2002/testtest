@@ -1,0 +1,3936 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMART SILO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100&icon_names=favorite,home,search,settings" rel="stylesheet" />
+
+    <!-- ======= Styles ====== -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script src="https://unpkg.com/popper.js@1"></script>
+    <script src="https://unpkg.com/tippy.js@5"></script>
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@5/dist/backdrop.css" />
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        .Refrence {
+          position: relative;
+          display: inline-block;
+          cursor: text;
+          font-size: 1rem;
+          color: var(--black2);
+          min-width: 30px;
+        }
+        .Refrence .tooltip-box {
+          visibility: hidden;
+          opacity: 0;
+          width: max-content;
+          max-width: 250px;
+          background-color: rgb(217, 248, 144);
+          font-size: 20px;
+          color: #28a745;
+          border-color:#28a745;
+          border-width: 20px;
+          text-align: left;
+          border-radius: 6px;
+          padding: 8px;
+          position: absolute;
+          z-index: 10;
+          top: 50%;
+          left: 100%;
+          transition: opacity 0.3s;
+          font-size: 0.75rem;
+        }
+    .Refrence .tooltip-box table {
+      border-collapse: collapse;
+    }
+
+    .Refrence .tooltip-box td {
+      padding: 2px 6px;
+    }
+
+    .Refrence .tooltip-box td:first-child {
+      font-weight: bold;
+      text-align: left;
+    }
+    .Refrence .tooltip-box td:nth-child(2),
+    .Refrence .tooltip-box td:nth-child(3) {
+      white-space: nowrap;
+      text-align: center;
+      padding-right: 1px;
+    }
+    .Refrence .tooltip-box td:nth-child(4) {
+      text-align: left;   /* times */
+      color: #797878;
+      font-size: 0.7rem;
+    }
+    /* Show tooltip on hover */
+    .Refrence:hover .tooltip-box {
+      visibility: visible;
+      opacity: 1;
+    }
+    .Refrence .tooltip-box:hover {
+      visibility: visible;
+      opacity: 1;
+    }
+    .Refrence.disabled:hover .tooltip-box {
+      visibility: hidden !important;
+      opacity: 0 !important;
+    }
+    .Status {
+      position: relative;
+    }
+    .Status .tooltip-box {
+          visibility: hidden;
+          opacity: 0;
+          width: fit-content;
+          background-color: rgb(255, 255, 255);
+          font-size: 20px;
+          color: #000000;
+          border: double;
+          border-color:#155a25;
+          border-width: 2px;
+          text-align: left;
+          padding: 2px;
+          position: absolute;
+          z-index: 10;
+          top: 66%;
+          left: 105%;
+          transition: opacity 0.3s;
+          font-size: 0.75rem;
+        }
+    .Status .tooltip-box table {
+      border-collapse: collapse;
+    }
+
+    .Status .tooltip-box td {
+      padding: 2px 6px;
+    }
+
+    .Status .tooltip-box td:first-child {
+      font-weight: bold;
+      text-align: left;
+    }
+    .Status .tooltip-box td:nth-child(2),
+    .Status .tooltip-box td:nth-child(3) {
+      white-space: nowrap;
+      text-align: center;
+      padding-right: 1px;
+    }
+    .Status .tooltip-box td:nth-child(4) {
+      text-align: left;   /* times */
+      color: #797878;
+      font-size: 0.7rem;
+    }
+    /* Show tooltip on hover */
+    .Status:hover .tooltip-box {
+      visibility: visible;
+      opacity: 1;
+    }
+    .Status .tooltip-box:hover {
+      visibility: visible;
+      opacity: 1;
+    }
+    .Status.disabled:hover .tooltip-box {
+      visibility: hidden !important;
+      opacity: 0 !important;
+    }
+    .SNRValue {
+      position: relative;
+    }
+    .SNRValue .tooltip-box {
+          visibility: hidden;
+          opacity: 0;
+          width: fit-content;
+          background-color: rgb(255, 255, 255);
+          color: #000000;
+          border: double;
+          border-color:#155a25;
+          border-width: 1px;
+          text-align: left;
+          padding: 2px;
+          position: absolute;
+          z-index: 10;
+          top: -12%;
+          left: 122%;
+          transition: opacity 0.3s;
+          font-size: 0.75rem;
+        }
+
+
+    .SNRValue .tooltip-box td:first-child {
+      font-weight: bold;
+      text-align: left;
+    }
+    .SNRValue .tooltip-box td:nth-child(4),
+    .SNRValue .tooltip-box td:nth-child(2) {
+      white-space: nowrap;
+      text-align: center;
+      padding-right: 1px;
+    }
+    .SNRValue .tooltip-box td:nth-child(3) {
+      text-align: left;   /* times */
+      color: #797878;
+    }
+    /* Show tooltip on hover */
+    .SNRValue:hover .tooltip-box {
+      visibility: visible;
+      opacity: 1;
+    }
+    .SNRValue .tooltip-box:hover {
+      visibility: visible;
+      opacity: 1;
+    }
+    .SNRValue.disabled:hover .tooltip-box {
+      visibility: hidden !important;
+      opacity: 0 !important;
+    }
+        /* Container styles */
+        .global-status,
+        .operation-status {
+          margin: 10px 0;
+          padding: 10px;
+          border-radius: 12px;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+          background-color: var(--white);
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        .global-status table {
+          border-collapse: collapse;
+          width: 100%;
+          flex: 1;
+        }
+        .global-status table td:nth-child(1) {
+          text-align: left;
+        }
+        .global-status table td:nth-child(2) {
+          text-align: center;
+        }
+        .global-status table td:nth-child(3) {
+          text-align: right;
+        }
+        .global-status table tr {
+          height: 37px;
+          vertical-align: middle;
+        }
+        .global-status table td:nth-child(1) label {
+          display: flex;
+          align-items: center;
+          gap: 3px;
+        }
+        .global-status table td:nth-child(3) select{
+          text-align: center;
+          text-align-last: center;
+          width: 151px;
+        }
+        /* Global silo status */
+        .status-indicator {
+        font-weight: bold;
+        padding: 4px 10px;
+        border-radius: 8px;
+        color: white;
+        }
+        .status-indicator.online {
+        background-color: #28a745; /* Green */
+        }
+        .status-indicator.offline {
+        background-color: #dc3545; /* Red */
+        }
+        .last-update {
+        margin-left: 10px;
+        font-size: 0.9em;
+        color: #666;
+        }
+
+        /* Emergency Stop */
+        .emergencybtn {
+        width: 47px;
+        cursor: pointer;
+        }
+
+        /* Operation Status */
+        .operation-status h3 {
+        margin: 0 0 8px;
+        font-size: 1.1em;
+        }
+        .operation-status p {
+        margin: 4px 0;
+        }
+
+        /* Action Controls */
+        .action-controls {
+          display: flex;
+          top: 50%;
+          right: 0;
+          transform: translateY(-50%);
+          position: fixed;
+          z-index: 99;
+          align-items: center;
+        }
+        .action-controls #action-panel {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          gap: 10px;
+          width: auto;                /* let flexbox size content */
+          max-width: 0;               /* start collapsed */
+          min-height: 60px;
+          height: max-content;
+          cursor: pointer;
+          user-select: none;
+          opacity: 0;
+          overflow: hidden;           /* hide content during transition */
+          white-space: nowrap;
+          transition:
+            opacity 1s ease,
+            max-width 0.5s ease;      /* 0.5s feels snappier than 5s */
+        }
+
+        .action-controls #action-panel.active {
+          max-width: 500px;           /* expand smoothly */
+          opacity: 1;
+          padding: 7px;
+          background-color: #f5fff5;
+          border-radius: 10px 0 0 10px;
+          border: thin solid #28a745;
+        }
+
+        .action-controls #action-panel-btn {
+          display: flex;
+          padding: 2px 0 2px 2px;
+          opacity: 0.5;
+          background-color: #f5fff5;
+          border-radius: 100% 0 0 100%;
+          border-style: solid;
+          border-width: thin;
+          border-color: #28a745;
+          width: max-content;
+          height: max-content;
+          cursor: pointer;
+          user-select: none;
+          justify-content: center;
+        }
+        .action-controls #action-panel-btn:hover {
+          opacity: 1;
+        }
+        .action-controls #action-panel-btn.active {
+          opacity: 1;
+          border-right: none;
+        }
+        .action-controls #action-panel-btn.running{
+          opacity: 1;
+        }
+        .Action{
+          width: 100%;
+          padding: 7px 0 7px 7px;
+          background: rgba(34, 197, 94, 0.2);
+          border-radius: 17px;
+          border-left: 5px solid green;
+          transition: transform 0.2s ease; /* smooth movement */
+        }
+        .Action:hover{
+          transform: translateX(5px); 
+        }
+        .Action table{
+          width: 100%;
+          table-layout: auto;
+        }
+        .Action td{
+          padding: 2px;
+          width: max-content;
+          vertical-align: middle;
+          text-align: center;
+        }
+        .Action .GrainTransfertAction td.label{
+          color: #797878;
+          font-size: xx-small;
+        }
+        .Action .actioname{
+          font-family: sans-serif;
+          font-size: medium;
+          font-weight: bold;
+        }
+        .actionStatus{
+          color: white;
+          border-radius: 7px;
+          padding: 5px;
+        }
+        .actionStatus.Started{
+          background-color: orange;
+        }
+        .actionStatus.InProgress{
+          background-color: rgb(1, 197, 1);
+        }
+        .actionStatus.Completed{
+          background-color: rgb(1, 94, 1);
+        }
+        .actionStatus.Error{
+          background-color: red;
+        }
+      .mqtt_status {
+        padding: 8px 12px;
+        border-radius: 4px;
+        font-weight: bold;
+        display: inline-block;
+        transition: all 0.3s ease;
+        background-color: #f44336;
+        color: white;
+      }
+      @keyframes valueChangeBeep {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+        100% { transform: scale(1); }
+      }
+
+      .beep-effect {
+        animation: valueChangeBeep 0.5s ease;
+        display: inline-block; /* Required for scale transforms on inline elements */
+      }
+
+      /* Interactive tooltip styles */
+      #interactive-tooltip {
+        transition: opacity 0.2s ease;
+      }
+      
+      /* Chart container hover effects */
+      .chart-section canvas {
+        transition: transform 0.1s ease;
+      }
+      
+      .chart-section canvas:hover {
+        transform: scale(1.01);
+      }
+      
+      /* Enhanced cursor styles for chart interaction */
+      .chart-section {
+        position: relative;
+        user-select: none;
+      }
+      
+      /* Highlight effect for active chart areas */
+      .chart-active {
+        box-shadow: 0 0 20px rgba(76, 175, 80, 0.3);
+        border-radius: 8px;
+      }
+
+      /* Sensor filter buttons */
+      .sensor-filter-btn {
+        transition: all 0.2s ease;
+        opacity: 0.8;
+        margin: 2px; 
+        padding: 4px 8px; 
+        border: none; 
+        border-radius: 4px; 
+        color: white; 
+        font-size: 10px; 
+        cursor: pointer;
+      }
+
+      .sensor-filter-btn:hover {
+        opacity: 1;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .sensor-filter-btn.active {
+        opacity: 1;
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+        transform: scale(1.05);
+      }
+
+      .sensor-filters {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 4px;
+      }
+      .btnSetStatus {
+        padding: 0 2px 0 2px;
+        color: white;
+        border-radius: 10px;
+      }
+      .tooltip {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+      }
+
+      .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 180px;
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        padding: 6px 10px;
+        border-radius: 5px;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%; /* Position above */
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+      }
+      .hidden {
+        display: none !important; 
+      }
+      .SiloSenosrsTooltip {
+        position: absolute;
+        background: rgb(223 221 103 / 85%);
+        color: #1f2937;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 14px;
+        pointer-events: none;
+        display: none;
+        z-index: 1000;
+        white-space: nowrap;
+      }
+      .tippy-tooltip.SiloSvgTooltip-theme {
+        background: rgba(255, 255, 255, 0.98);
+        color: #374151;
+        border: 3px solid #22c55e;
+        box-shadow: 0 12px 35px rgba(34, 197, 94, 0.2);
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+        font-size: 14px;
+        pointer-events: none;
+      }
+      .tippy-tooltip.SiloSvgTooltip-theme.normal-theme {
+        border-color:  #22c55e;
+        box-shadow: 0 12px 35px rgba(34, 197, 94, 0.2);;
+      }
+      .tippy-tooltip.SiloSvgTooltip-theme.warning-theme {
+        border-color: #ff3636;
+        box-shadow: 0 0 15px rgba(236, 46, 46, 0.6);
+      }
+      .tippy-tooltip.SiloSvgTooltip-theme.alarm-theme {
+        border-color: #990909;
+        box-shadow: 0 0 15px rgba(104, 20, 20, 0.6);
+      }
+
+      /* Style the sensor table in tooltips */
+      .tippy-content table {
+        width: 100%;
+        font-size: 12px;
+        border-collapse: collapse;
+      }
+
+      .tippy-content th {
+        background-color: #f3f4f6;
+        font-weight: 600;
+        padding: 6px 8px;
+        text-align: left;
+        border: 1px solid #d1d5db;
+      }
+
+      .tippy-content td {
+        padding: 4px 8px;
+        border: 1px solid #d1d5db;
+      }
+
+      .tippy-content tr:nth-child(even) {
+        background-color: #f9fafb;
+      }
+
+      /* Make sensor dots more interactive */
+      .sensor-clickable {
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .sensor-clickable:hover {
+        filter: brightness(1.1);
+      }
+      .good{
+        color: #22c55e;
+      }
+      .high{
+        color: red;
+      }
+      .low{
+        color:blue;
+      }
+      .wait{
+        display: flex;
+        gap: 3px;
+        align-items: center;
+        justify-content: center;
+      }
+      .notificationIcon{
+        width: 40px; 
+      }
+      .tippy-tooltip.notificationList-theme{
+        background: rgba(255, 255, 255, 0.98);
+        color: #374151;
+        border: 3px solid #22c55e;
+        box-shadow: 0 12px 35px rgba(34, 197, 94, 0.2);
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+        font-size: 14px;
+        pointer-events: none;
+      }
+      #notificationList .table-container{
+        max-height: 233px;
+        overflow-y: auto;
+        display: block;   /* important to enable scrolling */
+        scrollbar-width: thin;       /* makes it thinner */
+        scrollbar-color: #888 #f0f0f0; /* thumb and track */
+      }
+#notificationList .table-container::-webkit-scrollbar {
+  width: 2px;
+  height: 6px;
+}
+
+#notificationList .table-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+#notificationList .table-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+#notificationList .table-container::-webkit-scrollbar-track {
+  background: #f0f0f0;
+}
+
+#notificationList .table-container::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+      #notificationList tr.INFO {
+        background-color: blue;
+        color: white;
+      }
+      #notificationList tr.WARNING {
+        background-color: #ffcc00; /* yellow */
+        color: white;
+      }
+      #notificationList tr.DANGER {
+        background-color: #ff0000;   /* red */
+        color: white;
+      }
+      #notificationList tr td.INFO {
+        background-color: blue;
+        color: white;
+      }
+      #notificationList tr td.WARNING{
+        background-color: #ffcc00;
+        color: #000000;
+        animation: warningBlink 1s infinite; /* blinking animation */
+      }
+      #notificationList tr td.DANGER{
+        background-color: #ff0000;   /* red */
+        color: #ffffff;              /* white text */
+        animation: dangerBlink 0.3s infinite;
+      }
+      @keyframes dangerBlink {
+            0%, 100% {
+                background-color: #ff0000;   /* red */
+                color: #ffffff;              /* white text */
+            }
+            50% {
+                background-color: #ffffff;   /* white */
+                color: #ff0000;              /* red text */
+            }
+        }
+        @keyframes warningBlink {
+            0%, 100% {
+                background-color: #ffcc00;
+                color: #000000;
+            }
+            50% {
+                background-color: #ffffff;
+                color: #ffcc00;
+            }
+        }
+    </style>
+    <style>
+      .machine {
+        width: 34px;
+        fill: #3eb049; }
+
+      .small-shadow, .medium-shadow, .large-shadow {
+        fill: rgba(0, 0, 0, 0.05); }
+
+      .small {
+        -webkit-animation: counter-rotation 2.5s infinite linear;
+          -moz-animation: counter-rotation 2.5s infinite linear;
+            -o-animation: counter-rotation 2.5s infinite linear;
+                animation: counter-rotation 2.5s infinite linear;
+        -webkit-transform-origin: 100.136px 225.345px;
+            -ms-transform-origin: 100.136px 225.345px;
+                transform-origin: 100.136px 225.345px; }
+
+      .small-shadow {
+        -webkit-animation: counter-rotation 2.5s infinite linear;
+          -moz-animation: counter-rotation 2.5s infinite linear;
+            -o-animation: counter-rotation 2.5s infinite linear;
+                animation: counter-rotation 2.5s infinite linear;
+        -webkit-transform-origin: 110.136px 235.345px;
+            -ms-transform-origin: 110.136px 235.345px;
+                transform-origin: 110.136px 235.345px; }
+
+      .medium {
+        -webkit-animation: rotation 3.75s infinite linear;
+          -moz-animation: rotation 3.75s infinite linear;
+            -o-animation: rotation 3.75s infinite linear;
+                animation: rotation 3.75s infinite linear;
+        -webkit-transform-origin: 254.675px 379.447px;
+            -ms-transform-origin: 254.675px 379.447px;
+                transform-origin: 254.675px 379.447px; }
+
+      .medium-shadow {
+        -webkit-animation: rotation 3.75s infinite linear;
+          -moz-animation: rotation 3.75s infinite linear;
+            -o-animation: rotation 3.75s infinite linear;
+                animation: rotation 3.75s infinite linear;
+        -webkit-transform-origin: 264.675px 389.447px;
+            -ms-transform-origin: 264.675px 389.447px;
+                transform-origin: 264.675px 389.447px; }
+
+      .large {
+        -webkit-animation: counter-rotation 5s infinite linear;
+          -moz-animation: counter-rotation 5s infinite linear;
+            -o-animation: counter-rotation 5s infinite linear;
+                animation: counter-rotation 5s infinite linear;
+        -webkit-transform-origin: 461.37px 173.694px;
+            -ms-transform-origin: 461.37px 173.694px;
+                transform-origin: 461.37px 173.694px; }
+
+      .large-shadow {  
+        -webkit-animation: counter-rotation 5s infinite linear;
+          -moz-animation: counter-rotation 5s infinite linear;
+            -o-animation: counter-rotation 5s infinite linear;
+                animation: counter-rotation 5s infinite linear;
+        -webkit-transform-origin: 471.37px 183.694px;
+            -ms-transform-origin: 471.37px 183.694px;
+                transform-origin: 471.37px 183.694px; }
+      .small, .small-shadow,
+      .medium, .medium-shadow,
+      .large, .large-shadow {
+        animation-play-state: paused;
+      }
+      .machine.running .small,
+      .machine.running .small-shadow,
+      .machine.running .medium,
+      .machine.running .medium-shadow,
+      .machine.running .large,
+      .machine.running .large-shadow {
+        animation-play-state: running;
+      }
+
+      @-webkit-keyframes rotation {
+          from {-webkit-transform: rotate(0deg);}
+          to   {-webkit-transform: rotate(359deg);}
+      }
+      @-moz-keyframes rotation {
+          from {-moz-transform: rotate(0deg);}
+          to   {-moz-transform: rotate(359deg);}
+      }
+      @-o-keyframes rotation {
+          from {-o-transform: rotate(0deg);}
+          to   {-o-transform: rotate(359deg);}
+      }
+      @keyframes rotation {
+          from {transform: rotate(0deg);}
+          to   {transform: rotate(359deg);}
+      }
+
+      @-webkit-keyframes counter-rotation {
+          from {-webkit-transform: rotate(359deg);}
+          to   {-webkit-transform: rotate(0deg);}
+      }
+      @-moz-keyframes counter-rotation {
+          from {-moz-transform: rotate(359deg);}
+          to   {-moz-transform: rotate(0deg);}
+      }
+      @-o-keyframes counter-rotation {
+          from {-o-transform: rotate(359deg);}
+          to   {-o-transform: rotate(0deg);}
+      }
+      @keyframes counter-rotation {
+          from {transform: rotate(359deg);}
+          to   {transform: rotate(0deg);}
+      }
+    </style>
+</head>
+<body>
+  <div class="container">
+    <div class="navigation">
+      <ul>
+        <li>
+          <a href="#">
+            <span class="icon"><ion-icon name=""></ion-icon></span> 
+            <span class="title">Menu</span>
+          </a>
+        </li>
+
+              <li>
+                  <a href="/Dashboard">
+                      <span class="icon">
+                          <ion-icon name="home-outline"></ion-icon>
+                      </span>
+                      <span class="title">Dashboard</span>
+                  </a>
+              </li>
+
+              <li>
+                  <a href="/System">
+                      <span class="icon">
+                          <ion-icon name="people-outline"></ion-icon>
+                      </span>
+                      <span class="title">System</span>
+                  </a>
+              </li>
+              <li>
+                  <a href="/SCADA">
+                      <span class="icon">
+                      </span>
+                      <span class="title">SCADA</span>
+                  </a>
+              </li>
+              <li>
+                    <a href="/Analytics">
+                        <span class="icon">
+                            <ion-icon name="analytics-outline"></ion-icon>
+                        </span>
+                        <span class="title">Analytics</span>
+                    </a>
+              </li>
+              <li>
+                  <a href="/Messages">
+
+                      <span class="icon">
+                          <ion-icon name="chatbubble-outline"></ion-icon>
+                      </span>
+                      <span class="title">Messages</span>
+                  </a>
+              </li>
+
+              <li>
+            
+              <li>
+                  <a href="/Profile">
+                      <span class="icon">
+                          <ion-icon name="person-outline"></ion-icon>
+                      </span>
+                      <span class="title">Profile</span>
+                  </a>
+              </li>
+
+              <li>
+                  <a href="/Settings">
+                      <span class="icon">
+                          <ion-icon name="settings-outline"></ion-icon>
+                      </span>
+                      <span class="title">Settings</span>
+                  </a>
+              </li>
+
+              <li>
+                  <a href="/Password">
+                      <span class="icon">
+                          <ion-icon name="lock-closed-outline"></ion-icon>
+                      </span>
+                      <span class="title">Password</span>
+                  </a>
+              </li>
+
+              <li>
+                  <a href="/index">
+                      <span class="icon">
+                          <ion-icon name="log-out-outline"></ion-icon>
+                      </span>
+                      <span class="title">Sign Out</span>
+                  </a>
+              </li>
+          </ul>
+    </div>
+
+        <!-- ========================= Main ==================== -->
+        <div class="main">
+          <div class="topbar">
+                  <div style="display: inline-flex;align-items: center;gap: 10px;">
+                    <div class="toggle">
+                        <ion-icon name="menu-outline"></ion-icon>
+                    </div>
+                    <a class="emergencybtn" id="EmergencyStop"><img width="40" height="40" src="https://img.icons8.com/fluency/48/emergency-stop-button.png" alt="emergency-stop-button"/></a>
+                    <svg class="notificationIcon" xmlns="http://www.w3.org/2000/svg" viewBox="334.8251 179.281 123.2719 126.8183">
+                      <g id="Layer_1" transform="matrix(1, 0, 0, 1, -36.89320373535156, -15.533981323242188)">
+                        <g transform="matrix(1, 0, 0, 1, 371.718323, 198.755325)">
+                          <path fill-rule="evenodd" clip-rule="evenodd" d="M68.16,6.889c18.129,3.653,31.889,19.757,31.889,38.921 c0,22.594-2.146,39.585,20.592,54.716c-40.277,0-80.366,0-120.641,0C22.8,85.353,20.647,68.036,20.647,45.81 c0-19.267,13.91-35.439,32.182-38.979C53.883-2.309,67.174-2.265,68.16,6.889L68.16,6.889z M76.711,109.19 c-1.398,7.785-8.205,13.688-16.392,13.688c-8.187,0-14.992-5.902-16.393-13.688H76.711L76.711,109.19z" style="fill: rgb(255, 208, 15);"></path>
+                        </g>
+                      </g>
+                      <g id="noticircle" style="display: none;">
+                        <ellipse style="stroke: rgb(255, 255, 255); stroke-width: 6px; fill: rgb(173, 30, 30);" cx="430.097" cy="207.281" rx="28" ry="28"></ellipse>
+                        <text id="notinumber" style="fill: rgb(255, 250, 250); font-family: Arial, sans-serif; font-size: 28px; white-space: pre;" x="421.359" y="216.504" transform="matrix(1.5310490131378174, 0, 0, 1.3043830394744873, -226.675048828125, -63.044097900390625)">1</text>
+                      </g>
+                    </svg>
+                    <div id="notificationList" data-number="0">
+                      <div class="table-container">
+                        <table border="1">
+                          <tbody>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="silo">
+                      <span class="title">SMART SILO</span>
+                  </div>
+                  <div style="display: inline-flex;align-items: center;gap: 10px;">
+                    <div class="mqtt_status">
+                        MQTT
+                    </div>
+
+                    <div class="user">
+                      <img src="assets/imgs/customer001.jpg" alt="">
+                    </div>
+                  </div>
+            </div> 
+            <div class="action-controls" >
+              <div id="action-panel-btn">
+                <svg class="machine"xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 645 526">
+                  <defs/>
+                  <g>
+                    <path  x="-173,694" y="-173,694" class="large-shadow" d="M645 194v-21l-29-4c-1-10-3-19-6-28l25-14 -8-19 -28 7c-5-8-10-16-16-24L602 68l-15-15 -23 17c-7-6-15-11-24-16l7-28 -19-8 -14 25c-9-3-18-5-28-6L482 10h-21l-4 29c-10 1-19 3-28 6l-14-25 -19 8 7 28c-8 5-16 10-24 16l-23-17L341 68l17 23c-6 7-11 15-16 24l-28-7 -8 19 25 14c-3 9-5 18-6 28l-29 4v21l29 4c1 10 3 19 6 28l-25 14 8 19 28-7c5 8 10 16 16 24l-17 23 15 15 23-17c7 6 15 11 24 16l-7 28 19 8 14-25c9 3 18 5 28 6l4 29h21l4-29c10-1 19-3 28-6l14 25 19-8 -7-28c8-5 16-10 24-16l23 17 15-15 -17-23c6-7 11-15 16-24l28 7 8-19 -25-14c3-9 5-18 6-28L645 194zM471 294c-61 0-110-49-110-110S411 74 471 74s110 49 110 110S532 294 471 294z"/>
+                  </g>
+                  <g>
+                    <path x="-136,996" y="-136,996" class="medium-shadow" d="M402 400v-21l-28-4c-1-10-4-19-7-28l23-17 -11-18L352 323c-6-8-13-14-20-20l11-26 -18-11 -17 23c-9-4-18-6-28-7l-4-28h-21l-4 28c-10 1-19 4-28 7l-17-23 -18 11 11 26c-8 6-14 13-20 20l-26-11 -11 18 23 17c-4 9-6 18-7 28l-28 4v21l28 4c1 10 4 19 7 28l-23 17 11 18 26-11c6 8 13 14 20 20l-11 26 18 11 17-23c9 4 18 6 28 7l4 28h21l4-28c10-1 19-4 28-7l17 23 18-11 -11-26c8-6 14-13 20-20l26 11 11-18 -23-17c4-9 6-18 7-28L402 400zM265 463c-41 0-74-33-74-74 0-41 33-74 74-74 41 0 74 33 74 74C338 430 305 463 265 463z"/>
+                  </g>
+                  <g >
+                    <path x="-100,136" y="-100,136" class="small-shadow" d="M210 246v-21l-29-4c-2-10-6-18-11-26l18-23 -15-15 -23 18c-8-5-17-9-26-11l-4-29H100l-4 29c-10 2-18 6-26 11l-23-18 -15 15 18 23c-5 8-9 17-11 26L10 225v21l29 4c2 10 6 18 11 26l-18 23 15 15 23-18c8 5 17 9 26 11l4 29h21l4-29c10-2 18-6 26-11l23 18 15-15 -18-23c5-8 9-17 11-26L210 246zM110 272c-20 0-37-17-37-37s17-37 37-37c20 0 37 17 37 37S131 272 110 272z"/>
+                  </g>
+                  <g>
+                    <path x="-100,136" y="-100,136" class="small" d="M200 236v-21l-29-4c-2-10-6-18-11-26l18-23 -15-15 -23 18c-8-5-17-9-26-11l-4-29H90l-4 29c-10 2-18 6-26 11l-23-18 -15 15 18 23c-5 8-9 17-11 26L0 215v21l29 4c2 10 6 18 11 26l-18 23 15 15 23-18c8 5 17 9 26 11l4 29h21l4-29c10-2 18-6 26-11l23 18 15-15 -18-23c5-8 9-17 11-26L200 236zM100 262c-20 0-37-17-37-37s17-37 37-37c20 0 37 17 37 37S121 262 100 262z"/>
+                  </g>
+                  <g>
+                    <path x="-173,694" y="-173,694" class="large" d="M635 184v-21l-29-4c-1-10-3-19-6-28l25-14 -8-19 -28 7c-5-8-10-16-16-24L592 58l-15-15 -23 17c-7-6-15-11-24-16l7-28 -19-8 -14 25c-9-3-18-5-28-6L472 0h-21l-4 29c-10 1-19 3-28 6L405 9l-19 8 7 28c-8 5-16 10-24 16l-23-17L331 58l17 23c-6 7-11 15-16 24l-28-7 -8 19 25 14c-3 9-5 18-6 28l-29 4v21l29 4c1 10 3 19 6 28l-25 14 8 19 28-7c5 8 10 16 16 24l-17 23 15 15 23-17c7 6 15 11 24 16l-7 28 19 8 14-25c9 3 18 5 28 6l4 29h21l4-29c10-1 19-3 28-6l14 25 19-8 -7-28c8-5 16-10 24-16l23 17 15-15 -17-23c6-7 11-15 16-24l28 7 8-19 -25-14c3-9 5-18 6-28L635 184zM461 284c-61 0-110-49-110-110S401 64 461 64s110 49 110 110S522 284 461 284z"/>
+                  </g>
+                  <g>
+                    <path x="-136,996" y="-136,996" class="medium" d="M392 390v-21l-28-4c-1-10-4-19-7-28l23-17 -11-18L342 313c-6-8-13-14-20-20l11-26 -18-11 -17 23c-9-4-18-6-28-7l-4-28h-21l-4 28c-10 1-19 4-28 7l-17-23 -18 11 11 26c-8 6-14 13-20 20l-26-11 -11 18 23 17c-4 9-6 18-7 28l-28 4v21l28 4c1 10 4 19 7 28l-23 17 11 18 26-11c6 8 13 14 20 20l-11 26 18 11 17-23c9 4 18 6 28 7l4 28h21l4-28c10-1 19-4 28-7l17 23 18-11 -11-26c8-6 14-13 20-20l26 11 11-18 -23-17c4-9 6-18 7-28L392 390zM255 453c-41 0-74-33-74-74 0-41 33-74 74-74 41 0 74 33 74 74C328 420 295 453 255 453z"/>
+                  </g>
+                </svg>
+              </div>
+              <div id="action-panel" data-action="0">No Action</div>
+            </div>
+            <div id="silo-container" style="margin-top: 65px;"></div>
+          </div>
+     </div>
+<script>
+    const notificationBtn = document.querySelector('.notificationIcon');
+    const notificationCircle = document.querySelector('.notificationIcon #noticircle');
+    const notificationNumber = document.querySelector('.notificationIcon #notinumber');
+    const notificationList = document.getElementById('notificationList');
+    const notification = tippy(notificationBtn, {
+      content: notificationList,
+      allowHTML: true,
+      trigger: 'click',
+      theme: 'notificationList',
+      interactive: true,
+      hideOnClick: 'toggle',
+    });
+    notification.disable();
+    const actionPanelBtn = document.getElementById('action-panel-btn');
+    const actionPanel = document.getElementById('action-panel');
+
+    actionPanelBtn.addEventListener('click', () => {
+      actionPanelBtn.classList.toggle('active');
+      actionPanel.classList.toggle('active');
+    });
+    async function toggelAction(actionID,actionName,statusEl){
+      const actionEl = actionPanel.querySelector(`.Action[data-id="${actionID}"]`);
+      const status = actionEl.dataset.status;
+      if(status==='Completed' || status==='Error') return;
+      const waitEl = statusEl.nextElementSibling;
+      const wait=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+                        <path fill="#999999" stroke="#999999" stroke-width="13" transform-origin="center"
+                          d="m148 84.7 13.8-8-10-17.3-13.8 8a50 50 0 0 0-27.4-15.9v-16h-20v16A50 50 0 0 0 63 67.4l-13.8-8-10 17.3 13.8 8a50 50 0 0 0 0 31.7l-13.8 8 10 17.3 13.8-8a50 50 0 0 0 27.5 15.9v16h20v-16a50 50 0 0 0 27.4-15.9l13.8 8 10-17.3-13.8-8a50 50 0 0 0 0-31.7Zm-47.5 50.8a35 35 0 1 1 0-70 35 35 0 0 1 0 70Z">
+                          <animateTransform type="rotate" attributeName="transform" calcMode="spline"
+                            dur="2s" values="0;120" keyTimes="0;1" keySplines="0 0 1 1"
+                            repeatCount="indefinite"/>
+                        </path>
+                      </svg>`;
+      const error = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="#ce0d0d" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.713T12 15q-.425 0-.713.288T11 16q0 .425.288.713T12 17Zm-1-4h2V7h-2v6Zm1 9q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22Z"/></svg>`
+      function beforeUnloadHandler(e) {
+        e.preventDefault();
+        e.returnValue = ""; // required for most browsers
+      }
+      try {
+        waitEl.innerHTML=wait;
+        waitEl.style.display = 'block';
+        window.addEventListener("beforeunload", beforeUnloadHandler);
+        waitEl.title='Wait for user';
+        const resault = await openPopup(
+          { action: actionName, status },
+          `Action_${actionID}`,
+          "/pop/ActionStatusdialog"
+        );
+        console.log("Popup returned:", resault);
+
+        const payload = {
+          meta: {
+            actionID,
+            time: Math.floor(Date.now() / 1000),
+            command: resault.action,
+            description: resault.text,
+          },
+        };
+
+
+        if (resault.files && resault.files.length > 0) {
+          const formData = new FormData();
+          for (const key in payload.meta) {
+            formData.append(`meta[${key}]`, payload.meta[key]);
+          }
+          for (let i = 0; i < resault.files.length; i++) {
+            formData.append("files", resault.files[i]);
+          }
+          waitEl.title = "Wait for server responde";
+          const uploadRes = await fetch(
+            "/api/uploadeventfilles/set_actionStatus",
+            { method: "POST", body: formData }
+          );
+          if (!uploadRes.ok) throw new Error("Upload failed");
+          const json = await uploadRes.json();
+          console.log("Server response:", json);
+
+        } else {
+          waitEl.title = "Wait for server responde";
+          const uploadRes = await fetch(
+            "/api/uploadeventfilles/set_actionStatus",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            }
+          );
+          if (!uploadRes.ok) throw new Error("Upload failed");
+          const json = await uploadRes.json();
+          console.log("Server response:", json);
+        }
+        waitEl.innerHTML = '';
+        waitEl.style.display = 'none';
+      } catch (err) {
+        console.error("actionStatus change error", err);
+        alert("Error: failed to send Set actionStatus command.");
+        waitEl.title = err;
+        waitEl.innerHTML=error;
+
+      } finally {
+        window.removeEventListener("beforeunload", beforeUnloadHandler);
+      }
+    }
+</script>
+<script>
+/*function scrollToSiloSection(silo_id) {
+  const section = document.getElementById(`${silo_id}`);
+  console.log(section);
+  section.scrollIntoView({ behavior: 'smooth' }); // smooth scroll
+}*/
+function scrollToSiloSection(siloID) {
+    const section = document.getElementById(siloID);
+    if (!section) return;
+    const offset = 64; // pixels from top
+    const topPos = section.getBoundingClientRect().top + window.scrollY - offset;
+
+    window.scrollTo({
+        top: topPos,
+        behavior: 'smooth' // smooth scrolling
+    });
+}
+</script>
+<script>
+  const socket = io();
+  socket.on("forceDisconnect", (data ,ack) => {
+    if (ack) ack(); // acknowledge receipt
+    const mainDiv = document.querySelector('.main');
+    mainDiv.style.filter = 'blur(5px)';
+
+    setTimeout(() => {
+      alert("You have been kicked out");
+      mainDiv.innerHTML = '';
+    }, 100); 
+    setTimeout(() => {
+      window.location.replace("/"); // forces redirect to homepage
+    }, 2000);
+  });
+  socket.on("forceDelete", (data ,ack) => {
+    if (ack) ack(); // acknowledge receipt
+    const mainDiv = document.querySelector('.main');
+    mainDiv.style.filter = 'blur(5px)';
+
+    setTimeout(() => {
+      alert("You have been kicked out");
+      mainDiv.innerHTML = '';
+    }, 100); 
+    setTimeout(() => {
+      window.location.replace("/"); // forces redirect to homepage
+    }, 2000);
+  });
+  socket.on("disconnect", (reason) => {
+    console.error("Disconnected:", reason);});
+  function silos_list(callback) {
+    socket.emit('get_silos');
+    socket.once('silos', (data) => {
+      if (data.error) {
+        console.error(data.error);
+      } else {
+        console.log('Received silos:', data);
+        if (callback) callback(data);
+      }
+    });
+  }
+  function minisilos_list(callback) {
+    socket.emit('get_minisilos');
+    socket.once('minisilos', (data) => {
+      if (data.error) {
+        console.error(data.error);
+      } else {
+        console.log('Received minisilos:', data);
+        if (callback) callback(data);
+      }
+    });
+  }
+  function silos_grid(callback) {
+    socket.emit('get_silos_grid');
+    socket.once('silos_grid', (data) => {
+      if (data.error) {
+        console.error(data.error);
+      } else {
+        console.log('Received silos_grid:', data);
+        if (callback) callback(data);
+      }
+    });
+  }
+</script>
+
+<script src="/mqtt_min.js"></script>
+<script>
+  let topics = {};
+  const siloCharts = {};
+
+  // Improved chart update function
+  function updateChartWithLiveData(siloId, sensorType, value) {
+    const chart = siloCharts[siloId];
+    if (!chart) return;
+    const dataset = chart.data.datasets.find(ds => ds?.sensorType === sensorType);
+    if (!dataset) return;
+    const now = new Date();
+    const maxDataPoints = 50; // Limit data points for performance
+
+    // Add new data point
+    dataset.data.push({
+      x: now,
+      y: parseFloat(value)
+    });
+
+    // Remove old data points if exceeding limit
+    if (dataset.data.length > maxDataPoints) {
+      dataset.data.shift();
+    }
+
+    // Update chart with minimal animation for performance
+    chart.update('none');
+  }
+
+  function updateThreshold(siloId, sensorType, consigneName, newValue) {
+    const chart = siloCharts[siloId];
+    if (!chart) return;
+    // 1️⃣ Find the dataset
+    const ds = chart.data.datasets.find(d => d.sensorType === sensorType);
+    if (!ds) return;
+
+    // 2️⃣ Update the consigne value in the dataset
+    if (ds.consignes[consigneName]) {
+      ds.consignes[consigneName].value = newValue;
+    }
+
+    // 3️⃣ Update the annotation line
+    const ann = chart?.options?.plugins?.annotation?.annotations?.find(a => a.key === consigneName);
+    if (ann) {
+      ann.yMin = newValue ?? 0;  // use 0 or some placeholder if null
+      ann.yMax = newValue ?? 0;
+      ann.label.content = newValue !== null ? `${consigneName}: ${newValue}` : `${consigneName}: N/A`;
+      ann.display = true; // ensure it shows
+    }
+
+    // 4️⃣ Redraw the chart
+    chart.update({ duration: 500 });
+  }
+
+
+  // Create interactive tooltip element
+  function createInteractiveTooltip() {
+    const tooltip = document.createElement('div');
+    tooltip.id = 'interactive-tooltip';
+    tooltip.style.cssText = `
+      position: absolute;
+      background: rgba(0, 0, 0, 0.9);
+      color: white;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      pointer-events: none;
+      z-index: 1000;
+      display: none;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      min-width: 150px;
+    `;
+    document.body.appendChild(tooltip);
+    return tooltip;
+  }
+
+  // Get interactive tooltip (create if doesn't exist)
+  function getInteractiveTooltip() {
+    let tooltip = document.getElementById('interactive-tooltip');
+    if (!tooltip) {
+      tooltip = createInteractiveTooltip();
+    }
+    return tooltip;
+  }
+
+  // Show detailed information with vertical crosshair line
+function showDetailedTooltip(chart, event, mouseX) {
+  const tooltip = getInteractiveTooltip();
+  
+  // Only show interactive tooltip if single sensor is selected
+  if (chart.currentFilter === 'all') {
+    tooltip.style.display = 'none';
+    return;
+  }
+
+  // Get the visible dataset (should be only one)
+  const visibleDataset = chart.data.datasets.find(dataset => !dataset.hidden);
+  if (!visibleDataset || visibleDataset.data.length === 0) {
+    tooltip.style.display = 'none';
+    return;
+  }
+
+  // Convert mouse X position to chart scale
+  const canvasPosition = Chart.helpers.getRelativePosition(event, chart);
+  const dataX = chart.scales.x.getValueForPixel(canvasPosition.x);
+  
+  // Find the closest data point to the mouse X position
+  let closestPoint = null;
+  let closestDistance = Infinity;
+  let closestIndex = -1;
+
+  visibleDataset.data.forEach((dataPoint, index) => {
+    const pointTime = new Date(dataPoint.x).getTime();
+    const distance = Math.abs(pointTime - new Date(dataX).getTime());
+    if (distance < closestDistance) {
+      closestDistance = distance;
+      closestPoint = dataPoint;
+      closestIndex = index;
+    }
+  });
+
+  if (closestPoint) {
+    const sensorName = visibleDataset.label;
+    const sensorColor = visibleDataset.borderColor;
+    const value = closestPoint.y;
+    const time = new Date(closestPoint.x);
+    
+
+    // Format time as HH:MM:SS only
+    const timeFormatted = time.toLocaleTimeString('en-GB', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
+
+    // Get thresholds/consignes for this sensor
+    let thresholdInfo = '';
+    let errorInfo = '';
+    
+    if (visibleDataset.consignes) {
+      const thresholds = Object.entries(visibleDataset.consignes)
+        .filter(([name, consigne]) => consigne.value !== null && consigne.value !== undefined);
+      
+      if (thresholds.length > 0) {
+        thresholdInfo = '<div style="margin-top: 8px; border-top: 1px solid #444; padding-top: 8px;">';
+        thresholdInfo += '<div style="color: #ccc; margin-bottom: 4px;">Thresholds:</div>';
+
+        thresholds.forEach(([name, consigne]) => {
+          const thresholdColor = CONSIGNE_CONFIG[name]?.color || '#FFC107';
+          const error = (value - consigne.value).toFixed(2);
+          const errorPrefix = error >= 0 ? '+' : '';
+
+          let errorHtml = ''; // default: no error
+
+          if (name.toUpperCase().includes("MAX")) {
+            // show error only if value above MAX
+            if (error > 0) {
+              errorHtml = `<span style="color: #f44336; margin-left: 8px;">(Error: ${errorPrefix}${error})</span>`;
+            }
+          } 
+          else if (name.toUpperCase().includes("MIN")) {
+            // show error only if value below MIN
+            if (error < 0) {
+              errorHtml = `<span style="color: #f44336; margin-left: 8px;">(Error: ${error})</span>`;
+            }
+          } 
+          else {
+            // fallback: always show error with green/red coloring
+            const errorColor = error >= 0 ? '#4CAF50' : '#f44336';
+            errorHtml = `<span style="color: ${errorColor}; margin-left: 8px;">(Error: ${errorPrefix}${error})</span>`;
+          }
+          thresholdInfo += `
+            <div style="margin-bottom: 2px; font-size: 11px;">
+              <span style="color: ${thresholdColor};">●</span> 
+              <strong>${name}:</strong> ${consigne.value}
+              ${errorHtml}
+            </div>
+          `;
+        });
+
+        thresholdInfo += '</div>';
+
+
+        
+        // Find TARGET threshold specifically for main error display
+        const targetThreshold = thresholds.find(([name]) => name.toUpperCase().includes('TARGET'));
+        if (targetThreshold) {
+          const targetError = (value - targetThreshold[1].value).toFixed(2);
+          const targetErrorPrefix = targetError >= 0 ? '+' : '';
+          errorInfo = `
+            <div style="margin-bottom: 4px;">
+              <span style="color: #ccc;">Error (vs TARGET):</span> 
+              <strong>
+                ${targetErrorPrefix}${targetError}
+              </strong>
+            </div>
+          `;
+        }
+      }
+    }
+
+    tooltip.innerHTML = `
+      <div style="font-weight: bold; margin-bottom: 8px; color: ${sensorColor};">
+        📊 ${sensorName}
+      </div>
+      <div style="margin-bottom: 4px;">
+        <span style="color: #ccc;">Value:</span> 
+        <strong style="color: ${sensorColor};">${value}</strong>
+      </div>
+      <div style="margin-bottom: 4px;">
+        <span style="color: #ccc;">Time:</span> <strong>${timeFormatted}</strong>
+      </div>
+      ${errorInfo}
+      ${thresholdInfo}
+      <div style="font-size: 10px; color: #999; margin-top: 8px;">
+        ↔️ Move crosshair to explore data
+      </div>
+    `;
+    
+    tooltip.style.display = 'block';
+    tooltip.style.left = (event.pageX + 15) + 'px';
+    tooltip.style.top = (event.pageY - 10) + 'px';
+    
+    // Ensure tooltip stays within viewport
+    const rect = tooltip.getBoundingClientRect();
+    if (rect.right > window.innerWidth) {
+      tooltip.style.left = (event.pageX - rect.width - 15) + 'px';
+    }
+    if (rect.bottom > window.innerHeight) {
+      tooltip.style.top = (event.pageY - rect.height - 10) + 'px';
+    }
+
+    // Draw vertical crosshair line
+    drawCrosshair(chart, closestPoint.x);
+  } else {
+    tooltip.style.display = 'none';
+    clearCrosshair(chart);
+  }
+}
+
+  // Draw vertical crosshair line
+  function drawCrosshair(chart, xValue) {
+    // Remove existing crosshair plugin if it exists
+    if (chart.crosshairPlugin) {
+      Chart.unregister(chart.crosshairPlugin);
+    }
+
+    // Create crosshair plugin
+    const crosshairPlugin = {
+      id: 'crosshair',
+      afterDraw: (chart) => {
+        if (chart.currentFilter === 'all') return;
+
+        const ctx = chart.ctx;
+        const xScale = chart.scales.x;
+        const yScale = chart.scales[Object.keys(chart.scales).find(key => key.startsWith('y'))];
+        
+        const xPixel = xScale.getPixelForValue(xValue);
+        
+        ctx.save();
+        ctx.strokeStyle = '#FF6B6B';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([5, 5]);
+        
+        ctx.beginPath();
+        ctx.moveTo(xPixel, yScale.top);
+        ctx.lineTo(xPixel, yScale.bottom);
+        ctx.stroke();
+        
+        ctx.restore();
+      }
+    };
+
+    chart.crosshairPlugin = crosshairPlugin;
+    Chart.register(crosshairPlugin);
+    chart.update('none');
+  }
+
+  // Clear crosshair line
+  function clearCrosshair(chart) {
+    if (chart.crosshairPlugin) {
+      Chart.unregister(chart.crosshairPlugin);
+      chart.crosshairPlugin = null;
+      chart.update('none');
+    }
+  }
+  let client;
+  fetch('/mqtt-credentials')
+    .then(res => res.json())
+    .then(cfg => {
+      const statusElement = document.querySelector('.mqtt_status');
+      client = mqtt.connect(cfg.brokerUrl, {
+        clientId: cfg.clientId,
+        username: cfg.username,
+        password: cfg.password
+      });
+      console.log(cfg.clientId)
+      topics=cfg.topics;
+      console.log(topics)
+      client.on('connect', () => {
+        statusElement.style.backgroundColor = '#4CAF50';
+        for (const [type, arr] of Object.entries(topics.sub_topics)) {
+          arr.forEach(el => {
+            client.subscribe(el, (err) => {
+              if (!err) {
+                console.log(`📩 Subscribed to ${type}||topic:${el}`);
+              } else {
+                console.log(`❌ Subscribe failed to ${type}||topic:${el}`);
+                console.error('❌ Subscribe error:', err);
+              }
+            });
+          });
+        }
+        for (const [type, arr] of Object.entries(topics.pubsub_topics)) {
+          arr.forEach(el => {
+            client.subscribe(el, (err) => {
+              if (!err) {
+                console.log(`📩 Subscribed to ${type}||topic:${el}`);
+              } else {
+                console.log(`❌ Subscribe failed to ${type}||topic:${el}`);
+                console.error('❌ Subscribe error:', err);
+              }
+            });
+          });
+        }
+      });
+
+      client.on('reconnect', () => {
+        statusElement.style.backgroundColor = '#FFC107';
+      });
+
+      client.on('close', () => {
+        statusElement.style.backgroundColor = '#F44336';
+      });
+
+      client.on('message', (topic, msgBuffer) => {
+        const msg = msgBuffer.toString();
+        console.log("mqtt:",msg)
+        const parts = topic.split('/');
+        const type = parts[0];
+        
+        if (type==='Sensors'){
+          const equipment_id = parts[1]; // silo_1 minisilo_2
+          const sensorType = parts[2];   // temperature / humidity / co2 / level
+          if (parts.length === 4){
+            let level = parts[3];        // L1 / L2 / L3
+
+            const element =document.getElementById(`${sensorType}_${equipment_id}_Level_${level}_value`);
+            if(element){
+              const oldVal = element.innerText;
+              const newVal = msg;
+              if (newVal !== oldVal) {
+                element.innerText = msg;
+                element.classList.remove('beep-effect');
+                void element.offsetWidth;
+                element.classList.add('beep-effect');
+                element.addEventListener('animationend', () => {
+                  element.classList.remove('beep-effect');
+                }, { once: true });
+              }
+            }
+          }
+          else if (parts.length === 3){
+            const newVal = msg;
+            updateChartWithLiveData(equipment_id, sensorType, msg);
+            const element = document.getElementById(`${sensorType}_${equipment_id}`);
+            
+            if (element) {
+              const oldVal = element.innerText;
+              if (newVal !== oldVal) {
+                element.innerText = msg;
+                element.classList.remove('beep-effect');
+                void element.offsetWidth;
+                element.classList.add('beep-effect');
+                element.addEventListener('animationend', () => {
+                  element.classList.remove('beep-effect');
+                }, { once: true });
+
+                // Update chart with new data
+              }
+            }
+            if(sensorType==="Level_SILO") {
+              updateGrainLevel(equipment_id,msg);
+            }
+          }
+        }
+        
+        else if (type==='Consigne'){
+          const equipment_id = parts[1]; // silo_1 minisilo_2
+          const sensorType = parts[2];   // temperature / humidity / co2 / level
+          const consigneName = parts[3];
+          const data = JSON.parse(msg);
+          const newVal = data.value;
+          const time = Math.floor((new Date(data.timestamp))*1000);
+            if (parts.length === 5){
+              const level = parts[4];
+              if(consigneName==='TARGET') {
+                const element = document.getElementById(`${sensorType}_${equipment_id}_Level_${level}_consigne`);
+                if (element) {
+                const oldVal = element.innerText;
+                  if (newVal !== oldVal) {
+                    element.innerText = newVal;
+                    element.classList.remove('beep-effect');
+                    void element.offsetWidth;
+                    element.classList.add('beep-effect');
+                    element.addEventListener('animationend', () => {
+                      element.classList.remove('beep-effect');
+                    }, { once: true });
+                  }
+                }
+              }
+              const consigneEl = document.getElementById(`${sensorType}_${equipment_id}_Level_${level}_${consigneName}_consigne`);
+              const consignedateEl = document.getElementById(`${sensorType}_${equipment_id}_Level_${level}_${consigneName}_consigne_date`)
+      
+              if(consigneEl && consignedateEl){
+                consigneEl.innerText = newVal;
+                if(data.timestamp == null) consignedateEl.innerText ="--";
+                else consignedateEl.innerText =formatDateTime(time);
+              }
+              const popup = openPopups[`Consigne_${sensorType}_level_${level}_${equipment_id}`];
+              console.log(popup)
+              if (popup && !popup.closed) {
+                popup.postMessage(
+                  { consigne:{last_update:formatDateTime(time),name:consigneName,value:newVal} },
+                  window.location.origin
+                );
+              }
+            }
+            else if (parts.length === 4){
+            if(consigneName==='TARGET') {
+              const element = document.getElementById(`${sensorType}_${equipment_id}_Refrence`);
+              if (element) {
+              const oldVal = element.innerText;
+                if (newVal !== oldVal) {
+                  element.innerText = newVal;
+                  element.classList.remove('beep-effect');
+                  void element.offsetWidth;
+                  element.classList.add('beep-effect');
+                  element.addEventListener('animationend', () => {
+                    element.classList.remove('beep-effect');
+                  }, { once: true });
+                }
+              }
+            }
+            const consigneEl = document.getElementById(`${sensorType}_${equipment_id}_${consigneName}_consigne`);
+            const consignedateEl = document.getElementById(`${sensorType}_${equipment_id}_${consigneName}_consigne_date`)
+    
+            if(consigneEl && consignedateEl){
+              consigneEl.innerText = newVal;
+              if(data.timestamp == null) consignedateEl.innerText ="--";
+              else consignedateEl.innerText =formatDateTime(time);
+            }
+            updateThreshold(equipment_id,sensorType,consigneName,newVal);
+            const popup = openPopups[`Consigne_${sensorType}_${equipment_id}`];
+            console.log(popup)
+            if (popup && !popup.closed) {
+              popup.postMessage(
+                { consigne:{last_update:formatDateTime(time),name:consigneName,value:newVal} },
+                window.location.origin
+              );
+            }
+          }
+        }
+
+        else if (type==='Parameters'){
+          const data= JSON.parse(msgBuffer);
+          const value = data.value;
+          const time = Math.floor((new Date(data.date))*1000)
+          const equipment_id = parts[1]; // silo_1 minisilo_2
+          const parameter_name = parts[2];   // country content 
+          const element = document.getElementById(`${equipment_id}_${parameter_name}`);
+          const dateEl = document.getElementById(`${equipment_id}_${parameter_name}_LastUpdate`);
+          const flagEl = document.getElementById(`${equipment_id}_${parameter_name}_flag`);
+          const iconEl = document.getElementById(`${equipment_id}_${parameter_name}_logo`);
+          if (element) {
+            element.innerText = data.value;
+            element.classList.remove('beep-effect');
+            void element.offsetWidth;
+            element.classList.add('beep-effect');
+            element.addEventListener('animationend', () => {
+              element.classList.remove('beep-effect');
+            }, { once: true });
+          }
+          if(dateEl) {
+            dateEl.textContent = getTime(formatDateTime(time));
+            dateEl.title = formatDateTime(time)
+          }
+          if (flagEl) {
+            flagEl.src = `resource/countrys/${data.value}.png`;
+            flagEl.alt = `${data.value}`
+            flagEl.classList.remove('beep-effect');
+            void flagEl.offsetWidth;
+            flagEl.classList.add('beep-effect');
+            flagEl.addEventListener('animationend', () => {
+              flagEl.classList.remove('beep-effect');
+            }, { once: true });
+          }
+          else if (iconEl){
+            iconEl.src = `resource/cereals/${data.value}.svg`;
+            iconEl.alt = `${data.value}`
+            iconEl.classList.remove('beep-effect');
+            void iconEl.offsetWidth;
+            iconEl.classList.add('beep-effect');
+            iconEl.addEventListener('animationend', () => {
+              iconEl.classList.remove('beep-effect');
+            }, { once: true });
+          }
+        }
+        else if (type==='Status') {
+          const equipment_id = parts[1]; // silo_1 minisilo_2
+          const status_name = parts[2];   // operation speed ...
+          const statusEl = document.getElementById(`${equipment_id}_status`);
+          const statusSelectEl = document.getElementById(`${equipment_id}_statuSelect`);
+
+          if (statusEl) {
+            statusEl.innerText = msg;
+            statusEl.classList.remove('beep-effect');
+            void statusEl.offsetWidth;
+            statusEl.classList.add('beep-effect');
+            statusEl.addEventListener('animationend', () => {
+              statusEl.classList.remove('beep-effect');
+            }, { once: true });
+          }
+
+        }
+        else if (type==='Notifications') {
+          const notiType = parts[1];
+          const parm = parts[2];
+          if(notiType==='Consigne'){
+            switch (parm){
+              case 'Tempurature':
+                alert(msg);//notification latter
+                break;
+              case 'Humidty':
+                alert(msg);//notification latter
+                break;
+              case 'GASCO2':
+                alert(msg);//notification latter
+                break;
+              case 'Level':
+                alert(msg);//notification latter
+                break;
+              case 'Current':
+                alert(msg);//notification latter
+                break;
+              case 'Speed':
+                alert(msg);//notification latter
+                break;
+            }
+          }
+          else if (notiType==='Parameters'){
+            switch(parm){
+              case 'Country':
+                alert(msg);//notification latter
+                break;
+              case 'ContentType':
+                alert(msg);//notification latter
+                break;
+
+            }
+          }
+          else if (notiType==='Actions'){
+            alert(msg);//notification latter
+          }
+        }
+        else if (type==='Actions'){
+          alert(msg)
+          const action = parts[1];
+          const actionID = parts[2];
+          const actionPanelBtn = document.getElementById('action-panel-btn');
+          const actionPanel = document.getElementById('action-panel');
+
+          if (action === "Grain_Transfert") {
+            if (!msg) {
+                // If msgBuffer is null or empty, remove the action
+                const existingAction = actionPanel.querySelector(`.Action[data-id="${actionID}"]`);
+                if (existingAction) {
+                    actionPanel.removeChild(existingAction);
+                    // Optional: decrease action counter
+                    actionPanel.dataset.action = String(Math.max(0, Number(actionPanel.dataset.action) - 1));
+                    if(Number(actionPanel.dataset.action)<=0){
+                      document.getElementsByClassName('machine')[0].classList.remove('running');
+                      actionPanelBtn.classList.remove('running');
+                      actionPanel.innerHTML='No Action';
+                    }
+                }
+                return; // exit early
+            }
+
+            const data = JSON.parse(msgBuffer);
+
+            // Check if an action with this actionID already exists
+            let existingAction = actionPanel.querySelector(`.Action[data-id="${actionID}"]`);
+
+            const element = document.createElement("div");
+            element.className = "Action";
+            element.dataset.id = actionID;
+            element.dataset.status = data.status;
+            element.innerHTML = `
+              <table class="GrainTransfertAction">
+                <tr>
+                  <td class='label'>From</td>
+                  <td class='actioname'>${action}</td>
+                  <td class='label'>To</td>
+                  <td rowspan="2" style="padding: 0 7px;">
+                    <div class="wait">
+                      <span class="actionStatus ${data.status}" onClick="toggelAction('${actionID}','${action}',this)">${data.status}</span>
+                      <span style="width:20px;display:none;"></span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td onClick="scrollToSiloSection('${data.from}')">${data.from}</td>
+                  <td></td>
+                  <td onClick="scrollToSiloSection('${data.to}')">${data.to}</td>
+                </tr>
+              </table>
+            `;
+
+            if (existingAction) {
+              // ✅ Only update the status span instead of replacing the whole element
+              const statusEl = existingAction.querySelector(".actionStatus");
+              if (statusEl) {
+                statusEl.textContent = data.status;            // update text
+                statusEl.className = `actionStatus ${data.status}`; // update class
+              }
+
+              // still notify popup if open
+              const popup = openPopups['Action_' + actionID];
+              if (popup && !popup.closed) {
+                popup.postMessage(
+                  { status: data.status },
+                  window.location.origin
+                );
+              }
+            } else {
+              // Add new action
+              actionPanel.appendChild(element);
+              actionPanel.dataset.action = String(Number(actionPanel.dataset.action) + 1);
+              document.getElementsByClassName('machine')[0].classList.add('running');
+              document.getElementById('action-panel-btn').classList.add('running');
+            }
+          }
+          else if (action === "Dust_Aspiration") {
+           if (!msg) {
+                // If msgBuffer is null or empty, remove the action
+                const existingAction = actionPanel.querySelector(`.Action[data-id="${actionID}"]`);
+                if (existingAction) {
+                    actionPanel.removeChild(existingAction);
+                    // Optional: decrease action counter
+                    actionPanel.dataset.action = String(Math.max(0, Number(actionPanel.dataset.action) - 1));
+                    if(Number(actionPanel.dataset.action)<=0){
+                      document.getElementsByClassName('machine')[0].classList.remove('running');
+                      actionPanelBtn.classList.remove('running');
+                      actionPanel.innerHTML='No Action';
+                    }
+                }
+                return; // exit early
+            }
+            const data = JSON.parse(msgBuffer);
+
+            // Check if an action with this actionID already exists
+            let existingAction = actionPanel.querySelector(`.Action[data-id="${actionID}"]`);
+
+            const element = document.createElement("div");
+            element.className = "Action";
+            element.dataset.id = actionID;
+
+            element.innerHTML = `
+                <table class="DustAspiration">
+                    <tr>
+                        <td rowspan="2"></td>
+                        <td class='actioname'>${action}</td>
+                        <td rowspan="2" style="padding: 0 7px;">
+                            <span class="actionStatus ${data.status}">${data.status}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>${data.equipment_id}</td>
+                    </tr>
+                </table>
+            `;
+            if (existingAction) {
+              // ✅ Only update the status span instead of replacing the whole element
+              const statusEl = existingAction.querySelector(".actionStatus");
+              if (statusEl) {
+                statusEl.textContent = data.status;            // update text
+                statusEl.className = `actionStatus ${data.status}`; // update class
+              }
+
+              // still notify popup if open
+              const popup = openPopups['Action_' + actionID];
+              if (popup && !popup.closed) {
+                popup.postMessage(
+                  { status: data.status },
+                  window.location.origin
+                );
+              }
+            } else {
+              // Add new action
+              actionPanel.appendChild(element);
+              actionPanel.dataset.action = String(Number(actionPanel.dataset.action) + 1);
+              document.getElementsByClassName('machine')[0].classList.add('running');
+              document.getElementById('action-panel-btn').classList.add('running');
+            }
+          }
+        }  
+        else if (type==='Alarms'){
+          const type = parts[1];
+          const id = parts[2];
+
+          const tbody = notificationList.querySelector('tbody');
+          let tr = tbody.querySelector(`tr[data-id="${id}"]`);
+
+          if (!msg) {
+            alert(msg)
+            // 🔻 Remove if exists
+            if (tr) {
+              tr.remove();
+              notificationList.dataset.number = Math.max(0, Number(notificationList.dataset.number) - 1);
+
+              if (notificationList.dataset.number <= 0) {
+                notificationCircle.style.display = "none";  // hide circle
+                notification.disable();
+              } else if (notificationList.dataset.number > 9) {
+                notificationNumber.textContent = "+";
+              } else {
+                notificationNumber.textContent = notificationList.dataset.number;
+              }
+            }
+          } else {
+            const data = msgBuffer ? JSON.parse(msgBuffer) : null;
+            const alarm = data.alarm;
+            const time = data.time * 1000;
+
+            if (!tr) {
+              // ✅ Add new row
+              notificationList.dataset.number = Number(notificationList.dataset.number) + 1;
+
+              if (notificationList.dataset.number > 0) {
+                notificationCircle.style.display = ''; // show circle
+                notification.enable();
+              }
+
+              if (notificationList.dataset.number > 9) {
+                notificationNumber.textContent = "+";
+              } else {
+                notificationNumber.textContent = notificationList.dataset.number;
+              }
+
+              tr = document.createElement('tr');
+              tr.className = type;
+              tr.dataset.id = id;
+
+              [type, alarm, time].forEach((val, index) => {
+                const td = document.createElement('td');
+                td.textContent = val;
+                if (index === 0) {
+                  td.className = type;
+                }
+                if (index === 2) {
+                  td.textContent = getTime(formatDateTime(time));
+                  td.title = formatDateTime(time);
+                }
+                tr.appendChild(td);
+              });
+
+              tbody.appendChild(tr);
+            } else {
+              return;
+            }
+          }
+
+        }
+      });
+      
+      client.on('error', err => {
+        console.error('MQTT Error:', err);
+      });
+    });
+    let whoIm = 'ahmed';
+    document.getElementById('EmergencyStop').addEventListener('click', () => {
+    client.publish(topics.pub_topics.Emergency_stop[0],null,{ qos: 1 },
+      (err) => {
+        if (err) {
+          console.error("❌ Failed to publish message:", err);
+          alert("Error: failed to send emrgstop command.");
+        } else {
+          console.log("✅ Publish succeeded to",topics.pub_topics.Emergency_stop[0]);
+        }
+      }
+    );
+    });
+    document.querySelectorAll('.Refrence').forEach(refEl => {
+      refEl.addEventListener('click', () => {
+        refEl.classList.add('disabled');   // disable only this one
+      });
+    });
+</script>
+
+<script>
+const isPhone = () => /Mobi|Android|iPhone|iPod/i.test(navigator.userAgent) && window.innerWidth < 1024;
+function getTime(ts) {
+  if (!ts) return null;
+
+  // ensure proper parsing: SQLite uses "YYYY-MM-DD HH:MM:SS"
+  const d = new Date(ts.replace(" ", "T"));
+
+  if (isNaN(d)) {
+    console.error("Invalid date:", ts);
+    return null;
+  }
+
+  const hh = String(d.getHours()).padStart(2, "0");
+  const mm = String(d.getMinutes()).padStart(2, "0");
+  const ss = String(d.getSeconds()).padStart(2, "0");
+
+  return `${hh}:${mm}:${ss}`;
+}
+
+function formatDateTime(ts) {
+  const date = new Date(ts);
+
+  const pad = n => String(n).padStart(2, "0");
+
+  const year   = date.getFullYear();
+  const month  = pad(date.getMonth() + 1); // months are 0-based
+  const day    = pad(date.getDate());
+  const hour   = pad(date.getHours());
+  const minute = pad(date.getMinutes());
+  const second = pad(date.getSeconds());
+
+  return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
+}
+const openPopups = {};
+function openPopup(msg, prefix=null, url, options = "width=400,height=300") {
+  return new Promise((resolve, reject) => {
+    // unique window name (timestamp or UUID)
+    const popup = window.open(url, "Popup_" + prefix, options);
+    openPopups[prefix] = popup;
+
+    if (!popup) {
+      reject(new Error("Popup blocked"));
+      return;
+    }
+
+    popup.onload = () => {
+      popup.postMessage(msg, window.location.origin);
+    };
+
+    const handler = (event) => {
+      if (event.origin !== window.location.origin) return;
+      resolve(event.data);
+      window.removeEventListener("message", handler);
+      try { popup.close(); } catch {}
+    };
+
+    window.addEventListener("message", handler);
+
+    const timer = setInterval(() => {
+      if (popup.closed) {
+        clearInterval(timer);
+        window.removeEventListener("message", handler);
+        reject(new Error("Popup closed without response"));
+      }
+    }, 500);
+  });
+}
+
+
+const CONSIGNE_CONFIG = {
+  MAX:   { color: "red",   dash: [6, 6] },
+  MIN:   { color: "blue",  dash: [6, 6] },
+  TARGET:{ color: "green", dash: [6, 6] }
+};
+
+function ADDSilo_to_view(id, silo) {
+  const container = document.getElementById("silo-container");
+  const status = silo.status;
+  const country = {
+                    value:silo.parameters.Country.value || "N/A",
+                    date:silo.parameters.Country.last_update}
+  const content = {
+                    value:silo.parameters.ContentType.value || "N/A",
+                    date:silo.parameters.ContentType.last_update}
+  const capacity = silo.parameters.Capacity.value || "N/A";
+  
+  const typeIcons = {
+    Tempurature_SILO: "thermometer-outline",
+    Humidty_SILO: "water-outline",
+    Level_SILO: "beaker-outline",
+    GASCO2_SILO: "flame-outline"
+  };
+  
+  const typeColor = {
+    Tempurature_SILO: "#FF6B6B",
+    Humidty_SILO: "#4ECDC4", 
+    Level_SILO: "#45B7D1",
+    GASCO2_SILO: "#FFA726"
+  };
+
+  
+
+  const section = document.createElement('section');
+  let sensorBar = '';
+  section.className = 'silo-section';
+  section.id = `${id}`;
+  let StatustooltipRows = '';
+  for (const [type, data] of Object.entries(silo.status)) {
+    const value = data?.value ?? "--";
+    const date = data?.last_update ?? "--";
+     StatustooltipRows += `
+        <tr>
+          <td>${type}:</td>
+          <td id="${type}_${id}_status">${value}</td>
+          <td id="${type}_${id}__status_date">${date}</td>
+        </tr>
+      `;
+  }
+  const statusbar = `
+    <tr>
+      <td>
+        <strong>Status:</strong>
+        <span id="${id}_status" class="Status"> ${status.OperatingStatus.value}
+          <div class="tooltip-box">
+            <table>
+              ${StatustooltipRows}
+            </table>
+          </div>
+        </span>
+      </td>
+      <td>
+        <span class="last-update"><span id="${id}_status_LastUpdate" title="${status.OperatingStatus.last_update}">${getTime(status.OperatingStatus.last_update)}</span></span>
+      </td>
+      <td>
+        <span id="${id}_statusWait" style="display:none;vertical-align: middle;"><svg style="width:20px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path fill="#999999" stroke="#999999" stroke-width="13" transform-origin="center" d="m148 84.7 13.8-8-10-17.3-13.8 8a50 50 0 0 0-27.4-15.9v-16h-20v16A50 50 0 0 0 63 67.4l-13.8-8-10 17.3 13.8 8a50 50 0 0 0 0 31.7l-13.8 8 10 17.3 13.8-8a50 50 0 0 0 27.5 15.9v16h20v-16a50 50 0 0 0 27.4-15.9l13.8 8 10-17.3-13.8-8a50 50 0 0 0 0-31.7Zm-47.5 50.8a35 35 0 1 1 0-70 35 35 0 0 1 0 70Z"><animateTransform type="rotate" attributeName="transform" calcMode="spline" dur="2" values="0;120" keyTimes="0;1" keySplines="0 0 1 1" repeatCount="indefinite"></animateTransform></path></svg></span>
+        <button id="${id}_statuSetCancel" style="display:none;background-color:red;border-color:red;" class="btnSetStatus">Cancel</button>
+        <button id="${id}_statuSet" style="display:none;background-color:rgb(76, 175, 80);border-color:rgb(76, 175, 80);" class="btnSetStatus">Set</button>
+        <select id="${id}_statuSelect">
+        </select>
+      </td>
+    </tr>`
+  const contentbar = `
+    <tr>
+      <td>
+        <label><strong>Content:</strong> <span id="${id}_ContentType"> ${content.value}</span><img id="${id}_ContentType_logo" src="resource/cereals/${content.value}.svg" alt="${content.value}" height="30"></label>
+      </td>
+      <td>
+        <span class="last-update"><span id="${id}_ContentType_LastUpdate" title="${content.date}">${getTime(content.date)}</span></span>      
+      </td>
+      <td>
+        <span id="${id}_contentWait" style="display:none;vertical-align: middle;"><svg style="width:20px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path fill="#999999" stroke="#999999" stroke-width="13" transform-origin="center" d="m148 84.7 13.8-8-10-17.3-13.8 8a50 50 0 0 0-27.4-15.9v-16h-20v16A50 50 0 0 0 63 67.4l-13.8-8-10 17.3 13.8 8a50 50 0 0 0 0 31.7l-13.8 8 10 17.3 13.8-8a50 50 0 0 0 27.5 15.9v16h20v-16a50 50 0 0 0 27.4-15.9l13.8 8 10-17.3-13.8-8a50 50 0 0 0 0-31.7Zm-47.5 50.8a35 35 0 1 1 0-70 35 35 0 0 1 0 70Z"><animateTransform type="rotate" attributeName="transform" calcMode="spline" dur="2" values="0;120" keyTimes="0;1" keySplines="0 0 1 1" repeatCount="indefinite"></animateTransform></path></svg></span>
+        <button id="${id}_contentSetCancel" style="display:none;background-color:red;border-color:red;" class="btnSetStatus">Cancel</button>
+        <button id="${id}_contentSet" style="display:none;background-color:rgb(76, 175, 80);border-color:rgb(76, 175, 80);" class="btnSetStatus">Set</button>
+        <select id="${id}_contentSelect">
+        </select>
+      </td>
+    </tr>`
+  const countrybar = `
+    <tr>
+      <td>
+        <label><strong>Country:</strong> <span id="${id}_Country"> ${country.value}</span><img id="${id}_Country_flag" src="resource/countrys/${country.value}.png" alt="${country.value}" height="30"></label>      
+      </td>
+      <td>
+        <span class="last-update"><span id="${id}_Country_LastUpdate" title="${country.date}">${getTime(country.date)}</span></span>      
+      </td>
+      <td>
+        <span id="${id}_countryWait" style="display:none;vertical-align: middle;"><svg style="width:20px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path fill="#999999" stroke="#999999" stroke-width="13" transform-origin="center" d="m148 84.7 13.8-8-10-17.3-13.8 8a50 50 0 0 0-27.4-15.9v-16h-20v16A50 50 0 0 0 63 67.4l-13.8-8-10 17.3 13.8 8a50 50 0 0 0 0 31.7l-13.8 8 10 17.3 13.8-8a50 50 0 0 0 27.5 15.9v16h20v-16a50 50 0 0 0 27.4-15.9l13.8 8 10-17.3-13.8-8a50 50 0 0 0 0-31.7Zm-47.5 50.8a35 35 0 1 1 0-70 35 35 0 0 1 0 70Z"><animateTransform type="rotate" attributeName="transform" calcMode="spline" dur="2" values="0;120" keyTimes="0;1" keySplines="0 0 1 1" repeatCount="indefinite"></animateTransform></path></svg></span>
+        <button id="${id}_countrySetCancel" style="display:none;background-color:red;border-color:red;" class="btnSetStatus">Cancel</button>
+        <button id="${id}_countrySet" style="display:none;background-color:rgb(76, 175, 80);border-color:rgb(76, 175, 80);" class="btnSetStatus">Set</button>
+        <select id="${id}_countrySelect">
+        </select>
+      </td>
+    </tr>`
+  const globalStatusbar= `${statusbar}${contentbar}${countrybar}`;
+  // Prepare datasets for chart
+  const chartDatasets = [];
+  let sensorFilters='';
+  let datasetIndex = 0;
+
+  for (const [type, data] of Object.entries(silo.sensors)) {
+    const value = data?.value ?? "--";
+    const consigne = data?.consignes?.TARGET ?? "--";
+    const unit = data?.unit ?? "";
+    const icon = typeIcons[type] ?? "help-circle-outline";
+    let ReftooltipRows='';
+    for (const [key, consigne] of Object.entries(data.consignes)) {
+      ReftooltipRows += `
+        <tr>
+          <td>${key}:</td>
+          <td id="${type}_${id}_${key}_consigne">${consigne?.value ?? "--"}</td>
+          <td>${unit}</td>
+          <td id="${type}_${id}_${key}_consigne_date">${consigne?.last_update ?? "--"}</td>
+        </tr>
+      `;
+    }
+    sensorBar += `
+      <div class="card" id="${type}_${id}_Card">
+        <div>
+          <div id="${type}_${id}_Detail" style="display: none;"></div>
+          <div class="Refrence">
+            <div class='wait'>
+              <span id="${type}_${id}_Refrence">${consigne?.value ?? "--"}</span>
+              <span style="width:20px;display:none;"></span>
+            </div>
+            <div class="tooltip-box">
+              <table>
+                ${ReftooltipRows}
+              </table>
+            </div>
+          </div>
+          <div class="numbers" id="${type}_${id}">${value}</div>
+          <div class="cardName">${type.replaceAll("_SILO", "")} (${unit})</div>
+        </div>
+        <div class="iconBx" id="${type}_${id}_Icon"><ion-icon name="${icon}"></ion-icon></div>
+      </div>`;
+    
+    sensorFilters += `
+      <button 
+        class="sensor-filter-btn" 
+        data-silo="${id}" 
+        data-sensor="${type}" 
+        style="
+          background-color: ${typeColor[type] || `hsl(${datasetIndex * 60}, 70%, 50%)`}; 
+        "
+      >
+        ${type.replaceAll("_SILO", "")}
+      </button>
+    `;
+    const sensorDataset = {
+      sensorType: type,
+      unit: unit,
+      label: `${type.replaceAll("_SILO", "")} (${data.unit})`,
+      borderColor: typeColor[type] || `hsl(${datasetIndex * 60}, 70%, 50%)`,
+      backgroundColor: typeColor[type] ? `${typeColor[type]}20` : `hsla(${datasetIndex * 60}, 70%, 50%, 0.1)`,
+      borderWidth: 2,
+      fill: false,
+      tension: 0.4,
+      pointRadius: 0,
+      pointHoverRadius: 8,
+      pointHitRadius: 10,
+      data: [], // <-- real values will go here
+      consignes: data.consignes
+    };
+
+    // Final datasets for this sensor
+    const datasets = sensorDataset;
+    chartDatasets.push(datasets);
+    datasetIndex++;
+    console.log("Datasets for", type, datasets);
+    // Create dataset for chart
+    /*const dataset = {
+      meta: { sensorType: type },
+      label: `${type.replaceAll("_SILO", "")} (${unit})`,
+      borderColor: typeColor[type] || `hsl(${datasetIndex * 60}, 70%, 50%)`,
+      backgroundColor: typeColor[type] ? `${typeColor[type]}20` : `hsla(${datasetIndex * 60}, 70%, 50%, 0.1)`,
+      borderWidth: 2,
+      fill: false,
+      tension: 0.4,
+      pointRadius: 0, // Set to 0 as requested
+      pointHoverRadius: 8,
+      pointHitRadius: 10,
+      data: [],
+    };
+    chartDatasets.push(dataset);
+    datasetIndex++;*/
+
+  }
+
+  // Create sensor filter buttons
+/*  const sensorFilters = chartDatasets.map(dataset => {
+    const sensorName = dataset.label.split(' (')[0]; // Get name without unit
+    const sensorType = dataset.meta.sensorType;
+    return `<button class="sensor-filter-btn" data-silo="${id}" data-sensor="${sensorType}" style="background-color: ${dataset.borderColor}; margin: 2px; padding: 4px 8px; border: none; border-radius: 4px; color: white; font-size: 10px; cursor: pointer;">${sensorName}</button>`;
+  }).join('');*/
+
+  const chartBar = `
+    <div class="chart-section">
+      <div class="cardHeader">
+        <h2>Chart - ${id}</h2>
+        <div class="sensor-filters" style="margin: 8px 0;">
+          ${sensorFilters}
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <a href="Analytics.html?id=${id}" class="btn">View All</a>
+        </div>
+      </div>
+      <canvas id="${id}CombinedChart" width="510" height="255"></canvas>
+    </div>`;
+    
+  const imageBar = `
+    <div class="image-section" style="padding:10px">
+      <div class="image-center" id="${id}Image">
+        <svg id="${id}_siloSvg" data-matrixRows="1" data-matrixCols="1"  width="400" height="400" viewBox="90 11 232 384">
+          <!-- Background -->
+          <rect x="90" y="11" width="232" height="384" fill="#f8fafc" />
+          
+          <!-- Gradients and Effects -->
+          <defs>
+              <linearGradient id="grainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#f6ad55" />
+                  <stop offset="50%" stop-color="#ed8936" />
+                  <stop offset="100%" stop-color="#dd6b20" />
+              </linearGradient>
+              <linearGradient id="roofGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#e2e8f0" />
+                  <stop offset="50%" stop-color="#cbd5e0" />
+                  <stop offset="100%" stop-color="#a0aec0" />
+              </linearGradient>
+              
+              <!-- Red glow filter -->
+              <filter id="redGlow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                  <feMerge> 
+                      <feMergeNode in="coloredBlur"/>
+                      <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+              </filter>
+              <!-- Large Red smoke filter -->
+              <filter id="largeShadow" x="-200%" y="-200%" width="400%" height="400%">
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="12"/>
+              </filter>
+          </defs>
+          
+          <!-- Silo base/foundation -->
+          <ellipse cx="200" cy="380" rx="110" ry="15" fill="#4a5568" />
+          <ellipse cx="200" cy="375" rx="110" ry="15" fill="#718096" />
+          
+          <!-- Main silo cylinder - back wall -->
+          <rect x="90" y="80" width="220" height="295" fill="#e2e8f0" />
+          
+          <!-- Back wall texture - corrugated lines -->
+          <g id="backWallTexture">
+              <line x1="95" y1="80" x2="95" y2="375" stroke="#cbd5e0" stroke-width="1"/>
+              <line x1="105" y1="80" x2="105" y2="375" stroke="#cbd5e0" stroke-width="1"/>
+              <line x1="115" y1="80" x2="115" y2="375" stroke="#cbd5e0" stroke-width="1"/>
+              <line x1="125" y1="80" x2="125" y2="375" stroke="#cbd5e0" stroke-width="1"/>
+              <line x1="135" y1="80" x2="135" y2="375" stroke="#cbd5e0" stroke-width="1"/>
+              <line x1="145" y1="80" x2="145" y2="375" stroke="#cbd5e0" stroke-width="1"/>
+              <line x1="155" y1="80" x2="155" y2="375" stroke="#cbd5e0" stroke-width="1"/>
+              <line x1="165" y1="80" x2="165" y2="375" stroke="#cbd5e0" stroke-width="1"/>
+              <line x1="175" y1="80" x2="175" y2="375" stroke="#cbd5e0" stroke-width="1"/>
+              <line x1="185" y1="80" x2="185" y2="375" stroke="#cbd5e0" stroke-width="1"/>
+              <line x1="195" y1="80" x2="195" y2="375" stroke="#cbd5e0" stroke-width="1"/>
+              <line x1="205" y1="80" x2="205" y2="375" stroke="#cbd5e0" stroke-width="1"/>
+              <line x1="215" y1="80" x2="215" y2="375" stroke="#cbd5e0" stroke-width="1"/>
+              <line x1="225" y1="80" x2="225" y2="375" stroke="#cbd5e0" stroke-width="1"/>
+              <line x1="235" y1="80" x2="235" y2="375" stroke="#cbd5e0" stroke-width="1"/>
+              <line x1="245" y1="80" x2="245" y2="375" stroke="#cbd5e0" stroke-width="1"/>
+              <line x1="255" y1="80" x2="255" y2="375" stroke="#cbd5e0" stroke-width="1"/>
+              <line x1="265" y1="80" x2="265" y2="375" stroke="#cbd5e0" stroke-width="1"/>
+              <line x1="275" y1="80" x2="275" y2="375" stroke="#cbd5e0" stroke-width="1"/>
+              <line x1="285" y1="80" x2="285" y2="375" stroke="#cbd5e0" stroke-width="1"/>
+          </g>
+          
+          <!-- Cross-section opening - the cut-away view -->
+          <path d="M 120 100 L 280 100 L 280 360 L 120 360 Z" fill="#1a202c" opacity="0.1" />
+          
+          <!-- Grain inside the silo -->
+          <rect id="${id}_grainLevel" x="125" y="305" width="150" height="60" fill="url(#grainGradient)" />
+          
+          <!-- Grain texture - small particles -->
+          <g id="${id}_grainTexture">
+              <g><circle cx="130" cy="362" r="1.5" fill="#f6ad55" opacity="0.7"/><circle cx="144" cy="362" r="1.5" fill="#f6ad55" opacity="0.7"/><circle cx="158" cy="362" r="1.5" fill="#f6ad55" opacity="0.7"/><circle cx="172" cy="362" r="1.5" fill="#f6ad55" opacity="0.7"/><circle cx="186" cy="362" r="1.5" fill="#f6ad55" opacity="0.7"/><circle cx="200" cy="362" r="1.5" fill="#f6ad55" opacity="0.7"/><circle cx="214" cy="362" r="1.5" fill="#f6ad55" opacity="0.7"/><circle cx="228" cy="362" r="1.5" fill="#f6ad55" opacity="0.7"/><circle cx="242" cy="362" r="1.5" fill="#f6ad55" opacity="0.7"/><circle cx="256" cy="362" r="1.5" fill="#f6ad55" opacity="0.7"/></g>
+              <g><circle cx="137" cy="358" r="1.5" fill="#f6ad55" opacity="0.7"/><circle cx="151" cy="358" r="1.5" fill="#f6ad55" opacity="0.7"/><circle cx="165" cy="358" r="1.5" fill="#f6ad55" opacity="0.7"/><circle cx="179" cy="358" r="1.5" fill="#f6ad55" opacity="0.7"/><circle cx="193" cy="358" r="1.5" fill="#f6ad55" opacity="0.7"/><circle cx="207" cy="358" r="1.5" fill="#f6ad55" opacity="0.7"/><circle cx="221" cy="358" r="1.5" fill="#f6ad55" opacity="0.7"/><circle cx="235" cy="358" r="1.5" fill="#f6ad55" opacity="0.7"/><circle cx="249" cy="358" r="1.5" fill="#f6ad55" opacity="0.7"/><circle cx="263" cy="358" r="1.5" fill="#f6ad55" opacity="0.7"/></g>
+              <g><circle cx="130" cy="354" r="1.5" fill="#f6ad55" opacity="0.7"/><circle cx="144" cy="354" r="1.5" fill="#f6ad55" opacity="0.7"/><circle cx="158" cy="354" r="1.5" fill="#f6ad55" opacity="0.7"/><circle cx="172" cy="354" r="1.5" fill="#f6ad55" opacity="0.7"/><circle cx="186" cy="354" r="1.5" fill="#f6ad55" opacity="0.7"/><circle cx="200" cy="354" r="1.5" fill="#f6ad55" opacity="0.7"/><circle cx="214" cy="354" r="1.5" fill="#f6ad55" opacity="0.7"/><circle cx="228" cy="354" r="1.5" fill="#f6ad55" opacity="0.7"/><circle cx="242" cy="354" r="1.5" fill="#f6ad55" opacity="0.7"/><circle cx="256" cy="354" r="1.5" fill="#f6ad55" opacity="0.7"/></g>
+          </g>
+
+          <!-- Sensor support cables/lines -->
+          <g id="${id}_sensorLines"></g>
+
+          <!-- Sensor dots -->
+          <g id="${id}_sensorDots"></g>
+          
+          <!-- Front silo walls - partial transparency to show inside -->
+          <rect x="90" y="80" width="30" height="295" fill="#e2e8f0" opacity="0.9" />
+          <rect x="280" y="80" width="30" height="295" fill="#e2e8f0" opacity="0.9" />
+          
+          <!-- Front wall corrugation -->
+          <g id="frontWallTexture">
+              <line x1="95" y1="80" x2="95" y2="375" stroke="#cbd5e0" stroke-width="0.8"/>
+              <line x1="103" y1="80" x2="103" y2="375" stroke="#cbd5e0" stroke-width="0.8"/>
+              <line x1="111" y1="80" x2="111" y2="375" stroke="#cbd5e0" stroke-width="0.8"/>
+              <line x1="285" y1="80" x2="285" y2="375" stroke="#cbd5e0" stroke-width="0.8"/>
+              <line x1="293" y1="80" x2="293" y2="375" stroke="#cbd5e0" stroke-width="0.8"/>
+              <line x1="301" y1="80" x2="301" y2="375" stroke="#cbd5e0" stroke-width="0.8"/>
+          </g>
+          
+          <!-- Conical roof -->
+          <path d="M 90 80 L 200 20 L 310 80 Z" fill="url(#roofGradient)" />
+          
+          <!-- Roof texture lines -->
+          <g id="roofTexture">
+              <line x1="200" y1="20" x2="105" y2="80" stroke="#a0aec0" stroke-width="0.5" opacity="0.6"/>
+              <line x1="200" y1="20" x2="119" y2="80" stroke="#a0aec0" stroke-width="0.5" opacity="0.6"/>
+              <line x1="200" y1="20" x2="133" y2="80" stroke="#a0aec0" stroke-width="0.5" opacity="0.6"/>
+              <line x1="200" y1="20" x2="147" y2="80" stroke="#a0aec0" stroke-width="0.5" opacity="0.6"/>
+              <line x1="200" y1="20" x2="161" y2="80" stroke="#a0aec0" stroke-width="0.5" opacity="0.6"/>
+              <line x1="200" y1="20" x2="175" y2="80" stroke="#a0aec0" stroke-width="0.5" opacity="0.6"/>
+              <line x1="200" y1="20" x2="189" y2="80" stroke="#a0aec0" stroke-width="0.5" opacity="0.6"/>
+              <line x1="200" y1="20" x2="211" y2="80" stroke="#a0aec0" stroke-width="0.5" opacity="0.6"/>
+              <line x1="200" y1="20" x2="225" y2="80" stroke="#a0aec0" stroke-width="0.5" opacity="0.6"/>
+              <line x1="200" y1="20" x2="239" y2="80" stroke="#a0aec0" stroke-width="0.5" opacity="0.6"/>
+              <line x1="200" y1="20" x2="253" y2="80" stroke="#a0aec0" stroke-width="0.5" opacity="0.6"/>
+              <line x1="200" y1="20" x2="267" y2="80" stroke="#a0aec0" stroke-width="0.5" opacity="0.6"/>
+              <line x1="200" y1="20" x2="281" y2="80" stroke="#a0aec0" stroke-width="0.5" opacity="0.6"/>
+              <line x1="200" y1="20" x2="295" y2="80" stroke="#a0aec0" stroke-width="0.5" opacity="0.6"/>
+          </g>
+          
+          <!-- Ventilation cap on top -->
+          <ellipse cx="200" cy="15" rx="8" ry="4" fill="#4a5568" />
+          <rect x="196" y="10" width="8" height="10" fill="#4a5568" />
+          
+          <!-- Access ladder -->
+          <rect x="315" y="100" width="4" height="250" fill="#4a5568" />
+          <g id="ladderRungs">
+              <rect x="312" y="110" width="10" height="2" fill="#4a5568"/>
+              <rect x="312" y="126" width="10" height="2" fill="#4a5568"/>
+              <rect x="312" y="142" width="10" height="2" fill="#4a5568"/>
+              <rect x="312" y="158" width="10" height="2" fill="#4a5568"/>
+              <rect x="312" y="174" width="10" height="2" fill="#4a5568"/>
+              <rect x="312" y="190" width="10" height="2" fill="#4a5568"/>
+              <rect x="312" y="206" width="10" height="2" fill="#4a5568"/>
+              <rect x="312" y="222" width="10" height="2" fill="#4a5568"/>
+              <rect x="312" y="238" width="10" height="2" fill="#4a5568"/>
+              <rect x="312" y="254" width="10" height="2" fill="#4a5568"/>
+              <rect x="312" y="270" width="10" height="2" fill="#4a5568"/>
+              <rect x="312" y="286" width="10" height="2" fill="#4a5568"/>
+              <rect x="312" y="302" width="10" height="2" fill="#4a5568"/>
+              <rect x="312" y="318" width="10" height="2" fill="#4a5568"/>
+              <rect x="312" y="334" width="10" height="2" fill="#4a5568"/>
+          </g>
+          
+          <!-- Door at bottom -->
+          <rect x="125" y="330" width="25" height="35" fill="#2d3748" rx="2" />
+          <circle cx="145" cy="347" r="1.5" fill="#e2e8f0" />
+          
+          <!-- Grain discharge outlet -->
+          <rect x="195" y="365" width="10" height="15" fill="#2d3748" />
+        </svg>
+      </div>
+    </div>`;
+
+  section.innerHTML = `
+    <h2>${id}</h2>
+    <div class="global-status">
+      <table>
+        <tbody>
+        ${globalStatusbar}
+        </tbody>
+      </table>
+    </div>
+    <div class="cardBox">
+      ${sensorBar || '<p style="color:white; font-size:6px;">No sensor data available</p>'}
+    </div>
+    <div class="details">
+      <div id="sensorTooltip" class="SiloSenosrsTooltip"></div>
+      ${chartBar}
+      ${imageBar}
+    </div>`;
+  container.appendChild(section);
+  //======Status bar selector=====//
+  const statusSelectEl = document.getElementById(`${id}_statuSelect`);
+  const contentSelectEl = document.getElementById(`${id}_contentSelect`);
+  const countrySelectEl = document.getElementById(`${id}_countrySelect`);
+  //Status select
+  statusSelectEl.addEventListener("change", () => {
+    const newValue = statusSelectEl.value;
+    const statuSetCancel = document.getElementById(`${id}_statuSetCancel`);
+    const statusWait = document.getElementById(`${id}_statusWait`);
+    const statuSet = document.getElementById(`${id}_statuSet`);
+    if(newValue==="") {
+      statuSet.style.display = 'none';
+      statuSetCancel.style.display = 'none';
+      statusWait.style.display = 'none'; 
+      return;
+    }
+    statuSet.style.display = 'inline';
+    statuSetCancel.style.display = 'inline';
+    statusWait.style.display = 'none';
+    statuSet.addEventListener('click' , async() =>{
+    statuSet.disabled = true;
+    statuSet.style.opacity = "0.6";
+    statuSet.style.pointerEvents = "none";
+      try{
+          const resault = await openPopup({ text: `change opeartion status from ${status} to ${newValue}` },"/pop/statusdialog");
+          statuSet.disabled = false;
+          statuSet.style.opacity = "1";
+          statuSet.style.pointerEvents = "auto";
+          statuSet.style.display = 'none';
+          statusWait.style.display = 'inline';
+          console.log("Popup returned:", resault);
+          // --- Build the payload
+          const payload = {meta:{
+            equipment_id:id,
+            value: newValue,
+            description: resault.text,
+          }};
+          // --- If there are files
+          if (resault.files && resault.files.length > 0) {
+            const formData = new FormData();
+            for (const key in payload.meta) {
+              formData.append(`meta[${key}]`, payload.meta[key]);
+            }
+
+            for (let i = 0; i < resault.files.length; i++) {
+              formData.append("files", resault.files[i]); // multiple files supported
+            }
+
+            // Send with fetch (to backend)
+            const uploadRes = await fetch("/api/uploadeventfilles/set_status", {
+              method: "POST",
+              body: formData,
+            });
+
+            const json = await uploadRes.json();
+            console.log("Server response:", json);
+          } else {
+            // If no files, simple JSON send
+            const uploadRes = await fetch("/api/uploadeventfilles/set_status", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+
+            const json = await uploadRes.json();
+            console.log("Server response:", json);
+          }
+      }catch(err){
+        console.error('Satus change error',err)
+        statuSet.disabled = false;
+        statuSet.style.opacity = "1";
+        statuSet.style.pointerEvents = "auto";
+
+      }
+      client.publish(topics.pub_topics.Set_status + `${id}/OperatingStatus/${whoIm}`,newValue,{ qos: 1 },
+        (err) => {
+          if (err) {
+            console.error("Publish failed:", err);
+            alert('falied to set status')
+          } else {
+            console.log("Status published successfully!");
+          }
+        }
+      );
+    })
+    statuSetCancel.addEventListener('click', () =>{
+      statuSet.style.display = 'none';
+      statuSetCancel.style.display = 'none';
+      statusWait.style.display = 'none';
+    })
+  })
+
+  //Content
+  const contentSetCancel = document.getElementById(`${id}_contentSetCancel`);
+  const contentWait = document.getElementById(`${id}_contentWait`);
+  const contentSet = document.getElementById(`${id}_contentSet`);
+
+  contentSelectEl.addEventListener("change", () => {
+    const newValue = contentSelectEl.value;
+    if(newValue==="") {
+      contentSet.style.display = 'none';
+      contentSetCancel.style.display = 'none';
+      contentWait.style.display = 'none'; 
+      return;
+    }
+    contentSet.style.display = 'inline';
+    contentSetCancel.style.display = 'inline';
+    contentWait.style.display = 'none';
+  });
+  
+  contentSet.addEventListener('click' , async() =>{
+    contentSetCancel.style.display = 'none';
+    contentSet.disabled = true;
+    contentSet.style.opacity = "0.6";
+    contentSet.style.pointerEvents = "none";
+      try{
+        const resault = await openPopup({ text: `change content of ${id} from ${content.value} to ${contentSelectEl.value}` },"/pop/statusdialog");
+          contentSet.disabled = false;
+          contentSet.style.opacity = "1";
+          contentSet.style.pointerEvents = "auto";
+          contentSet.style.display = 'none';
+          contentWait.style.display = 'inline';
+          console.log("Popup returned:", resault);
+          // --- Build the payload
+          const payload = {meta:{
+            equipment_id:id,
+            name:'ContentType',
+            oldValue: content.value,
+            value: contentSelectEl.value,
+            time:Math.floor(Date.now() / 1000),
+            description: resault.text,
+          }};
+          // --- If there are files
+          if (resault.files && resault.files.length > 0) {
+            const formData = new FormData();
+            for (const key in payload.meta) {
+              formData.append(`meta[${key}]`, payload.meta[key]);
+            }
+
+            for (let i = 0; i < resault.files.length; i++) {
+              formData.append("files", resault.files[i]); // multiple files supported
+            }
+
+            // Send with fetch (to backend)
+            const uploadRes = await fetch("/api/uploadeventfilles/set_parameter", {
+              method: "POST",
+              body: formData,
+            });
+            const json = await uploadRes.json();
+            console.log("Server response:", json);
+          } else {
+            // If no files, simple JSON send
+            const uploadRes = await fetch("/api/uploadeventfilles/set_parameter", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+
+            const json = await uploadRes.json();
+            console.log("Server response:", json);
+          }
+      }catch(err){
+        console.error('Content change error',err)
+        contentWait.style.display = 'none';
+        contentSet.disabled = false;
+        contentSet.style.opacity = "1";
+        contentSet.style.pointerEvents = "auto";
+        contentSet.style.display = 'none';
+        contentSetCancel.style.display = 'none';
+      } finally {
+        contentWait.style.display = 'none';
+        contentSet.disabled = false;
+        contentSet.style.opacity = "1";
+        contentSet.style.pointerEvents = "auto";
+        contentSet.style.display = 'none';
+        contentSetCancel.style.display = 'none';
+      }
+  })
+  
+  contentSetCancel.addEventListener('click', () =>{
+    contentSet.style.display = 'none';
+    contentSetCancel.style.display = 'none';
+    contentWait.style.display = 'none';
+  })
+
+  //Country Select
+  const countrySetCancel = document.getElementById(`${id}_countrySetCancel`);
+  const countryWait = document.getElementById(`${id}_countryWait`);
+  const countrySet = document.getElementById(`${id}_countrySet`);
+
+  countrySelectEl.addEventListener("change", () => {
+    const newValue = countrySelectEl.value;
+    if(newValue==="") {
+      countrySet.style.display = 'none';
+      countrySetCancel.style.display = 'none';
+      countryWait.style.display = 'none'; 
+      return;
+    }
+    countrySet.style.display = 'inline';
+    countrySetCancel.style.display = 'inline';
+    countryWait.style.display = 'none';
+  });
+
+  countrySet.addEventListener('click' , async() => {
+    countrySet.disabled = true;
+    countrySet.style.opacity = "0.6";
+    countrySet.style.pointerEvents = "none";
+      try{
+        const resault = await openPopup({ text: `change content origin of ${id} from ${country.value} to ${countrySelectEl.value}` },"/pop/statusdialog");
+          countrySet.disabled = false;
+          countrySet.style.opacity = "1";
+          countrySet.style.pointerEvents = "auto";
+          countrySet.style.display = 'none';
+          countryWait.style.display = 'inline';
+          console.log("Popup returned:", resault);
+          // --- Build the payload
+          const payload = {meta:{
+            equipment_id:id,
+            name:'Country',
+            oldValue: country.value,
+            value: countrySelectEl.value,
+            time:Math.floor(Date.now() / 1000),
+            description: resault.text,
+          }};
+          // --- If there are files
+          if (resault.files && resault.files.length > 0) {
+            const formData = new FormData();
+            for (const key in payload.meta) {
+              formData.append(`meta[${key}]`, payload.meta[key]);
+            }
+
+            for (let i = 0; i < resault.files.length; i++) {
+              formData.append("files", resault.files[i]); // multiple files supported
+            }
+
+            // Send with fetch (to backend)
+            const uploadRes = await fetch("/api/uploadeventfilles/set_parameter", {
+              method: "POST",
+              body: formData,
+            });
+
+            const json = await uploadRes.json();
+            console.log("Server response:", json);
+          } else {
+            // If no files, simple JSON send
+            const uploadRes = await fetch("/api/uploadeventfilles/set_parameter", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+
+            const json = await uploadRes.json();
+            console.log("Server response:", json);
+          }
+      }catch(err){
+        console.error('Country change error',err)
+        countryWait.style.display = 'none';
+        countrySet.disabled = false;
+        countrySet.style.opacity = "1";
+        countrySet.style.pointerEvents = "auto";
+        countrySet.style.display = 'none';
+        countrySetCancel.style.display = 'none';
+      } finally {
+        countryWait.style.display = 'none';
+        countrySet.disabled = false;
+        countrySet.style.opacity = "1";
+        countrySet.style.pointerEvents = "auto";
+        countrySet.style.display = 'none';
+        countrySetCancel.style.display = 'none';
+      }
+  })
+
+  countrySetCancel.addEventListener('click', () =>{
+    countrySet.style.display = 'none';
+    countrySetCancel.style.display = 'none';
+    countryWait.style.display = 'none';
+  })
+  
+  // Initialize Chart with improved configuration
+  initializeChart(id, chartDatasets);
+
+  // Setup sensor filter buttons
+  setupSensorFilters(id);
+
+  // Setup card event listeners
+  for (const [type, data] of Object.entries(silo.sensors)) {
+    card_EventListener(type,data.unit, id);
+    const refEl = document.getElementById(`${type}_${id}_Refrence`);
+    if (refEl) {
+      const tooltips = document.querySelector('.Refrence .tooltip-box');
+      refEl.addEventListener('click', async() => {
+        const oldValue = refEl.textContent;
+        const waitEl = refEl.nextElementSibling;
+        const wait=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+                      <path fill="#999999" stroke="#999999" stroke-width="13" transform-origin="center"
+                        d="m148 84.7 13.8-8-10-17.3-13.8 8a50 50 0 0 0-27.4-15.9v-16h-20v16A50 50 0 0 0 63 67.4l-13.8-8-10 17.3 13.8 8a50 50 0 0 0 0 31.7l-13.8 8 10 17.3 13.8-8a50 50 0 0 0 27.5 15.9v16h20v-16a50 50 0 0 0 27.4-15.9l13.8 8 10-17.3-13.8-8a50 50 0 0 0 0-31.7Zm-47.5 50.8a35 35 0 1 1 0-70 35 35 0 0 1 0 70Z">
+                        <animateTransform type="rotate" attributeName="transform" calcMode="spline"
+                          dur="2s" values="0;120" keyTimes="0;1" keySplines="0 0 1 1"
+                          repeatCount="indefinite"/>
+                      </path>
+                    </svg>`;
+        const error = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="#ce0d0d" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.713T12 15q-.425 0-.713.288T11 16q0 .425.288.713T12 17Zm-1-4h2V7h-2v6Zm1 9q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22Z"/></svg>`
+        function beforeUnloadHandler(e) {
+          e.preventDefault();
+          e.returnValue = ""; // required for most browsers
+        }
+        try {
+          waitEl.innerHTML=wait;
+          waitEl.style.display = 'block';
+          window.addEventListener("beforeunload", beforeUnloadHandler);
+          waitEl.title='Wait for user';
+          const resault = await openPopup(
+            { type,equipment_id:id, consignes:data.consignes },
+            `Consigne_${type}_${id}`,
+            "/pop/Consignedialog"
+          );
+          console.log("Popup returned:", resault);
+
+          // --- Build the payload
+          const payload = {meta:{
+            equipment_id:id,
+            sensor_type:type,
+            unit:data.unit,
+            time:Math.floor(Date.now() / 1000),
+            name:resault.consigneName,
+            oldValue:resault.oldValue,
+            value: resault.value,
+            description: resault.text,
+          }};  
+
+          if (resault.files && resault.files.length > 0) {
+            const formData = new FormData();
+            for (const key in payload.meta) {
+              formData.append(`meta[${key}]`, payload.meta[key]);
+            }
+            for (let i = 0; i < resault.files.length; i++) {
+              formData.append("files", resault.files[i]);
+            }
+            waitEl.title = "Wait for server responde";
+            const uploadRes = await fetch(
+              "/api/uploadeventfilles/set_consigne",
+              { method: "POST", body: formData }
+            );
+            const json = await uploadRes.json();
+            console.log("Server response:", json);
+
+          } else {
+            waitEl.title = "Wait for server responde";
+            const uploadRes = await fetch(
+              "/api/uploadeventfilles/set_consigne",
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+              }
+            );
+            const json = await uploadRes.json();
+            console.log("Server response:", json);
+          }
+          waitEl.innerHTML = '';
+          waitEl.style.display = 'none';
+        } catch (err) {
+          console.error('Consigne change error',err)
+          alert("Error: failed to send Set Consigne command.");
+          waitEl.title = err;
+          waitEl.innerHTML=error;
+
+        } finally {
+          window.removeEventListener("beforeunload", beforeUnloadHandler);
+        }
+        /*tooltips.classList.add('hidden');
+        const oldValue = refEl.textContent;
+        const t= type.split("_")[0];
+        const input = document.createElement("input");
+        input.type = "text";
+        input.value = oldValue;
+        input.style.width = "80%";
+        refEl.textContent = "";
+        refEl.appendChild(input);
+        input.focus();
+          input.addEventListener("blur", async () => {
+            if (input.cancelEdit) {
+              input.cancelEdit = false;  // reset for next time
+              tooltips.classList.remove('hidden');
+              return;              // skip all logic
+            }
+            if(oldValue!=input.value){
+              const newVal = input.value;
+              const beforeUnloadHandler = (e) => {
+                e.preventDefault();
+                e.returnValue = ""; // needed for Chrome/Edge/Firefox
+              };
+              try {
+                refEl.innerHTML = `<svg style="width: 1em;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path fill="#999999" stroke="#999999" stroke-width="13" transform-origin="center" d="m148 84.7 13.8-8-10-17.3-13.8 8a50 50 0 0 0-27.4-15.9v-16h-20v16A50 50 0 0 0 63 67.4l-13.8-8-10 17.3 13.8 8a50 50 0 0 0 0 31.7l-13.8 8 10 17.3 13.8-8a50 50 0 0 0 27.5 15.9v16h20v-16a50 50 0 0 0 27.4-15.9l13.8 8 10-17.3-13.8-8a50 50 0 0 0 0-31.7Zm-47.5 50.8a35 35 0 1 1 0-70 35 35 0 0 1 0 70Z"><animateTransform type="rotate" attributeName="transform" calcMode="spline" dur="2" values="0;120" keyTimes="0;1" keySplines="0 0 1 1" repeatCount="indefinite"></animateTransform></path></svg>`;
+                const resault = await openPopup({ type:''} ,null,"/pop/statusdialog");
+                console.log("Popup returned:", resault);
+                // --- Build the payload
+                const payload = {meta:{
+                  equipment_id:id,
+                  sensor_type:type,
+                  unit:data.unit,
+                  time:Math.floor(Date.now() / 1000),
+                  name:'TARGET',
+                  oldValue:oldValue,
+                  value: newVal,
+                  description: resault.text,
+                }};  
+                window.addEventListener("beforeunload", beforeUnloadHandler);
+                // --- If there are files
+                if (resault.files && resault.files.length > 0) {
+                  const formData = new FormData();
+                  for (const key in payload.meta) {
+                    formData.append(`meta[${key}]`, payload.meta[key]);
+                  }
+
+                  for (let i = 0; i < resault.files.length; i++) {
+                    formData.append("files", resault.files[i]); // multiple files supported
+                  }
+
+                  // Send with fetch (to backend)
+                  const uploadRes = await fetch("/api/uploadeventfilles/set_consigne", {
+                    method: "POST",
+                    body: formData,
+                  });
+                  const json = await uploadRes.json();
+                  console.log("Server response:", json);
+                  tooltips.classList.remove('hidden');
+                } else {
+                  // If no files, simple JSON send
+                  const uploadRes = await fetch("/api/uploadeventfilles/set_consigne", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload),
+                  });
+                  const json = await uploadRes.json();
+                  console.log("Server response:", json);
+                  tooltips.classList.remove('hidden');
+                }
+              } catch(err){
+                console.error('Consigne change error',err)
+                alert("Error: failed to send Set Consigne command.");
+                refEl.innerText = oldValue;
+                tooltips.classList.remove('hidden');
+              } finally {
+                // --- Remove handler once finished (allow leaving again)
+                window.removeEventListener("beforeunload", beforeUnloadHandler);
+              }
+            }
+            else refEl.innerText = oldValue;tooltips.classList.remove('hidden');
+        });
+        
+          input.addEventListener("keydown", (e) => {
+            if (e.key === "Enter"){
+              input.blur();
+            } else if (e.key === "Escape") {
+              input.cancelEdit = true;
+              refEl.innerText = oldValue;
+            }
+          });*/
+      });
+    }
+  }
+  
+  function buildStatusSelector(){
+    const selectEl = document.getElementById(`${id}_statuSelect`);
+    const status = [
+      {name:'Idle',value:'Idle'},
+      {name:'Automatic',value:'Automatic'},
+      {name:'Manual',value:'Idle'},
+      {name:'Maintenance',value:'Idle'},
+      {name:'Cleaning',value:'Cleaning'}
+    ]
+    status.forEach(s => {
+      const option = document.createElement("option");
+      option.value = s.value;
+      option.textContent = s.name;
+      selectEl.appendChild(option);
+    })
+  }
+  
+  function builedContentSelector() {
+    const selectEl = document.getElementById(`${id}_contentSelect`);
+    const content = [
+      // Grains
+      { name: 'Wheat', value: 'Wheat' },
+      { name: 'Soft Wheat', value: 'Soft Wheat' },
+      { name: 'Corn', value: 'Corn' },
+      { name: 'Rice', value: 'Rice' },
+      { name: 'Barley', value: 'Barley' },
+      { name: 'Oats', value: 'Oats' },
+
+      // Legumes
+      { name: 'Lentils', value: 'Lentils' },
+      { name: 'Beans', value: 'Beans' },
+      { name: 'Chickpeas', value: 'Chickpeas' },
+      { name: 'Kidney Beans', value: 'Kidney Beans' },
+      { name: 'Peas', value: 'Peas' },
+
+      // Fallback
+      { name: 'Other', value: 'Other' }
+    ];
+
+    content.forEach(c => {
+      const option = document.createElement("option");
+      option.value = c.value;
+      option.textContent = c.name;
+      selectEl.appendChild(option);
+    });
+  }
+  
+  function buildCountrySelector() {
+    const selectEl = document.getElementById(`${id}_countrySelect`);
+    const countries = [
+      { name: 'Algeria', value: 'Algeria' },
+      { name: 'Argentina', value: 'Argentina' },
+      { name: 'Australia', value: 'Australia' },
+      { name: 'Bahrain', value: 'Bahrain' },
+      { name: 'Brazil', value: 'Brazil' },
+      { name: 'Canada', value: 'Canada' },
+      { name: 'Comoros', value: 'Comoros' },
+      { name: 'Djibouti', value: 'Djibouti' },
+      { name: 'Egypt', value: 'Egypt' },
+      { name: 'France', value: 'France' },
+      { name: 'Germany', value: 'Germany' },
+      { name: 'India', value: 'India' },
+      { name: 'Iraq', value: 'Iraq' },
+      { name: 'Jordan', value: 'Jordan' },
+      { name: 'Kuwait', value: 'Kuwait' },
+      { name: 'Lebanon', value: 'Lebanon' },
+      { name: 'Libya', value: 'Libya' },
+      { name: 'Mauritania', value: 'Mauritania' },
+      { name: 'Morocco', value: 'Morocco' },
+      { name: 'Oman', value: 'Oman' },
+      { name: 'Palestine', value: 'Palestine' },
+      { name: 'Qatar', value: 'Qatar' },
+      { name: 'Russia', value: 'Russia' },
+      { name: 'Saudi Arabia', value: 'Saudi Arabia' },
+      { name: 'Somalia', value: 'Somalia' },
+      { name: 'Sudan', value: 'Sudan' },
+      { name: 'Syria', value: 'Syria' },
+      { name: 'Tunisia', value: 'Tunisia' },
+      { name: 'Turkey', value: 'Turkey' },
+      { name: 'Ukraine', value: 'Ukraine' },
+      { name: 'United Arab Emirates', value: 'United Arab Emirates' },
+      { name: 'United States', value: 'United States' },
+      { name: 'Western Sahara', value: 'Western Sahara' },
+      { name: 'Yemen', value: 'Yemen' }
+    ];
+    countries.forEach(c => {
+      const option = document.createElement("option");
+      option.value = c.value;
+      option.textContent = c.name;
+      selectEl.appendChild(option);
+    });
+  }
+  
+  buildStatusSelector();
+  builedContentSelector();
+  contentSelectEl.value = content.value;
+  buildCountrySelector();
+  countrySelectEl.value = country.value;
+  updateGrainLevel(id,silo.sensors?.Level_SILO?.value ?? 0);
+}
+  function setupSensorFilters(siloId) {
+    const filterButtons = document.querySelectorAll(`[data-silo="${siloId}"].sensor-filter-btn`);
+    const chart = siloCharts[siloId]
+    filterButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const sensorType = btn.dataset.sensor;
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        btn.classList.add('active');
+        // 1. Hide all datasets
+        chart.data.datasets.forEach(ds => ds.hidden = true);
+
+        // 2. Show only clicked sensor
+        const activeDataset = chart.data.datasets.find(ds => ds.sensorType === sensorType);
+        if (activeDataset) {
+          activeDataset.hidden = false;
+
+          // 3. Update thresholds from dataset.consignes
+          chart.options.plugins.annotation.annotations = Object.entries(activeDataset.consignes).map(([name, consigne]) => {
+            if (consigne.value == null) return null;
+            const cfg = CONSIGNE_CONFIG[name] || { color: "gray", dash: [] };
+            return {
+              type: "line",
+              yMin: consigne.value ?? null,
+              yMax: consigne.value ?? null,
+              borderColor: cfg.color,
+              borderDash: cfg.dash,
+              borderWidth: 2,
+              label: {
+                display: false,
+              },
+              key: name // add this for toggling
+            };
+          }).filter(Boolean);
+        }else alert("lkfjsdjgoisjgsodjfs")
+        chart.options.plugins.legend.display=true;
+        chart.update();
+      });
+    });
+    if (filterButtons.length > 0) {
+      filterButtons[0].click();
+    }
+  }
+
+/*function setupSensorFilters(siloId) {
+  const filterButtons = document.querySelectorAll(`[data-silo="${siloId}"].sensor-filter-btn`);
+  const chart = siloCharts[siloId];
+  const statusElement = document.getElementById(`${siloId}_InteractionStatus`);
+  
+  if (!chart || !statusElement) return;
+
+  // Track current filter state
+  chart.currentFilter = 'all';
+  statusElement.textContent = 'Click & drag disabled (showing all sensors)';
+
+  filterButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const sensor = button.dataset.sensor;
+      
+      // Remove active class from all buttons
+      filterButtons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+      
+      if (sensor === 'all') {
+        // Show all datasets
+        chart.data.datasets.forEach((dataset, index) => {
+          dataset.hidden = false;
+          chart.setDatasetVisibility(index, true);
+        });
+        chart.currentFilter = 'all';
+        statusElement.textContent = 'Move mouse over chart when single sensor selected';
+        statusElement.style.color = '#999';
+        clearCrosshair(chart);
+      } else {
+        // Show only selected dataset
+        chart.data.datasets.forEach((dataset, index) => {
+          const isSelected = dataset.meta.sensorType === sensor;
+          dataset.hidden = !isSelected;
+          chart.setDatasetVisibility(index, isSelected);
+        });
+        chart.currentFilter = sensor;
+        const sensorName = button.textContent;
+        statusElement.textContent = `Move mouse to see crosshair for ${sensorName} ↔️`;
+        statusElement.style.color = '#4CAF50';
+      }
+      
+      chart.update();
+    });
+  });
+}*/
+
+function initializeChart(siloId, datasets) {
+  const ctx = document.getElementById(`${siloId}CombinedChart`);
+  if (!ctx) return;
+
+  // Create Y-axes for each dataset
+  const yAxes = {};
+  datasets.forEach((dataset, index) => {
+    const position = index % 2 === 0 ? 'left' : 'right';
+    yAxes[`y${index}`] = {
+      type: 'linear',
+      display: true,
+      position: position,
+      title: {
+        display: true,
+        text: dataset.label,
+        color: dataset.borderColor
+      },
+      ticks: {
+        color: dataset.borderColor
+      },
+      grid: {
+        drawOnChartArea: index === 0,
+        color: 'rgba(255, 255, 255, 0.1)'
+      }
+    };
+  });
+
+  let isDragging = false;
+  let dragStarted = false;
+
+  const config = {
+    type: 'line',
+    data: {
+      datasets: datasets
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        mode: 'point',
+        intersect: false,
+      },
+      plugins: {
+        tooltip: {
+          enabled: false, // Disable default tooltip to use custom one
+        },
+        legend: {
+          display: false,
+          position: 'top',
+          labels: {
+            generateLabels: function(chart) {
+              // Create a legend item for each consigne of the active dataset
+              const ds = chart.data.datasets.find(d => !d.hidden);
+              if (!ds) return [];
+              return Object.entries(ds.consignes).map(([name, consigne]) => ({
+                text: name,
+                fillStyle: "transparent", 
+                strokeStyle: consigne.value !== null ? CONSIGNE_CONFIG[name]?.color || "gray" : "#ccc",
+                fontColor: consigne.value !== null ? "black" : "#888", // label text
+                hidden: consigne.value == null,
+                datasetIndex: 0 // dummy, we handle toggling manually
+              }));
+            },
+            usePointStyle: true,
+            padding: 10
+          },
+          onClick: function(e, legendItem, legend) {
+            const chart = legend.chart;
+            const key = legendItem.text; // matches annotation key
+
+            // Toggle the threshold/consigne line
+            chart.options.plugins.annotation.annotations.forEach(ann => {
+              if (ann.key === key) ann.display = !ann.display;
+            });
+            legendItem.hidden = !legendItem.hidden;
+            chart.update();
+          }
+        },
+        annotation: {
+          annotations: {} // we’ll fill this with consignes
+        }
+      },
+      scales: {
+        x: {
+          type: 'time',
+          time: {
+            displayFormats: {
+              minute: 'HH:mm',
+              hour: 'HH:mm'
+            }
+          },
+          title: {
+            display: true,
+            text: 'Time'
+          },
+          grid: {
+            color: 'rgba(255, 255, 255, 0.1)'
+          }
+        },
+        y: {  // ✅ Single default Y-axis
+        type: 'linear',
+        display: true,
+        beginAtZero: true, // forces axis to start at 0
+        min: 0, 
+        title: {
+          display: true,
+          text: 'Values'
+        },
+        grid: {
+          color: 'rgba(255, 255, 255, 0.1)'
+        }
+      }
+      },
+      onHover: (event, activeElements, chart) => {
+        // Only allow interaction if single sensor is selected
+        if (chart.currentFilter === 'all') {
+          event.native.target.style.cursor = 'default';
+          const tooltip = getInteractiveTooltip();
+          tooltip.style.display = 'none';
+          clearCrosshair(chart);
+          return;
+        }
+
+        event.native.target.style.cursor = 'crosshair';
+        // Show crosshair and tooltip on hover for single sensor
+        showDetailedTooltip(chart, event.native);
+      },
+      onClick: (event, activeElements, chart) => {
+        // Click behavior for single sensor
+        if (chart.currentFilter !== 'all') {
+          showDetailedTooltip(chart, event.native);
+        }
+      }
+    }
+  };
+
+  const chart = new Chart(ctx, config);
+  siloCharts[siloId] = chart;
+
+  // Add mouse event listeners for click and drag functionality
+  const canvas = chart.canvas;
+  
+  canvas.addEventListener('mousedown', (event) => {
+    // Only allow interaction if single sensor is selected
+    if (chart.currentFilter === 'all') return;
+    
+    isDragging = true;
+    dragStarted = true;
+    showDetailedTooltip(chart, event);
+  });
+
+  canvas.addEventListener('mousemove', (event) => {
+    // Only allow interaction if single sensor is selected
+    if (chart.currentFilter === 'all') {
+      clearCrosshair(chart);
+      return;
+    }
+    
+    // Always show crosshair when moving mouse over single sensor chart
+    showDetailedTooltip(chart, event);
+  });
+
+  canvas.addEventListener('mouseup', (event) => {
+    if (isDragging) {
+      isDragging = false;
+      dragStarted = false;
+    }
+  });
+
+  canvas.addEventListener('mouseleave', (event) => {
+    isDragging = false;
+    dragStarted = false;
+    const tooltip = getInteractiveTooltip();
+    tooltip.style.display = 'none';
+    clearCrosshair(chart);
+  });
+  
+}
+
+function getStyleValue(el, prop) {
+  return window.getComputedStyle(el).getPropertyValue(prop);
+}
+
+function card_EventListener(type,unit, id) {
+  const iconEl = document.getElementById(`${type}_${id}_Icon`);
+  const detailEl = document.getElementById(`${type}_${id}_Detail`);
+  const refEl = document.getElementById(`${type}_${id}_Refrence`);
+  const el = document.getElementById(`${type}_${id}`);
+
+  iconEl.addEventListener('click', () => {
+    if (getStyleValue(detailEl, "display") === 'none') {
+      detailEl.style.display = 'block';
+      refEl.parentElement.style.display = "none";
+      el.style.display = "none";
+
+      // If detailEl is empty, fetch data
+      if (!detailEl.innerHTML.trim()) {
+        detailEl.innerText = "Loading...";
+        socket.emit('get_silos_sensor_detail', type, id);
+        socket.once('sensor_detail', (data) => {
+          if (data.error) {
+            console.error(data.error);
+            detailEl.innerText = "Error loading data";
+          } else {
+            console.log('Received sensors:', data);
+            display_Sensors_detail(id, type, data, unit);
+          }
+        });
+      }
+
+    } else if (getStyleValue(detailEl, "display") === 'block') {
+      detailEl.style.display = 'none';
+      refEl.parentElement.style.display = "block";
+      el.style.display = "block";
+    }
+  });
+}
+
+
+function display_Sensors_detail(id, type, levels, unit) {
+  document.getElementById(`${type}_${id}_Detail`).innerHTML = "";
+  const container = document.getElementById(`${type}_${id}_Detail`);
+  console.log(levels)
+  for (const [level, data] of Object.entries(levels)) {
+    let ReftooltipRows="";
+    for (const [key, consigne] of Object.entries(data.consigns)) {
+      ReftooltipRows += `
+        <tr>
+          <td>${key}:</td>
+          <td id="${type}_${id}_Level_${level}_${key}_consigne">${consigne?.value ?? "--"}</td>
+          <td id="${type}_${id}_Level_${level}_${key}_consigne_date">${consigne?.time ?? "--"}</td>
+          <td>${unit}</td>
+        </tr>
+      `;
+    }
+    let ValtooltipRows="";
+    for (const [name, sensor] of Object.entries(data.sensors)) {   // <-- use data.sensors
+      const { value, target } = sensor;
+      ValtooltipRows += `
+        <tr>
+          <td>${name}:</td>
+          <td id="${name}_Sensor">${value ?? "--"}</td>
+          <td id="${name}_Sensor_target">${target ?? "--"}</td>
+          <td>${unit}</td>
+        </tr>
+      `;
+    }
+    container.insertAdjacentHTML("beforeend", `
+      <div style="display: flex; justify-content: space-between; width: 100%;align-items: baseline;">
+        <div class="numbers" style="font-size: 1rem !important;" id='${type}_${id}_Level_${level}'>
+          Level ${level}: <span id='${type}_${id}_Level_${level}_value' class='SNRValue'>${data.value}
+            <div class="tooltip-box">
+              <table>
+                ${ValtooltipRows}
+              </table>
+            </div>
+          </span>
+        </div> 
+        <div class="Refrence">
+          <div class='wait'>
+            <span style="font-size: 0.8rem !important;" id='${type}_${id}_Level_${level}_consigne'>${data?.consigns?.TARGET?.value} ${unit}</span>
+            <span></span>
+          </div>
+          <div class="tooltip-box">
+            <table>
+              ${ReftooltipRows}
+            </table>
+          </div>
+        </div>
+      </div>
+    `);
+
+    const refEl = document.getElementById(`${type}_${id}_Level_${level}_consigne`);
+    if (refEl) {
+      const tooltips = document.querySelector('.Refrence .tooltip-box');
+      refEl.addEventListener('click', async() => {
+        const oldValue = refEl.textContent;
+        const waitEl = refEl.nextElementSibling;
+        const wait=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+                          <path fill="#999999" stroke="#999999" stroke-width="13" transform-origin="center"
+                            d="m148 84.7 13.8-8-10-17.3-13.8 8a50 50 0 0 0-27.4-15.9v-16h-20v16A50 50 0 0 0 63 67.4l-13.8-8-10 17.3 13.8 8a50 50 0 0 0 0 31.7l-13.8 8 10 17.3 13.8-8a50 50 0 0 0 27.5 15.9v16h20v-16a50 50 0 0 0 27.4-15.9l13.8 8 10-17.3-13.8-8a50 50 0 0 0 0-31.7Zm-47.5 50.8a35 35 0 1 1 0-70 35 35 0 0 1 0 70Z">
+                            <animateTransform type="rotate" attributeName="transform" calcMode="spline"
+                              dur="2s" values="0;120" keyTimes="0;1" keySplines="0 0 1 1"
+                              repeatCount="indefinite"/>
+                          </path>
+                        </svg>`;
+        const error = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="#ce0d0d" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.713T12 15q-.425 0-.713.288T11 16q0 .425.288.713T12 17Zm-1-4h2V7h-2v6Zm1 9q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22Z"/></svg>`
+        function beforeUnloadHandler(e) {
+          e.preventDefault();
+          e.returnValue = ""; // required for most browsers
+        }
+        try {
+          waitEl.innerHTML=wait;
+          waitEl.style.display = 'block';
+          window.addEventListener("beforeunload", beforeUnloadHandler);
+          waitEl.title='Wait for user';
+          const resault = await openPopup(
+            { type, level,equipment_id:id, consignes:data.consigns},
+            `Consigne_${type}_level_${level}_${id}`,
+            "/pop/Consigneperleveldialog"
+          );
+          console.log("Popup returned:", resault);
+
+          // --- Build the payload
+          const payload = {meta:{
+            equipment_id:id,
+            sensor_type:type,
+            level:level,
+            unit:unit,
+            time:Math.floor(Date.now() / 1000),
+            name:resault.consigneName,
+            oldValue:resault.oldValue,
+            value: resault.value,
+            description: resault.text,
+          }};  
+          if (resault.files && resault.files.length > 0) {
+            const formData = new FormData();
+            for (const key in payload.meta) {
+              formData.append(`meta[${key}]`, payload.meta[key]);
+            }
+            for (let i = 0; i < resault.files.length; i++) {
+              formData.append("files", resault.files[i]);
+            }
+            waitEl.title = "Wait for server responde";
+            const uploadRes = await fetch(
+              "/api/uploadeventfilles/set_consigneperlevel",
+              { method: "POST", body: formData }
+            );
+            const json = await uploadRes.json();
+            console.log("Server response:", json);
+
+          } else {
+            waitEl.title = "Wait for server responde";
+            const uploadRes = await fetch(
+              "/api/uploadeventfilles/set_consigneperlevel",
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+              }
+            );
+            const json = await uploadRes.json();
+            console.log("Server response:", json);
+          }
+          waitEl.innerHTML = '';
+          waitEl.style.display = 'none';
+        } catch (err) {
+          console.error('Consigne change error',err)
+          alert("Error: failed to send Set Consigne command.");
+          waitEl.title = err;
+          waitEl.innerHTML=error;
+
+        } finally {
+          window.removeEventListener("beforeunload", beforeUnloadHandler);
+        }
+       /* tooltips.classList.add('hidden');
+        const oldValue = refEl.textContent;
+        const t= type.split("_")[0];
+        const input = document.createElement("input");
+        input.type = "text";
+        input.value = oldValue;
+        input.style.width = "80%";
+        refEl.textContent = "";
+        refEl.appendChild(input);
+        input.focus();
+          input.addEventListener("blur", async () => {
+            if (input.cancelEdit) {
+              input.cancelEdit = false;  // reset for next time
+              tooltips.classList.remove('hidden');
+              return;              // skip all logic
+            }
+            if(oldValue!=input.value){
+              const newVal = input.value;
+              const beforeUnloadHandler = (e) => {
+                e.preventDefault();
+                e.returnValue = ""; // needed for Chrome/Edge/Firefox
+              };
+              try {
+                refEl.innerHTML = `<svg style="width: 1em;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path fill="#999999" stroke="#999999" stroke-width="13" transform-origin="center" d="m148 84.7 13.8-8-10-17.3-13.8 8a50 50 0 0 0-27.4-15.9v-16h-20v16A50 50 0 0 0 63 67.4l-13.8-8-10 17.3 13.8 8a50 50 0 0 0 0 31.7l-13.8 8 10 17.3 13.8-8a50 50 0 0 0 27.5 15.9v16h20v-16a50 50 0 0 0 27.4-15.9l13.8 8 10-17.3-13.8-8a50 50 0 0 0 0-31.7Zm-47.5 50.8a35 35 0 1 1 0-70 35 35 0 0 1 0 70Z"><animateTransform type="rotate" attributeName="transform" calcMode="spline" dur="2" values="0;120" keyTimes="0;1" keySplines="0 0 1 1" repeatCount="indefinite"></animateTransform></path></svg>`;
+                const resault = await openPopup({ text: `Change ${t} Consigne at level ${level} from ${oldValue} ${unit} to ${newVal} ${unit} for ${id}`},"/pop/statusdialog");
+                console.log("Popup returned:", resault);
+                // --- Build the payload
+                const payload = {meta:{
+                  equipment_id:id,
+                  sensor_type:type,
+                  level:level,
+                  unit:unit,
+                  time:Math.floor(Date.now() / 1000),
+                  name:'TARGET',
+                  oldValue:oldValue,
+                  value: newVal,
+                  description: resault.text,
+                }};  
+                window.addEventListener("beforeunload", beforeUnloadHandler);
+                // --- If there are files
+                if (resault.files && resault.files.length > 0) {
+                  const formData = new FormData();
+                  for (const key in payload.meta) {
+                    formData.append(`meta[${key}]`, payload.meta[key]);
+                  }
+
+                  for (let i = 0; i < resault.files.length; i++) {
+                    formData.append("files", resault.files[i]); // multiple files supported
+                  }
+
+                  // Send with fetch (to backend)
+                  const uploadRes = await fetch("/api/uploadeventfilles/set_consigneperlevel", {
+                    method: "POST",
+                    body: formData,
+                  });
+                  const json = await uploadRes.json();
+                  console.log("Server response:", json);
+                  tooltips.classList.remove('hidden');
+                } else {
+                  // If no files, simple JSON send
+                  const uploadRes = await fetch("/api/uploadeventfilles/set_consigneperlevel", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload),
+                  });
+                  const json = await uploadRes.json();
+                  console.log("Server response:", json);
+                  tooltips.classList.remove('hidden');
+                }
+              } catch(err){
+                console.error('Consigne change error',err)
+                alert("Error: failed to send Set Consigne command.");
+                refEl.innerText = oldValue;
+                tooltips.classList.remove('hidden');
+              } finally {
+                // --- Remove handler once finished (allow leaving again)
+                window.removeEventListener("beforeunload", beforeUnloadHandler);
+              }
+            }
+            else refEl.innerText = oldValue;tooltips.classList.remove('hidden');
+        });
+        
+          input.addEventListener("keydown", (e) => {
+            if (e.key === "Enter"){
+              input.blur();
+            } else if (e.key === "Escape") {
+              input.cancelEdit = true;
+              refEl.innerText = oldValue;
+            }
+          });*/
+      });
+    }
+  }
+}
+
+// Initialize silos
+silos_list(silos => {
+  Object.entries(silos)
+    .map(([id, silo]) => ADDSilo_to_view(id, silo))
+    .join("");
+});
+
+
+</script>
+
+<!-- for silo svg -->
+<script>
+  function calculateSensorPositions(siloId) {
+    const silo = document.getElementById(`${siloId}_siloSvg`);
+    const matrixRows = Number(silo.dataset.matrixrows);
+    const matrixCols = Number(silo.dataset.matrixcols);
+    const positions = [];
+    
+    // Cross-section boundaries with padding
+    const usableLeft = 155;
+    const usableRight = 245;
+    const usableTop = 140;
+    const usableBottom = 320;
+    
+    const usableWidth = usableRight - usableLeft;
+    const usableHeight = usableBottom - usableTop;
+    
+    for (let row = 0; row < matrixRows; row++) {
+        for (let col = 0; col < matrixCols; col++) {
+            let x, y;
+            
+            if (matrixCols === 1) {
+                x = usableLeft + usableWidth / 2;
+            } else {
+                x = usableLeft + (col * usableWidth) / (matrixCols - 1);
+            }
+            
+            if (matrixRows === 1) {
+                y = usableTop + usableHeight / 2;
+            } else {
+                y = usableTop + (row * usableHeight) / (matrixRows - 1);
+            }
+            
+            positions.push({ x, y, row, col });
+        }
+    }
+    
+    return positions;
+}
+  function updateGrainLevel(siloId,grainLevel) {
+    const siloHeight = 300;
+    const grainHeight = (grainLevel / 100) * (siloHeight - 60);
+    
+    const grainRect = document.getElementById(`${siloId}_grainLevel`);
+    grainRect.setAttribute('y', 365 - grainHeight);
+    grainRect.setAttribute('height', grainHeight);
+    
+    // Update grain texture
+    const grainTexture = document.getElementById(`${siloId}_grainTexture`);
+    grainTexture.innerHTML = '';
+    
+    const particleRows = Math.floor(grainHeight / 4);
+    for (let i = 0; i < particleRows; i++) {
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        for (let j = 0; j < 10; j++) {
+            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('cx', 130 + j * 14 + (i % 2) * 7);
+            circle.setAttribute('cy', 362 - i * 4);
+            circle.setAttribute('r', '1.5');
+            circle.setAttribute('fill', '#f6ad55');
+            circle.setAttribute('opacity', '0.7');
+            g.appendChild(circle);
+        }
+        grainTexture.appendChild(g);
+    }
+}
+  function setMatrix(rows, cols ,siloId ,sensors) {
+    const silo = document.getElementById(`${siloId}_siloSvg`);
+    silo.dataset.matrixrows = Math.max(1, Math.min(10, rows));
+    silo.dataset.matrixcols = Math.max(1, Math.min(10, cols));
+    sensorPositions = calculateSensorPositions(siloId);
+    console.log(sensorPositions)
+    // Update sensor lines
+    const sensorLines = document.getElementById(`${siloId}_sensorLines`);
+    sensorLines.innerHTML = '';
+    
+    sensorPositions.forEach((position) => {
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', position.x);
+        line.setAttribute('y1', '100');
+        line.setAttribute('x2', position.x);
+        line.setAttribute('y2', '360');
+        line.setAttribute('stroke', '#e2e8f0');
+        line.setAttribute('stroke-width', '2');
+        line.setAttribute('opacity', '0.8');
+        sensorLines.appendChild(line);
+    });
+    const sensorDots = document.getElementById(`${siloId}_sensorDots`);
+    const container = document.getElementById(`${siloId}Image`).closest('.image-section');
+    console.log(container)
+    sensorDots.innerHTML = '';
+    sensorPositions.forEach((position) => {
+        const sensorKey = `${position.row+1}-${position.col+1}`;
+        
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        // Main sensor dot
+        const mainDot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        mainDot.setAttribute('cx', position.x);
+        mainDot.setAttribute('cy', position.y);
+        mainDot.setAttribute('r', '4');
+        mainDot.setAttribute('fill','#10b981');
+        mainDot.setAttribute('stroke', '#ffffff');
+        mainDot.setAttribute('stroke-width', '1');
+        g.appendChild(mainDot);
+        g.setAttribute('class', 'sensor-clickable');
+        g.dataset.anchor = sensorKey;
+        g.dataset.status = 'good';
+        g.dataset.sensors = JSON.stringify(sensors[sensorKey]);
+        const tooltipDiv = document.getElementById("sensorTooltip");
+        // Build tooltip HTML
+        function buildTooltipHTML() {
+            let sensors = [];
+            const sensorJson = g?.dataset?.sensors;
+            if (sensorJson) {
+                try {
+                    sensors = JSON.parse(sensorJson);
+                } catch (e) {
+                    console.error("Invalid JSON in dataset.sensors", e);
+                    return `<strong>Position: ${sensorKey}</strong><br>Error loading sensor data`;
+                }
+            }
+
+            let tooltipHTML = `
+                <strong>Position: ${sensorKey}</strong>
+                <table border="1" cellspacing="0" cellpadding="4" style="margin-top:5px; border-collapse:collapse; font-size:12px;">
+                <tr>
+                    <th>Index</th>
+                    <th>Name</th>
+                    <th>Value</th>
+                    <th>Consigne</th>
+                    <th>Status</th>
+                </tr>
+            `;
+
+           for (const category in sensors) {
+  tooltipHTML += `<tr><td colspan="5" style="background:#eee; font-weight:bold;">${category}</td></tr>`;
+  for (const y in sensors[category]) {
+    const { name, value, consigne = [], status } = sensors[category][y];
+
+    let targetConsigne = '';
+    let otherConsignes = [];
+
+    if (Array.isArray(consigne)) {
+      consigne.forEach(c => {
+        if (c.name === 'TARGET') {
+          targetConsigne = c.value;
+        } else {
+          otherConsignes.push(`${c.name}: ${c.value}`);
+        }
+      });
+    }
+
+    // If extra consignes exist, attach them as tooltip content
+    const tdContent = otherConsignes.length
+      ? `<span class="target-consigne" data-tippy-content="${otherConsignes.join('<br>')}">${targetConsigne}</span>`
+      : targetConsigne;
+
+    tooltipHTML += `
+      <tr>
+        <td>${y}</td>
+        <td>${name}</td>
+        <td>${value}</td>
+        <td titel='zerjzerjj'>${tdContent}</td>
+        <td class=${status}>${status}</td>
+      </tr>
+    `;
+  }
+}
+
+
+
+            tooltipHTML += `</table>`;
+            return tooltipHTML;
+        }
+
+        // Initialize Tippy.js tooltip
+        tippy(g, {
+            content:buildTooltipHTML(),
+            allowHTML: true,
+            trigger: 'click',
+            interactive : false,
+            placement: 'right-start',
+            boundary: container, // Keeps tooltip within container
+            flip: true, // Auto-flip when no space
+            shift: true, // Shift to stay within boundaries
+            arrow: false,
+            theme: 'SiloSvgTooltip', // You can customize this
+            maxWidth: 400,
+            animation: 'fade',
+            duration: [200, 150], // [show, hide] duration
+            // Custom positioning options
+            onShown(instance) {
+    // Initialize tippy only after tooltip content is rendered
+    tippy(instance.popper.querySelectorAll('.target-consigne'), {
+      allowHTML: true,
+      placement: 'top',
+      theme: 'consigneTooltip',
+    });
+  }
+        });
+        
+
+
+        sensorDots.appendChild(g);
+    });
+    console.log(`Matrix set to ${silo.dataset.matrixRows} × ${silo.dataset.matrixCols}`);
+  };
+  function updateSensorProperty(siloId, sensorKey, category, index, property, newValue) {
+    // Find the sensor dot element
+    const sensorDot = document.querySelector(`#${siloId}_sensorDots .sensor-clickable[data-anchor="${sensorKey}"]`);
+    const status = sensorDot.getAttribute('status');
+    if (!sensorDot) {
+        console.error(`Sensor dot not found for position: ${sensorKey}`);
+        return false;
+    }
+
+    // Get current sensor data
+    let sensors = {};
+    const sensorJson = sensorDot.dataset.sensors;
+    
+    if (sensorJson) {
+        try {
+            sensors = JSON.parse(sensorJson);
+        } catch (e) {
+            console.error("Invalid JSON in dataset.sensors", e);
+            return false;
+        }
+    }
+
+    // Validate that the category and index exist
+    if (!sensors[category]) {
+        console.error(`Category '${category}' not found in sensor data`);
+        return false;
+    }
+    
+    if (!sensors[category][index]) {
+        console.error(`Index '${index}' not found in category '${category}'`);
+        return false;
+    }
+
+    // Validate property name
+    const validProperties = ['value', 'consigne', 'status'];
+    if (!validProperties.includes(property)) {
+        console.error(`Invalid property '${property}'. Valid properties are: ${validProperties.join(', ')}`);
+        return false;
+    }
+
+    // Update the property
+    sensors[category][index][property] = newValue;
+    
+    // Update the dataset
+    sensorDot.dataset.sensors = JSON.stringify(sensors);
+    
+    // Rebuild tooltip HTML function (same as in original code)
+    function buildTooltipHTML() {
+        let tooltipHTML = `
+            <strong>Position: ${sensorKey}</strong>
+            <table border="1" cellspacing="0" cellpadding="4" style="margin-top:5px; border-collapse:collapse; font-size:12px;">
+            <tr>
+                <th>Index</th>
+                <th>Name</th>
+                <th>Value</th>
+                <th>Consigne</th>
+                <th>Status</th>
+            </tr>
+        `;
+
+        for (const category in sensors) {
+            tooltipHTML += `<tr><td colspan="5" style="background:#eee; font-weight:bold;">${category}</td></tr>`;
+            for (const y in sensors[category]) {
+                const { name, value, consigne, status } = sensors[category][y];
+                tooltipHTML += `
+                    <tr>
+                    <td>${y}</td>
+                    <td>${name}</td>
+                    <td>${value}</td>
+                    <td>${consigne}</td>
+                    <td class=${status}>${status}</td>
+                    </tr>
+                `;
+            }
+        }
+
+        tooltipHTML += `</table>`;
+        return tooltipHTML;
+    }
+
+    // Update the Tippy.js tooltip content if it exists
+    if (sensorDot._tippy) {
+        sensorDot._tippy.setContent(buildTooltipHTML());
+        sensorDot._tippy.setProps({
+          theme: `SiloSvgTooltip ${status}`
+        });
+    }
+    
+    console.log(`Updated ${property} for sensor ${sensorKey} (${category}[${index}]) to: ${newValue}`);
+    return true;
+  }
+  function updateTooltipTheme(sensorDot, status) {
+    if (sensorDot._tippy) {
+        sensorDot._tippy.setProps({
+            theme: `SiloSvgTooltip ${status}`
+        });
+    }
+}
+  function setSensorDot(row, col,status, siloId) {
+      const silo = document.getElementById(`${siloId}_siloSvg`);
+      const matrixRows = Number(silo.dataset.matrixrows);
+      const matrixCols = Number(silo.dataset.matrixcols);
+      if (row >= matrixRows || col >= matrixCols || row < 0 || col < 0) {
+          console.log(`Invalid sensor position: (${row}, ${col})`);
+          return;
+      }
+      
+      const sensorKey = `${row}-${col}`;
+      const sensorDot = document.querySelector(`#${siloId}_sensorDots .sensor-clickable[data-anchor="${sensorKey}"]`);
+      const circle= sensorDot.children[0];
+      console.log(`Sensor (${row}, ${col}) ${sensorDot.dataset.status}`);
+      console.log(circle.getAttribute('cx'))
+      if(status==='normal') {
+        circle.setAttribute('fill','#10b981');
+        sensorDot.innerHTML='';
+        sensorDot.appendChild(circle);
+        updateTooltipTheme(sensorDot,status);
+      }
+      else if(status==='warning') {
+        circle.setAttribute('fill', '#dc2626');
+        sensorDot.innerHTML='';
+        sensorDot.appendChild(circle)
+        const outerGlow = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        outerGlow.setAttribute('cx', circle.getAttribute('cx'));
+        outerGlow.setAttribute('cy', circle.getAttribute('cy'));
+        outerGlow.setAttribute('r', '12');
+        outerGlow.setAttribute('fill', 'none');
+        outerGlow.setAttribute('stroke', '#ef4444');
+        outerGlow.setAttribute('stroke-width', '2');
+        outerGlow.setAttribute('opacity', '0.6');
+        outerGlow.setAttribute('filter', 'url(#redGlow)');
+        sensorDot.appendChild(outerGlow)
+        const pulsingDot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        pulsingDot.setAttribute('cx',circle.getAttribute('cx'));
+        pulsingDot.setAttribute('cy', circle.getAttribute('cy'));
+        pulsingDot.setAttribute('r', '4');
+        pulsingDot.setAttribute('fill', '#dc2626');
+        pulsingDot.setAttribute('opacity', '0.8');
+        
+        const animateR = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+        animateR.setAttribute('attributeName', 'r');
+        animateR.setAttribute('values', '4;8;4');
+        animateR.setAttribute('dur', '1.5s');
+        animateR.setAttribute('repeatCount', 'indefinite');
+        pulsingDot.appendChild(animateR);
+        
+        const animateOpacity = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+        animateOpacity.setAttribute('attributeName', 'opacity');
+        animateOpacity.setAttribute('values', '0.8;0.2;0.8');
+        animateOpacity.setAttribute('dur', '1.5s');
+        animateOpacity.setAttribute('repeatCount', 'indefinite');
+        pulsingDot.appendChild(animateOpacity);
+        sensorDot.appendChild(pulsingDot);
+        updateTooltipTheme(sensorDot,status);
+      }
+      else if(status==='alarm'){
+        circle.setAttribute('fill', '#dc2626');
+        sensorDot.innerHTML='';
+        sensorDot.appendChild(circle)
+        const outerGlow = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        outerGlow.setAttribute('cx', circle.getAttribute('cx'));
+        outerGlow.setAttribute('cy', circle.getAttribute('cy'));
+        outerGlow.setAttribute('r', '12');
+        outerGlow.setAttribute('fill', 'none');
+        outerGlow.setAttribute('stroke', '#ef4444');
+        outerGlow.setAttribute('stroke-width', '2');
+        outerGlow.setAttribute('opacity', '0.6');
+        outerGlow.setAttribute('filter', 'url(#redGlow)');
+        sensorDot.appendChild(outerGlow)
+        const pulsingDot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        pulsingDot.setAttribute('cx',circle.getAttribute('cx'));
+        pulsingDot.setAttribute('cy', circle.getAttribute('cy'));
+        pulsingDot.setAttribute('r', '4');
+        pulsingDot.setAttribute('fill', '#4d0000');
+        pulsingDot.setAttribute('opacity', '0.8');
+        
+        const animateR = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+        animateR.setAttribute('attributeName', 'r');
+        animateR.setAttribute('values', '4;8;4');
+        animateR.setAttribute('dur', '0.5s');
+        animateR.setAttribute('repeatCount', 'indefinite');
+        pulsingDot.appendChild(animateR);
+        
+        const animateOpacity = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+        animateOpacity.setAttribute('attributeName', 'opacity');
+        animateOpacity.setAttribute('values', '0.8;0.2;0.8');
+        animateOpacity.setAttribute('dur', '0.5s');
+        animateOpacity.setAttribute('repeatCount', 'indefinite');
+        pulsingDot.appendChild(animateOpacity);
+        sensorDot.appendChild(pulsingDot);
+        const largeSmoke = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        largeSmoke.setAttribute('cx', circle.getAttribute('cx'));
+        largeSmoke.setAttribute('cy', circle.getAttribute('cy'));
+        largeSmoke.setAttribute('r', '30');
+        largeSmoke.setAttribute('fill', '#dc2626');
+        largeSmoke.setAttribute('opacity', '0.5');
+        largeSmoke.setAttribute('filter', 'url(#largeShadow)');
+        sensorDot.appendChild(largeSmoke);
+        updateTooltipTheme(sensorDot,status)
+      }
+  };
+  document.addEventListener('DOMContentLoaded', () => {
+    silos_grid((silos) => {
+      for (const siloId in silos) {
+        const grainLevel = silos[siloId].level;
+        updateGrainLevel(siloId, grainLevel);
+      }
+      for (const siloId in silos) {
+        const silo = silos[siloId];
+
+        // 1) Update grain level
+        updateGrainLevel(siloId, silo.level);
+
+        // 2) Build matrix
+        const rows = silo.gridmatrix.level;
+        const cols = silo.gridmatrix.x;
+        const sensors = silo.positions;
+
+        setMatrix(rows, cols, siloId, sensors);
+      }
+    });
+  });
+
+</script>
+<script src="assets/js/navigation.js"></script>
+<!-- ====== ionicons ======= -->
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&icon_names=favorite,home,search,settings" rel="stylesheet" />
+</body>
+</html>

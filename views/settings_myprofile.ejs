@@ -1,0 +1,562 @@
+<html lang="en" class="hydrated"><head>
+    <meta charset="UTF-8"><style data-styles="">ion-icon{visibility:hidden}.hydrated{visibility:inherit}</style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Settings</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100&amp;icon_names=favorite,home,search,settings" rel="stylesheet">
+
+    <!-- ======= Styles ====== -->
+<link rel="stylesheet" href="/assets/css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.js"></script>
+    <style>
+        
+        .setting-container {
+            padding: 15px;
+            margin-top: 64px;
+        }
+        
+        .setting-container .card {
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            border-bottom: solid;
+            background: white;
+            color: green;
+            padding: 1.5rem;
+        }
+        
+        .header h1 {
+            font-size: 1.875rem;
+            font-weight: bold;
+        }
+        
+        .header p {
+            color: #bfdbfe;
+            margin-top: 0.5rem;
+        }
+        
+        .navigationbar {
+            background-color: #f9fafb;
+            padding: 1rem;
+        }
+        
+        .menu-items{
+            display: flex;
+            align-items: center;
+        }
+
+        .menu-item {
+            width: 100%;
+            text-align: left;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .menu-item:hover {
+            background-color: #e5e7eb;
+        }
+        
+        .menu-item.active {
+            background-color: #4be225;
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .menu-item-content {
+            flex: 1;
+        }
+        
+        .menu-item-title {
+            font-weight: 500;
+        }
+        
+
+        
+        
+        .content-area {
+            flex: 1;
+            padding: 2rem;
+        }
+        
+        .content-section {
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        .section-header{
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1f2937;
+        }
+
+        .section-desc {
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+            color: #6b7280;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        
+        @media (min-width: 768px) {
+            .form-grid.two-col {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .device-grid {
+                grid-template-columns: 2fr 1fr;
+            }
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-input, .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+        }
+        .profile-pic-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-pic {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ddd;
+        }
+        .status-container {
+            margin-bottom: 1rem;
+        }
+
+        .device-profile {
+            background-color: #f9fafb;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .device-profile h3 {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        
+        .device-specs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            font-size: 0.875rem;
+        }
+        
+        .checkbox-group {
+            margin-bottom: 0.75rem;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .checkbox-item input {
+            border-radius: 0.25rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+        
+        .btn-primary {
+            background-color: #2563eb;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+        }
+        
+        .btn-secondary {
+            background-color: #e5e7eb;
+            color: #374151;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #d1d5db;
+        }
+        
+        .btn-block {
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .placeholder-content {
+            background-color: #f9fafb;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            text-align: center;
+        }
+        
+        .placeholder-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 1rem;
+            color: #6b7280;
+        }
+        
+        .placeholder-text {
+            color: #4b5563;
+            margin-bottom: 0.5rem;
+        }
+        
+        .placeholder-subtext {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .subsection-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="container">
+      <div class="navigation">
+        <ul>
+          <li>
+            <a href="#">
+              <span class="icon"><ion-icon name="" role="img" class="md hydrated"><template shadowrootmode="open"><div class="icon-inner"></div></template></ion-icon></span> 
+              <span class="title">Menu</span>
+            </a>
+          </li>
+
+                <li>
+                    <a href="/Dashboard">
+                        <span class="icon">
+                            <ion-icon name="home-outline" role="img" class="md hydrated" aria-label="home outline"><template shadowrootmode="open"><div class="icon-inner"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon s-ion-icon" viewBox="0 0 512 512"><title>Home</title><path d="M80 212v236a16 16 0 0016 16h96V328a24 24 0 0124-24h80a24 24 0 0124 24v136h96a16 16 0 0016-16V212" stroke-linecap="round" stroke-linejoin="round" class="ionicon-fill-none ionicon-stroke-width"></path><path d="M480 256L266.89 52c-5-5.28-16.69-5.34-21.78 0L32 256M400 179V64h-48v69" stroke-linecap="round" stroke-linejoin="round" class="ionicon-fill-none ionicon-stroke-width"></path></svg></div></template></ion-icon>
+                        </span>
+                        <span class="title">Dashboard</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/System">
+                        <span class="icon">
+                            <ion-icon name="people-outline" role="img" class="md hydrated" aria-label="people outline"><template shadowrootmode="open"><div class="icon-inner"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon s-ion-icon" viewBox="0 0 512 512"><title>People</title><path d="M402 168c-2.93 40.67-33.1 72-66 72s-63.12-31.32-66-72c-3-42.31 26.37-72 66-72s69 30.46 66 72z" stroke-linecap="round" stroke-linejoin="round" class="ionicon-fill-none ionicon-stroke-width"></path><path d="M336 304c-65.17 0-127.84 32.37-143.54 95.41-2.08 8.34 3.15 16.59 11.72 16.59h263.65c8.57 0 13.77-8.25 11.72-16.59C463.85 335.36 401.18 304 336 304z" stroke-miterlimit="10" class="ionicon-fill-none ionicon-stroke-width"></path><path d="M200 185.94c-2.34 32.48-26.72 58.06-53 58.06s-50.7-25.57-53-58.06C91.61 152.15 115.34 128 147 128s55.39 24.77 53 57.94z" stroke-linecap="round" stroke-linejoin="round" class="ionicon-fill-none ionicon-stroke-width"></path><path d="M206 306c-18.05-8.27-37.93-11.45-59-11.45-52 0-102.1 25.85-114.65 76.2-1.65 6.66 2.53 13.25 9.37 13.25H154" stroke-linecap="round" stroke-miterlimit="10" class="ionicon-fill-none ionicon-stroke-width"></path></svg></div></template></ion-icon>
+                        </span>
+                        <span class="title">System</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/SCADA">
+                        <span class="icon">
+                        </span>
+                        <span class="title">SCADA</span>
+                    </a>
+                </li>
+                <li>
+                      <a href="/Analytics">
+                          <span class="icon">
+                              <ion-icon name="analytics-outline" role="img" class="md hydrated" aria-label="analytics outline"><template shadowrootmode="open"><div class="icon-inner"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon s-ion-icon" viewBox="0 0 512 512"><title>Analytics</title><path stroke-linecap="round" stroke-linejoin="round" d="M344 280l88-88M232 216l64 64M80 320l104-104" class="ionicon-fill-none ionicon-stroke-width"></path><circle cx="456" cy="168" r="24" stroke-linecap="round" stroke-linejoin="round" class="ionicon-fill-none ionicon-stroke-width"></circle><circle cx="320" cy="304" r="24" stroke-linecap="round" stroke-linejoin="round" class="ionicon-fill-none ionicon-stroke-width"></circle><circle cx="208" cy="192" r="24" stroke-linecap="round" stroke-linejoin="round" class="ionicon-fill-none ionicon-stroke-width"></circle><circle cx="56" cy="344" r="24" stroke-linecap="round" stroke-linejoin="round" class="ionicon-fill-none ionicon-stroke-width"></circle></svg></div></template></ion-icon>
+                          </span>
+                          <span class="title">Analytics</span>
+                      </a>
+                </li>
+                <li>
+                    <a href="/Messages">
+
+                        <span class="icon">
+                            <ion-icon name="chatbubble-outline" role="img" class="md hydrated" aria-label="chatbubble outline"><template shadowrootmode="open"><div class="icon-inner"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon s-ion-icon" viewBox="0 0 512 512"><title>Chatbubble</title><path d="M87.49 380c1.19-4.38-1.44-10.47-3.95-14.86a44.86 44.86 0 00-2.54-3.8 199.81 199.81 0 01-33-110C47.65 139.09 140.73 48 255.83 48 356.21 48 440 117.54 459.58 209.85a199 199 0 014.42 41.64c0 112.41-89.49 204.93-204.59 204.93-18.3 0-43-4.6-56.47-8.37s-26.92-8.77-30.39-10.11a31.09 31.09 0 00-11.12-2.07 30.71 30.71 0 00-12.09 2.43l-67.83 24.48a16 16 0 01-4.67 1.22 9.6 9.6 0 01-9.57-9.74 15.85 15.85 0 01.6-3.29z" stroke-linecap="round" stroke-miterlimit="10" class="ionicon-fill-none ionicon-stroke-width"></path></svg></div></template></ion-icon>
+                        </span>
+                        <span class="title">Messages</span>
+                    </a>
+                </li>
+
+                <li>
+             
+                </li><li>
+                    <a href="/Profile">
+                        <span class="icon">
+                            <ion-icon name="person-outline" role="img" class="md hydrated" aria-label="person outline"><template shadowrootmode="open"><div class="icon-inner"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon s-ion-icon" viewBox="0 0 512 512"><title>Person</title><path d="M344 144c-3.92 52.87-44 96-88 96s-84.15-43.12-88-96c-4-55 35-96 88-96s92 42 88 96z" stroke-linecap="round" stroke-linejoin="round" class="ionicon-fill-none ionicon-stroke-width"></path><path d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z" stroke-miterlimit="10" class="ionicon-fill-none ionicon-stroke-width"></path></svg></div></template></ion-icon>
+                        </span>
+                        <span class="title">Profile</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/Settings">
+                        <span class="icon">
+                            <ion-icon name="settings-outline" role="img" class="md hydrated" aria-label="settings outline"><template shadowrootmode="open"><div class="icon-inner"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon s-ion-icon" viewBox="0 0 512 512"><title>Settings</title><path d="M262.29 192.31a64 64 0 1057.4 57.4 64.13 64.13 0 00-57.4-57.4zM416.39 256a154.34 154.34 0 01-1.53 20.79l45.21 35.46a10.81 10.81 0 012.45 13.75l-42.77 74a10.81 10.81 0 01-13.14 4.59l-44.9-18.08a16.11 16.11 0 00-15.17 1.75A164.48 164.48 0 01325 400.8a15.94 15.94 0 00-8.82 12.14l-6.73 47.89a11.08 11.08 0 01-10.68 9.17h-85.54a11.11 11.11 0 01-10.69-8.87l-6.72-47.82a16.07 16.07 0 00-9-12.22 155.3 155.3 0 01-21.46-12.57 16 16 0 00-15.11-1.71l-44.89 18.07a10.81 10.81 0 01-13.14-4.58l-42.77-74a10.8 10.8 0 012.45-13.75l38.21-30a16.05 16.05 0 006-14.08c-.36-4.17-.58-8.33-.58-12.5s.21-8.27.58-12.35a16 16 0 00-6.07-13.94l-38.19-30A10.81 10.81 0 0149.48 186l42.77-74a10.81 10.81 0 0113.14-4.59l44.9 18.08a16.11 16.11 0 0015.17-1.75A164.48 164.48 0 01187 111.2a15.94 15.94 0 008.82-12.14l6.73-47.89A11.08 11.08 0 01213.23 42h85.54a11.11 11.11 0 0110.69 8.87l6.72 47.82a16.07 16.07 0 009 12.22 155.3 155.3 0 0121.46 12.57 16 16 0 0015.11 1.71l44.89-18.07a10.81 10.81 0 0113.14 4.58l42.77 74a10.8 10.8 0 01-2.45 13.75l-38.21 30a16.05 16.05 0 00-6.05 14.08c.33 4.14.55 8.3.55 12.47z" stroke-linecap="round" stroke-linejoin="round" class="ionicon-fill-none ionicon-stroke-width"></path></svg></div></template></ion-icon>
+                        </span>
+                        <span class="title">Settings</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/Password">
+                        <span class="icon">
+                            <ion-icon name="lock-closed-outline" role="img" class="md hydrated" aria-label="lock closed outline"><template shadowrootmode="open"><div class="icon-inner"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon s-ion-icon" viewBox="0 0 512 512"><title>Lock Closed</title><path d="M336 208v-95a80 80 0 00-160 0v95" stroke-linecap="round" stroke-linejoin="round" class="ionicon-fill-none ionicon-stroke-width"></path><rect x="96" y="208" width="320" height="272" rx="48" ry="48" stroke-linecap="round" stroke-linejoin="round" class="ionicon-fill-none ionicon-stroke-width"></rect></svg></div></template></ion-icon>
+                        </span>
+                        <span class="title">Password</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/index">
+                        <span class="icon">
+                            <ion-icon name="log-out-outline" role="img" class="md hydrated" aria-label="log out outline"><template shadowrootmode="open"><div class="icon-inner"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon s-ion-icon" viewBox="0 0 512 512"><title>Log Out</title><path d="M304 336v40a40 40 0 01-40 40H104a40 40 0 01-40-40V136a40 40 0 0140-40h152c22.09 0 48 17.91 48 40v40M368 336l80-80-80-80M176 256h256" stroke-linecap="round" stroke-linejoin="round" class="ionicon-fill-none ionicon-stroke-width"></path></svg></div></template></ion-icon>
+                        </span>
+                        <span class="title">Sign Out</span>
+                    </a>
+                </li>
+            </ul>
+      </div>
+      <!-- ========================= Main ==================== -->
+        <div class="main">
+            <div class="topbar">
+                  <div style="display: inline-flex;align-items: center;gap: 10px;">
+                    <div class="toggle">
+                        <ion-icon name="menu-outline" role="img" class="md hydrated" aria-label="menu outline"><template shadowrootmode="open"><div class="icon-inner"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon s-ion-icon" viewBox="0 0 512 512"><title>Menu</title><path stroke-linecap="round" stroke-miterlimit="10" d="M80 160h352M80 256h352M80 352h352" class="ionicon-fill-none ionicon-stroke-width"></path></svg></div></template></ion-icon>
+                    </div>
+                    <a class="emergencybtn" id="EmergencyStop"><img width="40" height="40" src="https://img.icons8.com/fluency/48/emergency-stop-button.png" alt="emergency-stop-button"></a>
+                  </div>
+                  <div class="silo">
+                      <span class="title">SMART SILO</span>
+                  </div>
+                  <div style="display: inline-flex;align-items: center;gap: 10px;">
+                    <div class="mqtt_status">
+                        MQTT
+                    </div>
+
+                    <div class="user">
+                      <img src="assets/imgs/customer001.jpg" alt="">
+                    </div>
+                  </div>
+            </div>
+            <div class="setting-container">
+                <div class="card">
+                    <div class="header">
+                        <h1>Settings</h1>
+                    </div>
+                    
+                    <div class="main-content">
+                        <!-- Navigation Bar -->
+                        <div class="navigationbar">
+                            <div class="menu-items">
+                                <a class="menu-item active" href="/settings">
+                                    <i data-lucide="user"></i>
+                                    <div class="menu-item-content">
+                                        <div class="menu-item-title">My Profile</div>                                    </div>
+                                </a>
+                                <a class="menu-item" href="/settings/usermanagement">
+                                    <i data-lucide="users"></i>
+                                    <div class="menu-item-content">
+                                        <div class="menu-item-title">User Management</div>
+                                    </div>
+                                </a>
+                             </div>  
+                        </div>
+                        
+                        <!-- Content Area -->
+                        <div class="content-area">
+                            <!-- Profile Section -->
+                            <div class="content-section active">
+                                <div class="section-header">
+                                    <h2 class="section-title">My Profile</h2>
+                                    <div class="section-desc">Personal account settings and preference...</div>
+                                </div>
+
+                                <!-- Profile Picture -->
+                                <div class="profile-pic-wrapper">
+                                    <img id="profile-pic" alt="Profile Picture" class="profile-pic">
+                                    <label for="profile-pic-upload" class="btn btn-secondary">Change Picture</label>
+                                    <input type="file" id="profile-pic-upload" style="display: none;" accept="image/*">
+                                </div>
+                                  <div class="status-container">
+                                    <label class="form-label" for="status">Account Status</label>
+                                    <select class="form-select" id="status">
+                                    <option value="Active">Active</option>
+                                    <option value="Disactive">Disactive</option>
+                                    </select>
+                                </div>
+                                <!-- Profile Form -->
+                                <div class="form-grid two-col">
+                                    <div>
+                                    <div class="form-group">
+                                        <label class="form-label">Full Name</label>
+                                        <input type="text" class="form-input" id="fullname" placeholder="Enter your full name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Username</label>
+                                        <input type="text" class="form-input"  placeholder="Choose a username">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Email Address</label>
+                                        <input type="email" class="form-input" id="e-mail" placeholder="your.email@company.com">
+                                    </div>
+                                    </div>
+                                    <div>
+                                    <div class="form-group">
+                                        <label class="form-label">Phone Number</label>
+                                        <input type="tel" class="form-input" id="phone" placeholder="+213 (555) 123-4567">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Role</label>
+                                        <select class="form-select" id="role">
+                                        <option>System Administrator</option>
+                                        <option>Plant Engineer</option>
+                                        <option>Data Analyst</option>
+                                        <option>admin</option>
+                                        <option>Operator</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Password</label>
+                                        <input type="password" class="form-input" placeholder="Enter new password">
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>                  
+                            <div class="actions">
+                                <button class="btn btn-secondary">Cancel</button>
+                                <button class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+    function getProfilePicUrl() {
+        return fetch("/MyProfilePic")
+            .then(res => {
+            if (!res.ok) {
+                // Try to parse error JSON
+                return res.json()
+                .then(err => {
+                    throw new Error(`Failed: ${res.status} - ${err.error || "Unknown error"}`);
+                })
+                .catch(() => {
+                    throw new Error(`Failed: ${res.status} - ${res.statusText}`);
+                });
+            }
+            return res.blob();
+            })
+            .then(blob => URL.createObjectURL(blob)) // ✅ return URL
+            .catch(err => {
+            console.error("Error fetching profile picture:", err.message);
+            return null;
+            });
+    }
+    async function fetchMyProfileInfo() {
+        try {
+            const response = await fetch('/MyProfileInfo', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include' // send cookies if you're using cookie auth
+            });
+
+            if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching profile info:', error);
+            return null;
+        }
+    }
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        getProfilePicUrl().then(url => {
+            if (url) {
+                document.getElementById("profile-pic").src = url;
+            } else {
+                document.getElementById("profile-pic").src = "/images/default-avatar.png";
+            }
+        });
+        const profile = await fetchMyProfileInfo();
+        console.log(profile)
+          if (profile) {
+            // Fill inputs
+            document.getElementById("fullname").value = profile.full_name || "";
+            document.getElementById("e-mail").value = profile.email || "";
+            document.getElementById("phone").value = profile.phone_number || "";
+            document.getElementById("role").value = profile.role || "";
+            document.getElementById("status").value = profile.status || "";
+        }
+    });
+</script>
+<script src="assets/js/navigation.js"></script>
+<!-- ====== ionicons ======= -->
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule="" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&amp;icon_names=favorite,home,search,settings" rel="stylesheet">
+
+</body></html>

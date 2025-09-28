@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMART SILO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100&icon_names=favorite,home,search,settings" rel="stylesheet" />
+
+    <!-- ======= Styles ====== -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+      .silo-box {
+        background: var(--white);
+        color: black;
+        padding: 25px 20px;
+        max-width: 254px;
+        border-radius: 20px;
+        box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
+        text-align: center;
+        transition: all 0.8s ease;
+        overflow: hidden;
+        cursor: pointer;
+        user-select: none;
+      }
+      .silo-box:hover {
+        background: var(--green);
+        color: white;
+        transform: translateY(-29px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      }
+
+      .silo-box img {
+        max-width: 50%;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        transition: max-width 0.3s ease-in-out;
+      }
+      .silo-box:hover img {
+        max-width: 10%;
+      }
+      .silo-box .details {
+        display: none;
+        font-size: 0px;
+        opacity: 0;
+        transition: font-size 0.3s ease-in-out;
+      }
+
+      .silo-box:hover .details {
+        display: block;
+        font-size: 22px;
+        opacity: 1;
+      }
+
+      .silo-box .basic-info {
+        font-size: 16px;
+        font-weight: bold;
+        transition: font-size 0.5s ease-in-out;
+      }
+      .silo-box:hover .basic-info {
+        font-size: 8px;
+        font-weight: bold;
+      }
+      .silo-out-service {
+        background-color: #d3d3d3; /* light gray */
+        color: #777;              /* softer text */
+        opacity: 0.6;              /* faded look */
+        pointer-events: none;      /* makes it not clickable */
+      }
+      .silo-out-service:hover {
+        background-color: #d3d3d3; /* light gray */
+        color: #777;              /* softer text */
+        opacity: 0.6;              /* faded look */
+        pointer-events: none;      /* makes it not clickable */
+      }
+
+      .status.connected {
+        color: green;
+      }
+
+      .status.disconnected {
+        color: red;
+      }
+
+      .mqtt_status {
+        padding: 8px 12px;
+        border-radius: 4px;
+        font-weight: bold;
+        display: inline-block;
+        transition: all 0.3s ease;
+        background-color: #f44336;
+        color: white;
+      }
+      @keyframes valueChangeBeep {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+        100% { transform: scale(1); }
+      }
+
+      .beep-effect {
+        animation: valueChangeBeep 0.5s ease;
+        display: inline-block; /* Required for scale transforms on inline elements */
+      }
+      #welcome-msg{
+        position: absolute;      /* relative to container */
+        background: rgba(255, 255, 255, 0.9);
+        padding: 10px 20px;
+        border: 1px solid #000;
+        z-index: 10;
+      }
+    </style>
+</head>
+
+<body>
+    
+     <div class="container">
+      <!-- =============== Navigation ================ -->
+      <div class="navigation">
+        <ul>
+          <li>
+            <a href="#">
+              <span class="icon"><ion-icon name=""></ion-icon></span> 
+              <span class="title">Menu</span>
+            </a>
+          </li>
+
+                <li>
+                    <a href="/Dashboard">
+                        <span class="icon">
+                            <ion-icon name="home-outline"></ion-icon>
+                        </span>
+                        <span class="title">Dashboard</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/System">
+                        <span class="icon">
+                            <ion-icon name="people-outline"></ion-icon>
+                        </span>
+                        <span class="title">System</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/SCADA">
+                        <span class="icon">
+                        </span>
+                        <span class="title">SCADA</span>
+                    </a>
+                </li>
+                <li>
+                      <a href="/Analytics">
+                          <span class="icon">
+                              <ion-icon name="analytics-outline"></ion-icon>
+                          </span>
+                          <span class="title">Analytics</span>
+                      </a>
+                </li>
+                <li>
+                    <a href="/Messages">
+
+                        <span class="icon">
+                            <ion-icon name="chatbubble-outline"></ion-icon>
+                        </span>
+                        <span class="title">Messages</span>
+                    </a>
+                </li>
+
+                <li>
+             
+                <li>
+                    <a href="/Profile">
+                        <span class="icon">
+                            <ion-icon name="person-outline"></ion-icon>
+                        </span>
+                        <span class="title">Profile</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/Settings">
+                        <span class="icon">
+                            <ion-icon name="settings-outline"></ion-icon>
+                        </span>
+                        <span class="title">Settings</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/Password">
+                        <span class="icon">
+                            <ion-icon name="lock-closed-outline"></ion-icon>
+                        </span>
+                        <span class="title">Password</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/index">
+                        <span class="icon">
+                            <ion-icon name="log-out-outline"></ion-icon>
+                        </span>
+                        <span class="title">Sign Out</span>
+                    </a>
+                </li>
+            </ul>
+      </div>
+  
+          <!-- ========================= Main ==================== -->
+          <div class="main">
+  
+            <div class="topbar">
+                  <div class="toggle">
+                      <ion-icon name="menu-outline"></ion-icon>
+                  </div>
+  
+                  <div class="silo">
+                      <span class="title">SMART SILO</span>
+                  </div>
+
+                  <div class="mqtt_status">
+                      MQTT
+                  </div>
+
+                  <div class="user">
+                    <img src="assets/imgs/customer001.jpg" alt="">
+                  </div>
+            </div> 
+      <% if (welcome) { %>
+                  <div id="welcome-msg">
+                    Welcome <%= welcome.user_name %>
+                    <span> I suggest you change your device name:</span>
+                    <input type="text" id="device-name-input" value="<%= welcome.device_name %>" />
+                    <button id="save-device-name">Save</button>
+                    <span id="saving-spinner" style="display:none;">⏳ Saving...</span>
+                  </div>
+
+                  <script>
+                    const input = document.getElementById('device-name-input');
+                    const saveBtn = document.getElementById('save-device-name');
+                    const spinner = document.getElementById('saving-spinner');
+                    const welcomeDiv = document.getElementById('welcome-msg');
+                    document.addEventListener('DOMContentLoaded', () => {
+                    const containerDiv = document.querySelector('.help-container');
+                    containerDiv.style.filter = 'blur(10px)';});
+                    async function saveDeviceName() {
+                      const newName = input.value.trim();
+                      if (!newName) return alert("Device name cannot be empty");
+
+                      saveBtn.style.display = 'none'; // hide button
+                      spinner.style.display = 'inline'; // show spinner
+
+                      try {
+                        const res = await fetch('/set-device-name', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ deviceId: "<%= welcome.device_id %>", name: newName })
+                        });
+                        const data = await res.json();
+
+                        if (data.success) {
+                          alert("Device name updated!");
+                          window.location.reload();
+                        } else {
+                          alert("Failed to update device name");
+                          saveBtn.style.display = 'inline';
+                          spinner.style.display = 'none';
+                        }
+                      } catch (err) {
+                        alert("Error saving device name");
+                        saveBtn.style.display = 'inline';
+                        spinner.style.display = 'none';
+                      }
+                    }
+
+                    saveBtn.addEventListener('click', saveDeviceName);
+
+                    input.addEventListener('keydown', (e) => {
+                      if (e.key === 'Enter') {
+                        saveDeviceName();
+                        containerDiv.style.filter = '';
+                      } else if (e.key === 'Escape') {
+                        // exit prompt
+                        welcomeDiv.style.display = 'none';
+                        containerDiv.style.filter = '';
+                      }
+                    });
+                  </script>
+
+                <% } %>
+            <div class="help-container">
+                <img src="resource/sys.jpeg" alt="Help Image">
+                <div class="silo-boxes" id="silos-box"></div>
+                <div class="silo-boxes" id="minisilos-box"></div>
+            </div>
+          </div>
+     </div>
+    <!-- =========== Scripts =========  -->
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  function updateFloating() {
+  const rect = document.querySelector('.main').getBoundingClientRect();
+  const floating = document.getElementById('welcome-msg');
+  // Compute visible area of container in viewport
+  const visibleTop = Math.max(rect.top, 0);
+  const visibleBottom = Math.min(rect.bottom, window.innerHeight);
+  const visibleHeight = visibleBottom - visibleTop;
+
+  const visibleLeft = Math.max(rect.left, 0);
+  const visibleRight = Math.min(rect.right, window.innerWidth);
+  const visibleWidth = visibleRight - visibleLeft;
+
+  // Center inside visible part
+  const top = Math.min(Math.max(visibleTop + visibleHeight / 2 - rect.top - floating.offsetHeight / 2, 0), rect.height - floating.offsetHeight);
+  const left = Math.min(Math.max(visibleLeft + visibleWidth / 2 - rect.left - floating.offsetWidth / 2, 0), rect.width - floating.offsetWidth);
+
+  floating.style.top = `${top}px`;
+  floating.style.left = `${left}px`;
+
+  // Hide if container completely out of viewport
+  floating.style.display = visibleHeight <= 0 || visibleWidth <= 0 ? 'none' : 'block';
+}
+window.addEventListener('scroll', updateFloating);
+window.addEventListener('resize', updateFloating);
+</script>
+<script>
+  const socket = io();
+  function silos_list(callback) {
+    socket.emit('get_silos');
+    socket.once('silos', (data) => {
+      if (data.error) {
+        console.error(data.error);
+      } else {
+        console.log('Received silos:', data);
+        if (callback) callback(data);
+      }
+    });
+  }
+  function minisilos_list(callback) {
+    socket.emit('get_minisilos');
+    socket.once('minisilos', (data) => {
+      if (data.error) {
+        console.error(data.error);
+      } else {
+        console.log('Received minisilos:', data);
+        if (callback) callback(data);
+      }
+    });
+  }
+
+</script>
+<script src="/mqtt_min.js"></script>
+<script>
+  let topics = {};
+  fetch('/mqtt-credentials')
+    .then(res => res.json())
+    .then(cfg => {
+      const statusElement = document.querySelector('.mqtt_status');
+      const client = mqtt.connect(cfg.brokerUrl, {
+        clientId: cfg.clientId,
+        username: cfg.username,
+        password: cfg.password
+      });
+      
+      if (Array.isArray(cfg.topics.pub_topics)) {
+          cfg.topics.pub_topics.forEach(t => {
+              topics[t.type] = t.topic_pattern;
+          });
+      }
+
+      topics=cfg.topics;
+      client.on('connect', () => {
+        statusElement.style.backgroundColor = '#4CAF50';
+        for (const [type, arr] of Object.entries(topics.sub_topics)) {
+          arr.forEach(el => {
+            client.subscribe(el, (err) => {
+              if (!err) {
+                console.log(`📩 Subscribed to ${type}||topic:${el}`);
+              } else {
+                console.log(`❌ Subscribe failed to ${type}||topic:${el}`);
+                console.error('❌ Subscribe error:', err);
+              }
+            });
+          });
+        }
+        for (const [type, arr] of Object.entries(topics.pubsub_topics)) {
+          arr.forEach(el => {
+            client.subscribe(el, (err) => {
+              if (!err) {
+                console.log(`📩 Subscribed to ${type}||topic:${el}`);
+              } else {
+                console.log(`❌ Subscribe failed to ${type}||topic:${el}`);
+                console.error('❌ Subscribe error:', err);
+              }
+            });
+          });
+        }
+      });
+
+      client.on('reconnect', () => {
+        statusElement.style.backgroundColor = '#FFC107';
+      });
+
+      client.on('close', () => {
+        statusElement.style.backgroundColor = '#F44336';
+      });
+
+      client.on('message', (topic, msgBuffer) => {
+        const msg = msgBuffer.toString();
+        console.log(msg)
+        const parts = topic.split('/');
+        const type = parts[0];
+        if (type==='Sensors'){
+          const equipment_id = parts[1]; // silo_1 minisilo_2
+          const sensorType = parts[2];   // temperature / humidity / co2 / level
+          if (parts.length === 5){
+            let level = parts[3];        // L1 / L2 / L3
+            if(level==2) level='full'
+            else if(level==1) level='empty'
+            const element =document.getElementById(`${level}_${equipment_id}`);
+            if(msg==='ON') {
+              element.style.cssText = `
+                color: rgb(179, 255, 26);
+                text-shadow: 0 0 5px rgb(179, 255, 26), 0 0 10px rgb(179, 255, 26);
+              `;
+              // Trigger animation
+              element.classList.remove('beep-effect'); // Reset class
+              void element.offsetWidth; // Trigger reflow to restart animation
+              element.classList.add('beep-effect');
+              
+              // Auto-remove class after animation completes
+              element.addEventListener('animationend', () => {
+                element.classList.remove('beep-effect');
+              }, { once: true });
+            }
+            else if (msg==='OFF') {
+              element.style.cssText =
+                'color: red; text-shadow: 0 0 5px red, 0 0 10px red;';
+                            // Trigger animation
+              element.classList.remove('beep-effect'); // Reset class
+              void element.offsetWidth; // Trigger reflow to restart animation
+              element.classList.add('beep-effect');
+              
+              // Auto-remove class after animation completes
+              element.addEventListener('animationend', () => {
+                element.classList.remove('beep-effect');
+              }, { once: true });
+            }
+          }
+          else if (parts.length === 4){
+            const newVal = msg;
+            const element = document.getElementById(`${sensorType}_${equipment_id}`);
+            const oldVal = element.innerText;
+
+            if (newVal !== oldVal) {
+              // Update text
+              element.innerText = msg;
+              
+              // Trigger animation
+              element.classList.remove('beep-effect'); // Reset class
+              void element.offsetWidth; // Trigger reflow to restart animation
+              element.classList.add('beep-effect');
+              
+              // Auto-remove class after animation completes
+              element.addEventListener('animationend', () => {
+                element.classList.remove('beep-effect');
+              }, { once: true });
+            }
+          }
+        }
+        else if (type==='Parameters'){
+          alert('dsfdsfsdf');
+            const equipment_id = parts[1]; // silo_1 minisilo_2
+            const proprety_name = parts[2];   // country content 
+            const element = document.getElementById(`${proprety_name}_${equipment_id}`);
+            const flagEl = document.getElementById(`flag_${equipment_id}`);
+            if (proprety_name === 'Country'){
+              if (flagEl) {
+                flagEl.src = `resource/${msg}.png`;
+                // Trigger animation
+                flagEl.classList.remove('beep-effect'); // Reset class
+                void flagEl.offsetWidth; // Trigger reflow to restart animation
+                flagEl.classList.add('beep-effect');
+                  
+                // Auto-remove class after animation completes
+                flagEl.addEventListener('animationend', () => {
+                  flagEl.classList.remove('beep-effect');
+                }, { once: true });
+              }
+            }
+
+            element.innerText = msg;
+          
+            // Trigger animation
+            element.classList.remove('beep-effect'); // Reset class
+            void element.offsetWidth; // Trigger reflow to restart animation
+            element.classList.add('beep-effect');
+              
+            // Auto-remove class after animation completes
+            element.addEventListener('animationend', () => {
+              element.classList.remove('beep-effect');
+            }, { once: true });
+        }
+        else if (type==='Status') {
+          const equipment_id = parts[1]; // silo_1 minisilo_2
+          const status_name = parts[2];   // operation speed ...
+
+          const element = document.getElementById(`${status_name}_${equipment_id}`);
+
+          element.innerText = msg;
+          
+          // Trigger animation
+          element.classList.remove('beep-effect'); // Reset class
+          void element.offsetWidth; // Trigger reflow to restart animation
+          element.classList.add('beep-effect');
+              
+          // Auto-remove class after animation completes
+          element.addEventListener('animationend', () => {
+            element.classList.remove('beep-effect');
+          }, { once: true });
+  
+        }
+        else if (type==='Notifications') {
+          const notiType = parts[1];
+          const parm = parts[2];
+          if(notiType==='Consigne'){
+            switch (parm){
+              case 'Tempurature':
+                alert(msg);//notification latter
+                break;
+              case 'Humidty':
+                alert(msg);//notification latter
+                break;
+              case 'GASCO2':
+                alert(msg);//notification latter
+                break;
+              case 'Level':
+                alert(msg);//notification latter
+                break;
+              case 'Current':
+                alert(msg);//notification latter
+                break;
+              case 'Speed':
+                alert(msg);//notification latter
+                break;
+            }
+          }
+          else if (notiType==='Parameters'){
+            switch(parm){
+              case 'Country':
+                alert(msg);//notification latter
+                break;
+              case 'ContentType':
+                alert(msg);//notification latter
+                break;
+            }
+          }
+
+          
+        }
+        
+
+        
+});
+      client.on('error', err => {
+        console.error('MQTT Error:', err);
+      });
+    });
+</script>
+<script>
+function createSiloCard(id, silo) {
+    const status = silo.status.OperatingStatus.value || "N/A";
+    const country = silo.parameters.Country.value || "N/A";
+    const content = silo.parameters.ContentType.value || "N/A";
+    const capacity = silo.parameters.Capacity.value || "N/A";
+
+    let sensorsHTML = '';
+    for (const [type, data] of Object.entries(silo.sensors)) {
+        const value = data?.value ?? "N/A";
+        const unit = data?.unit ?? "";
+        sensorsHTML += `
+            <p><strong>${type.replace("_SILO", "")}:</strong> 
+            <span id="${type}_${id}">${value}</span> <span style="color:black;">${unit}</span></p>
+        `;
+    }
+
+    return `
+        <div class="silo-box" id="${id}" 
+             onclick="location.href='system.html?id=${id}'" 
+             style="cursor: pointer; overflow: visible">
+            <img id="flag_${id}" src="resource/countrys/${country}.png" alt="Silo Flag" style="width:30%">
+            <div class="basic-info">
+                <h2 id="silo_${id}">${id}</h2>
+                <p><strong>Status:</strong> <span id="OperatingStatus_${id}">${status}</span></p>
+                <p><strong>Country:</strong> <span id="Country_${id}">${country}</span></p>
+                <p><strong>Content:</strong> <span id="Content_${id}">${content}</span></p>
+                <p><strong>Capacity:</strong> <span id="Capacity_${id}">${capacity}</span></p>
+            </div>
+            <div class="details">
+                ${sensorsHTML || '<p style="color:white; font-size:6px;">No sensor data available</p>'}
+            </div>
+        </div>
+    `;
+}
+
+function createMiniSiloCard(id, silo) {
+    // Extract main properties
+    const status = silo.status || "N/A";
+    const country = silo.country || "N/A";
+    const content = silo.content || "N/A";
+    const capacity = silo.capacity || "N/A";
+
+    // Determine colors for full/empty
+    const fullColor = silo.full === "ON" ? "green" : "red";
+    const emptyColor = silo.empty === "ON" ? "green" : "red";
+
+    // Create sensor details
+    let sensorsHTML = '';
+    for (const [type, data] of Object.entries(silo)) {
+        // Skip non-sensor properties
+        if (['status', 'country', 'content', 'capacity', 'full', 'empty'].includes(type)) continue;
+
+        const value = data?.value ?? "N/A";
+        const unit = data?.unit || "";
+
+        sensorsHTML += `
+          <p><strong>${type}:</strong> 
+          <span id="${type}_${id}">${value}</span><span>${unit}</span></p>
+          `
+    }
+
+    return `
+    <div class="silo-boxes">
+        <div class="silo-box" id='${id}'>
+            <img id="flag_${id}" src="resource/${country}.png" alt="Silo Flag" style="width:30%">
+            <div class="basic-info">
+              <h2 id="silo_${id}">${id}</h2>
+              <p><strong>Status:</strong> <span class="status" id="OperatingStatus_${id}">${status}</span></p>
+              <p><strong>Country:</strong> <span id="Country_${id}">${country}</span></p>
+              <p><strong>Content:</strong> <span id="Content_${id}">${content}</span></p>
+              <p><strong>Capacity:</strong> <span id="Capacity_${id}">${capacity}</span></p>
+            </div>
+            <div class="details">
+              <p><span id="full_${id}" style="color:${fullColor}; text-shadow: 0 0 5px ${fullColor}, 0 0 10px ${fullColor};">Full</span></p>
+              <p><span id="empty_${id}" style="color:${emptyColor}; text-shadow: 0 0 5px ${emptyColor}, 0 0 10px ${emptyColor};">Empty</span></p>
+              ${sensorsHTML}
+            </div>
+        </div>
+    </div>`;
+}
+
+function updateSiloCardValues(type, data, id) {
+
+  document.getElementById(`${type}_${id}`).textContent = data;
+  if(type==='country'){
+    const flagEl = document.getElementById(`flag_${id}`);
+      if (flagEl) {
+        flagEl.src = `resource/${data}.png`;
+      }
+  }
+  else if(type==='status'){
+    const siloEl = document.getElementById(`silo-${id}`);
+    if (data === "Out-Service") {
+        siloEl.classList.add("silo-out-service");
+    } 
+    else if (data === "Failure") {
+        siloEl.style.backgroundColor = "#b30000";
+        siloEl.style.color = "white";
+        siloEl.style.opacity= 0.8; 
+    }
+    else {
+        siloEl.classList.add("silo-box");
+    }
+    // if the data are include this [] 
+
+  }
+}
+/* function updateSiloCardValues(data) {
+  Object.entries(data).forEach(([id, sensors]) => {
+    // Level
+    if (sensors.level?.null !== undefined) {
+      document.getElementById(`level_${id}`).textContent = sensors.level.null;
+    }
+
+    // CO2
+    if (sensors.co2?.null !== undefined) {
+      document.getElementById(`co2_${id}`).textContent = sensors.co2.null;
+    }
+
+    // Temperature 
+    if (sensors.temperature?.null !== undefined) {
+      document.getElementById(`temp_${id}`).textContent = sensors.temperature.null;
+    }
+
+    // Humidity 
+    if (sensors.humidity?.null !== undefined) {
+      document.getElementById(`humidity_${id}`).textContent = sensors.humidity.null;
+    }
+
+        // Country name
+    if (sensors.country) {
+      const countryEl = document.getElementById(`country_${id}`);
+      if (countryEl) countryEl.textContent = sensors.country;
+
+      // Set flag image based on country (optional logic)
+      const flagEl = document.getElementById(`flag_${id}`);
+      if (flagEl) {
+        const countryFile = sensors.country.toLowerCase(); // e.g., "canada"
+        flagEl.src = `/resource/${countryFile}.png`; // make sure the image exists!
+      }
+    }
+
+    // Content (e.g., Wheat, Barley...)
+    if (sensors.content) {
+      const contentEl = document.getElementById(`content_${id}`);
+      if (contentEl) contentEl.textContent = sensors.content;
+    }
+    // Optionally set evaluator and vane if you have them later
+    // document.getElementById(`eval_${id}`).textContent = ...;
+    // document.getElementById(`vane_${id}`).textContent = ...;
+  });
+}*/
+
+silos_list(silos => {
+  const container = document.getElementById("silos-box");
+  container.innerHTML += Object.entries(silos)
+        .map(([id, silo]) => createSiloCard(id, silo))
+        .join("");
+});
+
+minisilos_list(minisilos => {
+  const container = document.getElementById("minisilos-box");
+  container.innerHTML += Object.entries(minisilos)
+        .map(([id, silo]) => createMiniSiloCard(id, silo))
+        .join("");
+});
+
+</script>
+
+    <script src="assets/js/navigation.js"></script>
+
+    <!-- ====== ionicons ======= -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&icon_names=favorite,home,search,settings" rel="stylesheet" />
+    
+    
+
+    <!-- Load React and Babel -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+</body>
+
+</html>

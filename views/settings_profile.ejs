@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100&icon_names=favorite,home,search,settings" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&amp;display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://unpkg.com/popper.js@1"></script>
+    <script src="https://unpkg.com/tippy.js@5"></script>
+    <!-- ======= Styles ====== -->
+     
+    <link rel="stylesheet" href="assets/css/style.css">
+    <!--fonts-->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;600&display=swap');
+        .fa-brands{
+            font-size: 1.5em;
+        }
+    </style>
+    <style>
+        .main{
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+        }
+        .help-contanier{
+            padding: 0 10px 5px;
+            margin-top: 65px;
+        }
+        .help-contanier section{
+            height: 100%;
+        }
+        .help-contanier .myprofile{
+            display: block;
+        }
+        .help-contanier .allprofiles{
+            display: none;
+        }
+        .help-contanier .myprofile .profile{
+            display: flex;
+            margin-bottom: 40px;
+        }
+        .help-contanier .myprofile .profile .profilePic{
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        .help-contanier .myprofile .profile .profilePic div{
+            position: relative;
+        }
+        .help-contanier .myprofile .profile .profilePic div img{
+            object-fit: none;
+            overflow: hidden;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #4a7c59;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        .help-contanier .myprofile .profile .profilePic .profileStatus{
+            position: absolute;
+            bottom: 0;                 /* always at bottom of image */
+            left: 50%;                 /* center horizontally */
+            transform: translateX(-50%); /* truly center */
+            width: max-content;
+            background: linear-gradient(135deg, #ff7e5f, #feb47b);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .help-contanier .myprofile .profile .profilePic .profileStatus span{
+            display: flex;
+            gap: 2px;
+            align-items: center;
+            transition: all 1.5s ease;
+        }
+        .help-contanier .myprofile .profile .profilePic .profileStatus.banned{
+            background: linear-gradient(135deg, #ff4b1f, #8e0000);
+            animation: gradientMove 1s ease infinite;
+            background-size: 300% 300%;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px); /* for Safari */
+        }
+        .help-contanier .myprofile .profile .profilePic .profileStatus.banned span::before {
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            content: "\f05e"; /* fa-ban */
+        }
+        .help-contanier .myprofile .profile .profilePic .profileStatus.active{
+            background: linear-gradient(135deg, #00b09b, #96c93d);
+        }
+        .help-contanier .myprofile .profile .profilePic .profileStatus.active span::before {
+            font-family: "Font Awesome 6 Free";
+            font-size: 0.7em;
+            font-weight: 900;
+            content: "\f111";
+            color: #00cc44; /* solid green */
+            text-shadow: 0 0 6px #00ff66, 0 0 12px #00ff66, 0 0 18px #00ff66;
+            -webkit-text-stroke: 1px white;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+        }
+        .help-contanier .myprofile .profile .profilePic .profileStatus.deactivated{
+            background: linear-gradient(135deg, #ff7e5f, #feb47b);
+        }
+        .help-contanier .myprofile .profile .profilePic .profileStatus.deactivated span::before {
+            font-family: "Font Awesome 6 Free";
+            font-size: 0.7em;
+            font-weight: 900;
+            content: "\f111";
+            color: #cc0000; /* solid red */
+            text-shadow: 0 0 6px #ff3333, 0 0 12px #ff3333, 0 0 18px #ff3333;
+            -webkit-text-stroke: 1px white;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+        }
+        .help-contanier .myprofile .profile .profileInfo {
+            font-family: "Open Sans", sans-serif;
+            margin: 20px;
+            
+        }
+        .help-contanier .myprofile .profile .profileInfo .name-role {
+            text-align: left;
+            margin-bottom: 10px;
+        }
+        .help-contanier .myprofile .profile .profileInfo .name-role .first-name,
+        .help-contanier .myprofile .profile .profileInfo .name-role .last-name {
+            display: inline;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: #2c5530;
+            line-height: 1.1;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .help-contanier .myprofile .profile .profileInfo .name-role .role {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
+            color: #666;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+        .help-contanier .myprofile .profile .profileInfo .separator {
+            border: none;
+            height: 3px;
+            background: linear-gradient(to right, #4a7c59, #7ba05b);
+            margin: 25px 0;
+            border-radius: 2px;
+        }
+        .help-contanier .myprofile .profile .profileInfo .detail{
+            display: grid;
+            grid-template-columns: max-content max-content;
+            gap: 15px;
+        }
+        .help-contanier .myprofile .profile .profileInfo .detail label {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #4a7c59;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .help-contanier .myprofile .profile .profileInfo .detail label:hover {
+            background: #e8f5e8;
+            transform: translateX(5px);
+        }
+        .help-contanier .myprofile .profileDev{
+            margin-top: 50px;
+        }
+        .help-contanier .myprofile .profileDev .device-header{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #e8f5e8;
+        }
+        .help-contanier .myprofile .profileDev .device-header > div:first-child{
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        .help-contanier .myprofile .profileDev .device-header > div:first-child .h2{
+            font-size: 2.2rem;
+            color: #2c5530;
+            font-weight: 700;
+        }
+        .help-contanier .myprofile .profileDev .device-header > div:first-child .device-count{
+            background: linear-gradient(135deg, #4a7c59, #7ba05b);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        .help-contanier .myprofile .profileDev .device-header > div:nth-child(2){
+            display: flex;
+            gap: 2px;
+            align-items: center;
+        }
+        .help-contanier .myprofile .profileDev .devices-grid{
+            padding: 24px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+        }
+        .help-contanier .myprofile .profileDev .devices-grid .device-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 16px;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .help-contanier .myprofile .profileDev .devices-grid .device-card:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-color: #d1d5db;
+        }
+        .help-contanier .myprofile .profileDev .devices-grid .device-card .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        .help-contanier .myprofile .profileDev .devices-grid .device-card .card-header .device-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+        .device-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #dbeafe 0%, #c7d2fe 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .device-details h3 {
+            font-size: 14px;
+            font-weight: 500;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-dot.online { background-color: #10b981; }
+        .status-dot.offline { background-color: #9ca3af; }
+        .status-dot.disconnected { background-color: #ef4444; }
+        .status-dot.ready { background-color: #c98a04; }
+
+        .status-text {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-text.online { color: #059669; }
+        .status-text.offline { color: #6b7280; }
+        .status-text.disconnected { color: #dc2626; }
+        .status-text.ready { color: #c98a04; }
+
+        .more-btn {
+            position: relative;
+        }
+
+        .dropdown {
+            width: 192px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            padding: 4px 0;
+        }
+
+        .dropdown.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            padding: 8px 12px;
+            border: none;
+            background: none;
+            text-align: left;
+            font-size: 14px;
+            color: #374151;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f9fafb;
+        }
+
+        .dropdown-item.delete {
+            color: #dc2626;
+        }
+
+        .dropdown-item.delete:hover {
+            background-color: #fef2f2;
+        }
+
+        .dropdown-separator {
+            height: 1px;
+            background-color: #e5e7eb;
+            margin: 4px 0;
+        }
+
+        .card-body {
+            margin-bottom: 12px;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+
+        .card-footer {
+            padding-top: 12px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-badge.active {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-badge.inactive {
+            background-color: #f3f4f6;
+            color: #4b5563;
+        }
+
+        .status-badge.banned {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .footer {
+            padding: 16px 24px;
+            background-color: #f9fafb;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer p {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .footer button {
+            background: none;
+            border: none;
+            color: #2563eb;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .footer button:hover {
+            color: #1d4ed8;
+        }
+
+        /* Icons using CSS */
+        .icon {
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+        }
+
+        .icon-smartphone:before { content: "📱"; }
+        .icon-laptop:before { content: "💻"; }
+        .icon-monitor:before { content: "🖥️"; }
+        .icon-tablet:before { content: "📟"; }
+        .icon-watch:before { content: "⌚"; }
+        .icon-tv:before { content: "📺"; }
+        .icon-more:before { content: "⋯"; }
+        .icon-clock:before { content: "🕐"; font-size: 12px; }
+        .icon-location:before { content: "📍"; font-size: 12px; }
+        .icon-wifi:before { content: "📶"; font-size: 12px; }
+        .icon-wifi-off:before { content: "📵"; font-size: 12px; }
+        .icon-eye:before { content: "👁️"; font-size: 14px; }
+        .icon-settings:before { content: "⚙️"; font-size: 14px; }
+        .icon-logout:before { content: "🚪"; font-size: 14px; }
+        .icon-shield:before { content: "🛡️"; font-size: 14px; }
+        .icon-ban:before { content: "🚫"; font-size: 14px; }
+        .icon-trash:before { content: "🗑️"; font-size: 14px; }
+        @keyframes glassMove {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        .tippy-content{
+            padding: 0;
+        }
+        .tippy-tooltip {
+            position: relative !important;
+            background: none !important;
+            color: inherit !important;
+            box-shadow: none !important;
+            border: none !important;
+            border-radius: 0 !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            font-size: inherit !important;
+            line-height: normal !important;
+            transition: none !important;
+            outline: none !important;
+        }
+    </style>
+    <title>My Profile</title>
+</head>
+<body>
+    <div class="container">
+      <div class="navigation">
+        <ul>
+          <li>
+            <a href="#">
+              <span class="icon"><ion-icon name=""></ion-icon></span> 
+              <span class="title">Menu</span>
+            </a>
+          </li>
+
+                <li>
+                    <a href="/Dashboard">
+                        <span class="icon">
+                            <ion-icon name="home-outline"></ion-icon>
+                        </span>
+                        <span class="title">Dashboard</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/System">
+                        <span class="icon">
+                            <ion-icon name="people-outline"></ion-icon>
+                        </span>
+                        <span class="title">System</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/SCADA">
+                        <span class="icon">
+                        </span>
+                        <span class="title">SCADA</span>
+                    </a>
+                </li>
+                <li>
+                      <a href="/Analytics">
+                          <span class="icon">
+                              <ion-icon name="analytics-outline"></ion-icon>
+                          </span>
+                          <span class="title">Analytics</span>
+                      </a>
+                </li>
+                <li>
+                    <a href="/Messages">
+
+                        <span class="icon">
+                            <ion-icon name="chatbubble-outline"></ion-icon>
+                        </span>
+                        <span class="title">Messages</span>
+                    </a>
+                </li>
+
+                <li>
+             
+                <li>
+                    <a href="/Profile">
+                        <span class="icon">
+                            <ion-icon name="person-outline"></ion-icon>
+                        </span>
+                        <span class="title">Profile</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/Settings">
+                        <span class="icon">
+                            <ion-icon name="settings-outline"></ion-icon>
+                        </span>
+                        <span class="title">Settings</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/Password">
+                        <span class="icon">
+                            <ion-icon name="lock-closed-outline"></ion-icon>
+                        </span>
+                        <span class="title">Password</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/index">
+                        <span class="icon">
+                            <ion-icon name="log-out-outline"></ion-icon>
+                        </span>
+                        <span class="title">Sign Out</span>
+                    </a>
+                </li>
+            </ul>
+      </div>
+      <!-- ========================= Main ==================== -->
+        <div class="main">
+            <div class="topbar">
+                  <div style="display: inline-flex;align-items: center;gap: 10px;">
+                    <div class="toggle">
+                        <ion-icon name="menu-outline"></ion-icon>
+                    </div>
+                    <a class="emergencybtn" id="EmergencyStop"><img width="40" height="40" src="https://img.icons8.com/fluency/48/emergency-stop-button.png" alt="emergency-stop-button"/></a>
+                  </div>
+                  <div class="silo">
+                      <span class="title">SMART SILO</span>
+                  </div>
+                  <div style="display: inline-flex;align-items: center;gap: 10px;">
+                    <div class="mqtt_status">
+                        MQTT
+                    </div>
+
+                    <div class="user">
+                      <img src="assets/imgs/customer001.jpg" alt="">
+                    </div>
+                  </div>
+            </div>
+            <div class="help-contanier">
+                <section class="myprofile">
+                    <div class="profile">
+                        <div class="profilePic">
+                            <div>
+                                <img id="MyProfilePic"></img>
+                                <div class="profileStatus disactive">
+                                <span id='MyProfile_status'>Desactive</span>
+                            </div>
+                    </div>
+                        </div>
+                        <div class="profileInfo">
+                            <div class="name-role">
+                                <span class="first-name"id='MyProfile_full_name'>Full Name</span>
+                                <span class="role"id='MyProfile_role'>Role</span>
+                            </div>
+                            <hr class="separator">
+                            <div class="detail">
+                                <label>
+                                    <i class="fas fa-envelope"></i>
+                                    <strong>Email:</strong> <span id='MyProfile_email'>jean-pierre.dubois@grainco.dz</span>
+                                </label>
+                                <label>
+                                    <i class="fas fa-phone"></i>
+                                    <strong>Phone:</strong> <span id='MyProfile_phone_number'>+213 31 567 890</span>
+                                </label>
+                                
+                                
+                                <label>
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <strong>Location:</strong> <span id='MyProfile_location'>Constantine, Algeria</span>
+                                </label>
+                                <label>
+                                    <i class="fas fa-calendar"></i>
+                                    <strong>Created Date:</strong> <span id='MyProfile_created_date'>January 2022</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="profileDev">
+                        <div class="device-header">
+                            <div>
+                                <h2><i class="fas fa-microchip"></i>Connected Devices</h2>
+                                <div class="device-count"><span id="online-devices" data-online_count="0">0</span> Active</div>
+                            </div>
+                            <div>Total:<span id="total-devices" data-device_count="0">0</span></div>
+                        </div>
+                        <div class="devices-grid" id="devices-grid">
+                            <!-- Device cards will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </section>
+                <section class="allprofiles"></section>
+            </div>
+        </div
+    </div>
+
+<script>
+    let devices=null
+    function getOSIcon(os = "") {
+        // Take only the first word (before space), lowercase
+        const key = os.split(" ")[0].toLowerCase();
+        switch (key) {
+            case "windows": return "fa-brands fa-windows";
+            case "linux": return "fa-brands fa-linux";
+            case "android": return "fa-brands fa-android";
+            case "ios":
+            case "mac": 
+            case "darwin": return "fa-brands fa-apple";
+            default: return "fa-solid fa-desktop";
+        }
+    }
+
+    function renderDevices() {
+        const device_count = document.getElementById('total-devices');
+        device_count.textContent=devices.other_devices.length+1;
+        device_count.dataset.device_count=devices.other_devices.length+1;
+
+        const online_count = document.getElementById('online-devices');
+        const online_devices= devices.other_devices.filter(d => d.status.toLowerCase() === "online").length;
+        online_count.textContent=online_devices+1;
+        online_count.dataset.online_count=online_devices+1;
+        const grid = document.getElementById('devices-grid');
+            const my_device=devices.my_device;
+            let html ='';
+            if (my_device) {
+                html += `
+                    <div class="device-card">
+                        <div class="card-header">
+                            <div class="device-info">
+                                <div class="device-icon">
+                                    <span class="${getOSIcon(my_device?.os)}"></span>
+                                </div>
+                                <div class="device-details">
+                                    <h3>${my_device?.name} (Your-device)</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="info-row">
+                                <span class="fa-solid fa-id-card"></span>
+                                <span>Id: ${my_device?.device_id}</span>
+                            </div>
+                            
+                            <div class="info-row">
+                                <span class="fa-solid fa-microchip"></span>
+                                <span>OS: ${my_device?.os}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="fa-solid fa-globe"></span>
+                                <span>Browser: ${my_device?.browser}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="fa-solid fa-right-to-bracket"></span>
+                                <span>Login at: ${my_device?.login_at}</span>
+                            </div>
+
+                            <div class="info-row">
+                                <span class="fa-solid fa-clock"></span>
+                                <span>Last seen: ${my_device?.last_seen}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            const other_devices = devices.other_devices
+            html += other_devices.map(device => `
+                <div class="device-card" data-id="${device?.device_id}">
+                    <div class="card-header">
+                        <div class="device-info">
+                            <div class="device-icon">
+                                <span class="${getOSIcon(device?.os)}"></span>
+                            </div>
+                            <div class="device-details">
+                                <h3><span class="device-name">${device?.name}</span></h3>
+                                <div class="status-indicator">
+                                    <div class="status-dot ${device?.status.toLowerCase()}"></div>
+                                    <span class="status-text ${device?.status.toLowerCase()}">
+                                        ${device?.status}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="more-btn">
+                            <button class="btn">
+                                <span class="icon icon-more"></span>
+                            </button>
+                        </div>
+                            <div class="dropdown">
+                                <!-- Show Disconnect if status is online or ready -->
+                                ${device?.status.toLowerCase() === 'online' || device?.status.toLowerCase() === 'ready' ? `
+                                    <button class="dropdown-item disconnect" data-id="${device?.device_id}" onclick="disconnect_device('${device?.device_id}')">
+                                        <span class="icon icon-logout"></span>
+                                        Disconnect
+                                    </button>
+                                ` : ''}
+
+                                <!-- Show Connect if status is disconnected -->
+                                ${device?.status.toLowerCase() === 'disconnected' ? `
+                                    <button class="dropdown-item connect" data-id="${device?.device_id}" onclick="connect_device('${device?.device_id}')">
+                                        <span class="icon icon-login"></span>
+                                        Connect
+                                    </button>
+                                ` : ''}
+
+                                <!-- For offline → no button at all -->
+                                
+                                <div class="dropdown-separator" data-id)"${device?.device_id}"></div>
+                                
+                                <button class="dropdown-item delete" data-id="${device?.device_id}" onclick="delete_device('${device?.device_id}')">
+                                    <span class="icon icon-trash"></span>
+                                    Delete Device
+                                </button>
+                            </div>
+                        
+                    </div>
+                    <div class="card-body">
+                            <div class="info-row">
+                                <span class="fa-solid fa-id-card"></span>
+                                <span>Id: ${device?.device_id}</span>
+                            </div>
+                            
+                            <div class="info-row">
+                                <span class="fa-solid fa-microchip"></span>
+                                <span>OS: ${device?.os}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="fa-solid fa-globe"></span>
+                                <span>Browser: ${device?.browser}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="fa-solid fa-right-to-bracket"></span>
+                                <span>Login at: ${device?.login_at}</span>
+                            </div>
+
+                            <div class="info-row">
+                                <span class="fa-solid fa-clock"></span>
+                                <span>Last seen: ${device?.last_seen}</span>
+                            </div>
+                        </div>
+                </div>
+            `).join('');
+             grid.innerHTML = html;
+            tippy(grid.querySelectorAll('.more-btn'), {
+                content(reference) {
+                    // get the sibling dropdown menu inside .more-btn
+                    return reference.parentElement.querySelector('.dropdown');
+                },
+                allowHTML: true,
+                interactive: true,     // allow clicking inside
+                trigger: 'click',      // open on click instead of hover
+                placement: 'buttom',
+                
+            });
+    }
+    async function disconnect_device(device_id) {
+        alert(device_id)
+        const btn = document.querySelector(`button[data-id="${device_id}"]`);
+        if (!btn) return;
+
+        // Save original button text
+        const originalText = btn.innerHTML;
+
+        // Disable button + show loading spinner
+        btn.disabled = true;
+        btn.innerHTML = `<span class="spinner"></span> Disconnecting...`;
+
+        // Timeout handling
+        let timeoutId;
+        const timeoutPromise = new Promise((_, reject) => {
+            timeoutId = setTimeout(() => reject(new Error("Timeout: no response after 30s")), 30000);
+        });
+
+        try {
+            const res = await Promise.race([
+                fetch("/device/disconnect", {
+                    method: "POST",   // or DELETE
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ device_id })
+                }),
+                timeoutPromise
+            ]);
+
+            clearTimeout(timeoutId); // ✅ clear timer if we got a response
+
+            if (!res.ok) throw new Error(`Failed: ${res.status}`);
+
+            const data = await res.json();
+            alert(`Device ${device_id} disconnected ✅`);
+            console.log("Server response:", data);
+        } catch (err) {
+            alert(`Error disconnecting ${device_id}: ${err.message}`);
+            console.error(err);
+        } finally {
+            clearTimeout(timeoutId); // extra safety
+            btn.disabled = false;
+            btn.innerHTML = originalText; // restore original button
+        }
+    }
+    async function connect_device(device_id) {
+        const btn = document.querySelector(`button[data-id="${device_id}"]`);
+        if (!btn) return;
+
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = `<span class="spinner"></span> Connecting...`;
+
+        let timeoutId;
+        const timeoutPromise = new Promise((_, reject) => {
+            timeoutId = setTimeout(() => reject(new Error("Timeout: no response after 30s")), 30000);
+        });
+
+        try {
+            const res = await Promise.race([
+                fetch("/device/connect", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ device_id })
+                }),
+                timeoutPromise
+            ]);
+
+            clearTimeout(timeoutId);
+
+            if (!res.ok) throw new Error(`Failed: ${res.status}`);
+
+            const data = await res.json();
+            alert(`Device ${device_id} connected ✅`);
+            console.log("Server response:", data);
+        } catch (err) {
+            alert(`Error connecting ${device_id}: ${err.message}`);
+            console.error(err);
+        } finally {
+            clearTimeout(timeoutId);
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        }
+    }
+
+    async function delete_device(device_id) {
+        if (!confirm("Are you sure you want to delete this device?")) return;
+
+        alert(device_id);
+        const btn = document.querySelector(`button[data-id="${device_id}"]`);
+        if (!btn) return;
+
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = `<span class="spinner"></span> Deleting...`;
+
+        let timeoutId;
+        const timeoutPromise = new Promise((_, reject) => {
+            timeoutId = setTimeout(() => reject(new Error("Timeout: no response after 30s")), 30000);
+        });
+
+        try {
+            const res = await Promise.race([
+                fetch("/device/delete", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ device_id })
+                }),
+                timeoutPromise
+            ]);
+
+            clearTimeout(timeoutId);
+
+            if (!res.ok) throw new Error(`Failed: ${res.status}`);
+
+            const data = await res.json();
+            alert(`Device ${device_id} deleted ✅`);
+            console.log("Server response:", data);
+
+            // Optionally remove device card from DOM
+            document.querySelector(`.device-card[data-id="${device_id}"]`)?.remove();
+        } catch (err) {
+            alert(`Error deleting ${device_id}: ${err.message}`);
+            console.error(err);
+        } finally {
+            clearTimeout(timeoutId);
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        }
+    }
+
+</script>
+<script>
+    function fetchMyProfileDevices(token) {
+        return fetch("/MyProfileDevices", {
+            method: "GET",
+            headers: {
+            "Content-Type": "application/json",
+            },
+            credentials: 'include' // send cookies if you're using cookie auth
+        })
+            .then((response) => {
+            if (!response.ok) {
+                // Try to parse error JSON
+                return response.json()
+                .then(err => {
+                    throw new Error(`Failed: ${response.status} - ${err.error || "Unknown error"}`);
+                })
+                .catch(() => {
+                    throw new Error(`Failed: ${response.status} - ${response.statusText}`);
+                });
+            }
+            return response.json(); // parse JSON
+            })
+            .catch((err) => {
+            console.error("Failed to fetch profile devices:", err);
+            return null;
+            });
+    }
+    async function fetchMyProfileInfo() {
+        try {
+            const response = await fetch('/MyProfileInfo', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include' // send cookies if you're using cookie auth
+            });
+
+            if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching profile info:', error);
+            return null;
+        }
+    }
+    function getProfilePicUrl() {
+        return fetch("/MyProfilePic")
+            .then(res => {
+            if (!res.ok) {
+                // Try to parse error JSON
+                return res.json()
+                .then(err => {
+                    throw new Error(`Failed: ${res.status} - ${err.error || "Unknown error"}`);
+                })
+                .catch(() => {
+                    throw new Error(`Failed: ${res.status} - ${res.statusText}`);
+                });
+            }
+            return res.blob();
+            })
+            .then(blob => URL.createObjectURL(blob)) // ✅ return URL
+            .catch(err => {
+            console.error("Error fetching profile picture:", err.message);
+            return null;
+            });
+    }
+
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        getProfilePicUrl().then(url => {
+            if (url) {
+                document.getElementById("MyProfilePic").src = url;
+            } else {
+                document.getElementById("MyProfilePic").src = "/images/default-avatar.png";
+            }
+        });
+        fetchMyProfileDevices().then((data) => {
+            if (!data) return;
+            devices={other_devices:data.devices,my_device:data.my_device};
+            renderDevices(); 
+        });
+        const profile = await fetchMyProfileInfo();
+
+        if (profile) {
+            for (const key in profile) {
+            const el = document.getElementById(`MyProfile_${key}`);
+            if (el) {
+                el.textContent = profile[key] ?? '';
+            }
+            }
+            const statusSpan = document.getElementById('MyProfile_status');
+            if (statusSpan) {
+            const parent = statusSpan.closest('.profileStatus');
+                if (parent) {
+                    // Remove old classes
+                    parent.classList.remove('active', 'deactivated', 'banned', 'unlocked');
+
+                    // Add new class based on DB value
+                    const newStatus = profile.status.toLowerCase();
+                    parent.classList.add(newStatus);
+                }
+            }
+        }
+    });
+</script>
+<script>
+    const socket = io();
+    socket.on("device", (device) => {
+        console.log("📡 Device update:", device);
+        function updateDeviceCounts() {
+            const cards = document.querySelectorAll(".device-card");
+            let total = cards.length;
+            let active = 0;
+
+            cards.forEach(card => {
+                const statusText = card.querySelector(".status-text")?.textContent.toLowerCase();
+                if (statusText === "online") {
+                active++;
+                }
+            });
+
+            const totalSpan = document.getElementById("total-devices");
+            if (totalSpan) {
+                totalSpan.textContent = total;
+                totalSpan.dataset.device_count = total;
+            }
+
+            const activeSpan = document.getElementById("online-devices");
+            if (activeSpan) {
+                activeSpan.textContent = active+1;
+                activeSpan.dataset.online_count = active+1;
+            }
+        }
+        // Find the matching card by device_id
+        function renderDeviceCard(device) {
+            const status = device?.status?.toLowerCase();
+
+            let actionBtn = '';
+            if (status === 'online' || status === 'ready') {
+                actionBtn = `
+                <button class="dropdown-item disconnect" data-id="${device.device_id}" onclick="disconnect_device('${device.device_id}')">
+                    <span class="icon icon-logout"></span>
+                    Disconnect
+                </button>
+                `;
+            } else if (status === 'disconnected') {
+                actionBtn = `
+                <button class="dropdown-item connect" data-id="${device.device_id}" onclick="connect_device('${device.device_id}')">
+                    <span class="icon icon-login"></span>
+                    Connect
+                </button>
+                `;
+            }
+            // offline → no button
+
+            const separator = actionBtn ? `<div class="dropdown-separator" data-id="${device.device_id}"></div>` : "";
+
+            return `
+                <div class="device-card" data-id="${device.device_id}">
+                <div class="card-header">
+                    <div class="device-info">
+                    <div class="device-icon">
+                        <span class="${getOSIcon(device.os)}"></span>
+                    </div>
+                    <div class="device-details">
+                        <h3><span class="device-name">${device.name}</span></h3>
+                        <div class="status-indicator">
+                        <div class="status-dot ${status}"></div>
+                        <span class="status-text ${status}">${device.status}</span>
+                        </div>
+                    </div>
+                    </div>
+
+                    <div class="more-btn">
+                    <button class="btn"><span class="icon icon-more"></span></button>
+                    </div>
+
+                    <div class="dropdown">
+                    ${actionBtn}
+                    ${separator}
+                    <button class="dropdown-item delete" data-id="${device.device_id}" onclick="delete_device('${device.device_id}')">
+                        <span class="icon icon-trash"></span>
+                        Delete Device
+                    </button>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="info-row">
+                    <span class="fa-solid fa-id-card"></span>
+                    <span>Id: ${device.device_id}</span>
+                    </div>
+                    <div class="info-row">
+                    <span class="fa-solid fa-microchip"></span>
+                    <span>OS: ${device.os}</span>
+                    </div>
+                    <div class="info-row">
+                    <span class="fa-solid fa-globe"></span>
+                    <span>Browser: ${device.browser}</span>
+                    </div>
+                    <div class="info-row">
+                    <span class="fa-solid fa-right-to-bracket"></span>
+                    <span>Login at: ${device.login_at}</span>
+                    </div>
+                    <div class="info-row">
+                    <span class="fa-solid fa-clock"></span>
+                    <span>Last seen: ${device.last_seen}</span>
+                    </div>
+                </div>
+                </div>
+            `;
+            }
+
+        if(device.add){
+           const grid = document.getElementById('devices-grid');
+            if (!grid) return;
+            // Insert a new device card into the container
+            grid.insertAdjacentHTML("beforeend", renderDeviceCard(device));
+            tippy(grid.querySelectorAll('.more-btn'), {
+                content(reference) {
+                    // get the sibling dropdown menu inside .more-btn
+                    return reference.parentElement.querySelector('.dropdown');
+                },
+                allowHTML: true,
+                interactive: true,     // allow clicking inside
+                trigger: 'click',      // open on click instead of hover
+                placement: 'buttom',
+            });
+            return;
+        }
+        const card = document.querySelector(`.device-card[data-id="${device.device_id}"]`);
+        if (!card) return; // No card yet for this device
+        if (device.deleted) {
+            card.style.transition = 'opacity 0.5s';
+            card.style.opacity = '0';
+            setTimeout(() => card.remove(), 500); // Wait for fade out
+            return;
+        }
+
+        const dropdown = card.querySelector(".dropdown");
+        if (dropdown) {
+            let actionBtnHTML = "";
+
+            if (["online", "ready"].includes(device.status.toLowerCase())) {
+            actionBtnHTML = `
+                <button class="dropdown-item disconnect" data-id="${device.device_id}" onclick="disconnect_device('${device.device_id}')">
+                <span class="icon icon-logout"></span>
+                Disconnect
+                </button>
+            `;
+            } else if (device.status.toLowerCase() === "disconnected") {
+            actionBtnHTML = `
+                <button class="dropdown-item connect" data-id="${device.device_id}" onclick="connect_device('${device.device_id}')">
+                <span class="icon icon-login"></span>
+                Connect
+                </button>
+            `;
+            }
+            // offline → no action button
+
+            // Keep the delete button & separator intact
+            const deleteBtn = dropdown.querySelector(".delete")?.outerHTML || "";
+            const separator = `<div class="dropdown-separator" data-id="${device.device_id}"></div>`;
+
+            dropdown.innerHTML = `${actionBtnHTML}${separator}${deleteBtn}`;
+        }
+        // 🔹 Update device name
+        const nameEl = card.querySelector(".device-name");
+        if (nameEl) nameEl.textContent = device.name;
+
+        // 🔹 Update status text + dot
+        const statusText = card.querySelector(".status-text");
+        const statusDot = card.querySelector(".status-dot");
+
+        if (statusText) {
+            statusText.textContent = device.status;
+            statusText.className = "status-text " + device.status.toLowerCase();
+        }
+
+        if (statusDot) {
+            statusDot.className = "status-dot " + device.status.toLowerCase();
+        }
+
+        // 🔹 Update OS
+        const osRow = card.querySelector(".info-row:nth-of-type(2) span:last-child");
+        if (osRow) osRow.textContent = `OS: ${device.os}`;
+
+        // 🔹 Update browser
+        const browserRow = card.querySelector(".info-row:nth-of-type(3) span:last-child");
+        if (browserRow) browserRow.textContent = `Browser: ${device.browser}`;
+
+        // 🔹 Update login_at
+        const loginRow = card.querySelector(".info-row:nth-of-type(4) span:last-child");
+        if (loginRow) loginRow.textContent = `Login at: ${device.login_at}`;
+
+        // 🔹 Update last_seen
+        const lastSeenRow = card.querySelector(".info-row:nth-of-type(5) span:last-child");
+        if (lastSeenRow) lastSeenRow.textContent = `Last seen: ${device.last_seen}`;
+        updateDeviceCounts();
+    });
+
+</script>
+<script src="assets/js/navigation.js"></script>
+<!-- ====== ionicons ======= -->
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&icon_names=favorite,home,search,settings" rel="stylesheet" />
+</body>
+</html>

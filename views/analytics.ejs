@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMART SILO</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100&icon_names=favorite,home,search,settings" rel="stylesheet" />
+    <!-- ======= Styles ====== -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .analytics-container {
+            padding: 20px;
+        }
+        
+        .selection-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .select-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .select-group label {
+            font-weight: bold;
+            color: #21853a;
+        }
+        
+        .select-group select {
+            padding: 8px 12px;
+            border: 2px solid #21853a;
+            border-radius: 5px;
+            background: white;
+            min-width: 150px;
+        }
+        
+        .sensor-types {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 0;
+        }
+        
+        .sensor-btn {
+            transition: all 0.2s ease;
+            opacity: 0.8;
+            margin: 2px;
+            padding: 4px 8px;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 10px;
+            cursor: pointer;
+        }
+        .sensor-btn:hover {
+            opacity: 1;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .sensor-btn.active {
+            opacity: 1;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+        
+        .chart-container {
+            position: relative;
+            margin-top: 20px;
+            min-height: 400px;
+            border: 1px solid #ddd;
+            background: white;
+        }
+        
+        #chart {
+            width: 100% !important;
+            height: 400px !important;
+        }
+        
+        .chart-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 0;
+            align-items: center;
+        }
+        
+        .nav-btn {
+            padding: 10px 15px;
+            background: #21853a;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .nav-btn:hover {
+            background: #1a6b2e;
+        }
+        
+        .nav-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .time-info {
+            background: #f0f8f2;
+            padding: 8px 15px;
+            border-radius: 5px;
+            color: #21853a;
+            font-weight: bold;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #21853a;
+            font-style: italic;
+        }
+        
+        @media (max-width: 768px) {
+            .selection-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .sensor-types {
+                justify-content: center;
+            }
+            
+            .chart-controls {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- =============== Navigation ================ -->
+        <div class="navigation">
+        <ul>
+          <li>
+            <a href="#">
+              <span class="icon"><ion-icon name=""></ion-icon></span> 
+              <span class="title">Menu</span>
+            </a>
+          </li>
+
+                <li>
+                    <a href="/Dashboard">
+                        <span class="icon">
+                            <ion-icon name="home-outline"></ion-icon>
+                        </span>
+                        <span class="title">Dashboard</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/System">
+                        <span class="icon">
+                            <ion-icon name="people-outline"></ion-icon>
+                        </span>
+                        <span class="title">System</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/SCADA">
+                        <span class="icon">
+                        </span>
+                        <span class="title">SCADA</span>
+                    </a>
+                </li>
+                <li>
+                      <a href="/Analytics">
+                          <span class="icon">
+                              <ion-icon name="analytics-outline"></ion-icon>
+                          </span>
+                          <span class="title">Analytics</span>
+                      </a>
+                </li>
+                <li>
+                    <a href="/Messages">
+
+                        <span class="icon">
+                            <ion-icon name="chatbubble-outline"></ion-icon>
+                        </span>
+                        <span class="title">Messages</span>
+                    </a>
+                </li>
+
+                <li>
+             
+                <li>
+                    <a href="/Profile">
+                        <span class="icon">
+                            <ion-icon name="person-outline"></ion-icon>
+                        </span>
+                        <span class="title">Profile</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/Settings">
+                        <span class="icon">
+                            <ion-icon name="settings-outline"></ion-icon>
+                        </span>
+                        <span class="title">Settings</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/Password">
+                        <span class="icon">
+                            <ion-icon name="lock-closed-outline"></ion-icon>
+                        </span>
+                        <span class="title">Password</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/index">
+                        <span class="icon">
+                            <ion-icon name="log-out-outline"></ion-icon>
+                        </span>
+                        <span class="title">Sign Out</span>
+                    </a>
+                </li>
+            </ul>
+      </div>
+
+        <!-- ========================= Main ==================== -->
+        <div class="main">
+            <div class="topbar">
+                <div class="toggle">
+                    <ion-icon name="menu-outline"></ion-icon>
+                </div>
+                <div class="silo">
+                    <span class="title">SMART SILO</span>
+                </div>
+                <div class="mqtt_status">
+                    MQTT
+                </div>
+                <div class="user">
+                    <img src="assets/imgs/customer001.jpg" alt="">
+                </div>
+            </div> 
+            
+            <div class="analytics-container" style="margin-top: 65px;">
+                <h1 style="text-align: center; color: #21853a; margin-bottom: 30px;" id='title'>Analytics</h1>
+                
+                <div class="selection-row">
+                    <div class="select-group">
+                        <label for="equipmentTypeSelect">Equipment Type:</label>
+                        <select id="equipmentTypeSelect">
+                            <option value="">Loading...</option>
+                        </select>
+                    </div>
+                    
+                    <div class="select-group">
+                        <label for="equipmentSelect">Equipment:</label>
+                        <select id="equipmentSelect" disabled>
+                            <option value="">Select equipment type first</option>
+                        </select>
+                    </div>
+                    <div class="select-group" id="sensorTypesContainer" style="display: none;">
+                    <label style="color: #21853a; font-weight: bold;">Sensor Types:</label>
+                    <div id="sensorTypes" class="sensor-types"></div>
+                </div>
+                </div>
+                
+                
+                <div class="chart-controls">
+                    <button id="prevBtn" class="nav-btn" disabled>
+                        <ion-icon name="chevron-back-outline"></ion-icon>
+                        Previous
+                    </button>
+                    <div id="timeInfo" class="time-info">Select equipment to view data</div>
+                    <button id="nextBtn" class="nav-btn" disabled>
+                        Next
+                        <ion-icon name="chevron-forward-outline"></ion-icon>
+                    </button>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-tooltip" id="chartTooltip"></div>
+                    <canvas id="chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    const typeColor = {
+        Tempurature: "#FF6B6B",
+        Humidty: "#4ECDC4",
+        Level: "#45B7D1",
+        GASCO2: "#FFA726",
+        Current: "#9C27B0",
+        Pressure: "#FF9800",
+        Flow: "#4CAF50"
+    };
+
+    // Global variables
+    let currentEquipment = null;
+    let currentSensorType = null;
+    let window_size = 21;
+    let end_time_const = null;
+    let start_time = null;
+    let end_time = null;
+    let chart = null;
+    let verticalLine = null;
+    let allSensorData = null; // Store all sensor data
+    let savedSensorType = null; // Remember last selected sensor type
+    function shiftSeconds(dateString, seconds) {
+        let d = new Date(dateString);
+        d.setSeconds(d.getSeconds() + seconds); // works for + or -
+
+        // format: YYYY-MM-DD HH:mm:ss
+        let yyyy = d.getFullYear();
+        let mm = String(d.getMonth() + 1).padStart(2, "0");
+        let dd = String(d.getDate()).padStart(2, "0");
+        let hh = String(d.getHours()).padStart(2, "0");
+        let min = String(d.getMinutes()).padStart(2, "0");
+        let ss = String(d.getSeconds()).padStart(2, "0");
+
+        return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
+    }
+
+
+    // Initialize chart
+    const ctx = document.getElementById('chart');
+    chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: '',
+                data: [],
+                borderColor: '#21853a',
+                backgroundColor: 'transparent', // No fill
+                tension: 0.3,
+                fill: false // Explicitly disable fill
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: false, // Disable default animations
+            plugins: {
+                legend: { 
+                    display: true,
+                    position: 'top'
+                },
+            tooltip: {
+    enabled: true,
+    mode: 'nearest',
+    intersect: false,
+    callbacks: {
+        label: function(context) {
+            const datasetIndex = context.datasetIndex;
+            const point = context.raw; // raw object {x, y}
+            
+            // Sensor dataset
+            if (datasetIndex === 0) {
+                // Find TARGET consigne dataset for error calculation
+                let targetY = null;
+                let maxY = null;
+                let minY = null;
+                
+                for (let i = 1; i < chart.data.datasets.length; i++) {
+                    const dataset = chart.data.datasets[i];
+                    const datasetLabel = dataset.label.toLowerCase();
+                    
+                    // Get the appropriate consigne value based on dataset label
+                    for (let j = 0; j < dataset.data.length; j++) {
+                        const c = dataset.data[j];
+                        if (new Date(c.x) <= new Date(point.x)) {
+                            if (datasetLabel.includes('target')) {
+                                targetY = c.y;
+                            } else if (datasetLabel.includes('max')) {
+                                maxY = c.y;
+                            } else if (datasetLabel.includes('min')) {
+                                minY = c.y;
+                            }
+                        }
+                    }
+                }
+                
+                // Build the tooltip content
+                const tooltipLines = [`${context.dataset.label}: ${point.y}`];
+                
+                // Add consigne values
+                if (targetY !== null) {
+                    tooltipLines.push(`Target: ${targetY}`);
+                }
+                if (maxY !== null) {
+                    tooltipLines.push(`Max: ${maxY}`);
+                }
+                if (minY !== null) {
+                    tooltipLines.push(`Min: ${minY}`);
+                }
+                
+                // Calculate error only with TARGET
+                if (targetY !== null) {
+                    const error = (point.y - targetY).toFixed(2);
+                    const errorText = error > 0 ? `Error: +${error}` : `Error: ${error}`;
+                    tooltipLines.push(errorText);
+                }
+                
+                return tooltipLines;
+            } else {
+                // Consigne datasets (TARGET, MAX, MIN)
+                return `${context.dataset.label}: ${point.y}`;
+            }
+        },
+        title: function(context) {
+            const t = context[0].raw.x;
+            return `Time: ${new Date(t).toLocaleTimeString()}`;
+        }
+    }
+}
+            },
+            elements: {
+                point: {
+                    radius: 0, // Remove points
+                    hoverRadius: 0
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(33, 133, 58, 0.1)'
+                    },
+                    title: {
+                        display: true,
+                        text: ''
+                    }
+                },
+                x: {
+                                        type: 'time',
+                    time: {
+                        displayFormats: {
+                        minute: 'HH:mm',
+                        hour: 'HH:mm'
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(33, 133, 58, 0.1)'
+                    }
+                }
+            },
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            }
+        },
+        plugins: [{
+            id: 'verticalLine',
+            afterDraw: (chart) => {
+                if (verticalLine && verticalLine.x >= 0 && verticalLine.x <= chart.width) {
+                    const ctx = chart.ctx;
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.moveTo(verticalLine.x, chart.chartArea.top);
+                    ctx.lineTo(verticalLine.x, chart.chartArea.bottom);
+                    ctx.lineWidth = 2;
+                    ctx.strokeStyle = '#ff0000';
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            }
+        }]
+    });
+
+    // Add mouse move event for vertical line
+    ctx.addEventListener('mousemove', (e) => {
+        const rect = ctx.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        // Check if mouse is within chart area
+        if (x >= chart.chartArea.left && x <= chart.chartArea.right &&
+            y >= chart.chartArea.top && y <= chart.chartArea.bottom) {
+            verticalLine = { x: x };
+            chart.update('none');
+        }
+    });
+    
+    ctx.addEventListener('mouseleave', () => {
+        verticalLine = null;
+        chart.update('none');
+        document.getElementById('chartTooltip').style.display = 'none';
+    });
+
+    // Set chart container height
+    document.querySelector('.chart-container').style.height = '400px';
+</script>
+
+<script>
+    // Socket connection
+    const socket = io();
+
+    // Socket functions
+    function equipment_types(callback) {
+        socket.emit('get_equipment_types');
+        socket.once('equipment_types', (data) => {
+            if (data.error) {
+                console.error(data.error);
+            } else {
+                console.log('Received equipment_types:', data);
+                if (callback) callback(data);
+            }
+        });
+    }
+
+    function equipments(callback, equipment_type) {
+        socket.emit('get_equipments', equipment_type);
+        socket.once('equipments', (data) => {
+            if (data.error) {
+                console.error(data.error);
+            } else {
+                console.log('Received equipments:', data.equipments);
+                console.log('Received end_time:', data.lastDate)
+                if (callback) callback(data);
+            }
+        });
+    }
+
+    // Function to get sensor data - now this returns all sensor types
+    function get_sensor_data(callback, equipment, start_time, end_time) {
+        console.log('Requesting sensor data for:', equipment, 'start time:', start_time, 'end time:', end_time);
+        socket.emit('get_sensor_data', equipment, start_time, end_time);
+        socket.once('sensor_data', (data) => {
+            if (data.error) {
+                console.error(data.error);
+            } else {
+                console.log('Received sensor_data:', data);
+                if (callback) callback(data);
+            }
+        });
+    }
+</script>
+
+<script>  
+    // Page initialization
+    document.addEventListener('DOMContentLoaded', function() {
+        // Load equipment types on page load
+        equipment_types(function(data) {
+            const equipmentTypeSelect = document.getElementById('equipmentTypeSelect');
+            equipmentTypeSelect.innerHTML = '<option value="">Select Equipment Type</option>';
+            
+            if (Array.isArray(data)) {
+                data.forEach(type => {
+                    const option = document.createElement('option');
+                    option.value = type;
+                    option.textContent = type;
+                    equipmentTypeSelect.appendChild(option);
+                });
+            }
+        });
+
+        // Equipment type selection handler
+        document.getElementById('equipmentTypeSelect').addEventListener('change', function() {
+            const selectedType = this.value;
+            const equipmentSelect = document.getElementById('equipmentSelect');
+            
+            if (selectedType) {
+                equipmentSelect.innerHTML = '<option value="">Loading...</option>';
+                equipmentSelect.disabled = false;
+                
+                equipments(function(data) {
+                    equipmentSelect.innerHTML = '<option value="">Select Equipment</option>';
+                    
+                    if (Array.isArray(data.equipments)) {
+                        data.equipments.forEach(equipment => {
+                            const option = document.createElement('option');
+                            option.value = equipment;
+                            option.textContent = equipment;
+                            equipmentSelect.appendChild(option);
+                        });
+                    }
+                    end_time_const = data.lastDate;
+                    end_time = end_time_const;
+                }, selectedType);
+            } else {
+                equipmentSelect.innerHTML = '<option value="">Select equipment type first</option>';
+                equipmentSelect.disabled = true;
+                hideSensorTypes();
+            }
+        });
+
+        // Equipment selection handler
+        document.getElementById('equipmentSelect').addEventListener('change', function() {
+            const selectedEquipment = this.value;
+            
+            if (selectedEquipment) {
+                currentEquipment = selectedEquipment;
+                start_time = shiftSeconds(end_time,-window_size);
+                alert(start_time)
+                // Update title
+                document.getElementById('title').textContent = `Analytics-${selectedEquipment}`;
+                
+                // Load sensor data and extract sensor types from it
+                loadAllSensorData();
+            } else {
+                hideSensorTypes();
+                document.getElementById('title').textContent = 'Analytics';
+                currentEquipment = null;
+                allSensorData = null;
+            }
+        });
+
+        // Navigation buttons
+        document.getElementById('prevBtn').addEventListener('click', function() {
+            if (currentEquipment) {
+                chart.options.animation = false;
+                start_time = shiftSeconds(start_time,-window_size);
+                end_time = shiftSeconds(end_time,-window_size);
+                document.getElementById('nextBtn').disabled=false;
+                loadAllSensorData(); // Load new time window data
+            }
+        });
+
+        document.getElementById('nextBtn').addEventListener('click', function() {
+            if (currentEquipment && new Date(end_time.replace(" ", "T")) < new Date(end_time_const.replace(" ", "T"))) {
+                chart.options.animation = false;
+                start_time = shiftSeconds(start_time,+window_size);
+                end_time = shiftSeconds(end_time,+window_size);
+                if(new Date(end_time.replace(" ", "T")) > new Date(end_time_const.replace(" ", "T"))) end_time = end_time_const;
+                loadAllSensorData(); // Load new time window data
+            }
+        });
+
+        // Touch/swipe support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        document.getElementById('chart').addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+            chart.options.animation = false;
+        });
+        
+        document.getElementById('chart').addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            chart.options.animation = false;
+            handleSwipe();
+        });
+        
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) {
+                // Swipe left - next data
+                if (currentTimeOffset > 0) {
+                    document.getElementById('nextBtn').click();
+                }
+            }
+            if (touchEndX > touchStartX + 50) {
+                // Swipe right - previous data
+                document.getElementById('prevBtn').click();
+            }
+        }
+    });
+
+    // Load all sensor data and extract sensor types
+    function loadAllSensorData() {
+        if (!currentEquipment) return;
+        document.getElementById('timeInfo').textContent = 'Loading...';
+        
+        get_sensor_data(function(data) {
+            allSensorData = data;
+            console.log('All sensor data received:', allSensorData);
+            document.getElementById('timeInfo').textContent = 'Chose type to plot';
+            if (data && typeof data === 'object') {
+                // Extract sensor types from the data object keys
+                const sensorTypes = Object.keys(data).filter(key => 
+                    data[key] && 
+                    typeof data[key] === 'object' && 
+                    data[key].values && 
+                    Array.isArray(data[key].values) && 
+                    data[key].values.length > 0
+                );
+                
+                console.log('Available sensor types:', sensorTypes);
+                
+                if (sensorTypes.length > 0) {
+                    displaySensorTypes(sensorTypes);
+                } else {
+                    hideSensorTypes();
+                    updateTimeInfo('No sensor data available');
+                }
+            } else {
+                hideSensorTypes();
+                updateTimeInfo(`${start_time.substring(11)} - ${end_time.substring(11)}`);
+            }
+            
+            updateNavigationButtons();
+        }, currentEquipment, start_time,end_time);
+    }
+
+    function displaySensorTypes(sensorTypes) {
+        const container = document.getElementById('sensorTypesContainer');
+        const sensorTypesDiv = document.getElementById('sensorTypes');
+        
+        sensorTypesDiv.innerHTML = '';
+        
+        if (Array.isArray(sensorTypes) && sensorTypes.length > 0) {
+            let foundSavedType = false;
+            
+            sensorTypes.forEach((sensorType, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'sensor-btn';
+                
+                // Get sensor data to extract unit
+                const sensorData = allSensorData[sensorType];
+                const unit = sensorData && sensorData.unit ? sensorData.unit : '';
+                
+                // Clean display name: remove everything after * and _ and _SILO
+                let displayName = sensorType;
+                if (displayName.includes('*')) {
+                    displayName = displayName.split('*')[0];
+                }
+                if (displayName.includes('_')) {
+                    displayName = displayName.split('_')[0];
+                }
+                // Add unit to display if available
+                btn.textContent = unit ? `${displayName} (${unit})` : displayName;
+                btn.dataset.sensorType = sensorType;
+                btn.dataset.unit = unit;
+                btn.dataset.displayName = displayName;
+                btn.style.backgroundColor = typeColor[displayName];
+
+                // Check if this is the saved sensor type
+                if (savedSensorType && sensorType === savedSensorType) {
+                    btn.classList.add('active');
+                    currentSensorType = sensorType;
+                    foundSavedType = true;
+                    updateChartFromAllData();
+                }
+                
+                btn.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    document.querySelectorAll('.sensor-btn').forEach(b => b.classList.remove('active'));
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    if (this!==currentSensorType) chart.options.animation = true;
+                    currentSensorType = this.dataset.sensorType;
+                    savedSensorType = currentSensorType; // Save the selected type
+                    
+                    // Update chart with animation when manually selecting
+                    updateChartFromAllData(true);
+                });
+                
+                sensorTypesDiv.appendChild(btn);
+            });
+            
+            // If no saved type found or no saved type, don't auto-select anything
+            if (!foundSavedType && savedSensorType) {
+                // The saved sensor type is not available in current data
+                savedSensorType = null;
+                currentSensorType = null;
+                updateChart([], [], 'Select a sensor type');
+            } else if (!foundSavedType && !savedSensorType) {
+                // No sensor type selected yet
+                currentSensorType = null;
+                updateChart([], [], 'Select a sensor type');
+            }
+            
+            container.style.display = 'block';
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    // Update chart using data from allSensorData
+    function updateChartFromAllData() {
+    if (!allSensorData || !currentSensorType || !allSensorData[currentSensorType]) {
+        updateChart([], [], 'No Data Available');
+        updateTimeInfo('No data available');
+        return;
+    }
+
+    const sensorData = allSensorData[currentSensorType].values;
+    const consigneData = allSensorData[currentSensorType].consignes || {};
+    const unit = allSensorData[currentSensorType].unit;
+
+    // Extract main sensor values
+    const values = sensorData.map(item => item.value);
+    const timestamps = sensorData.map(item => item.date);
+
+    // Main dataset
+    let sensorName = currentSensorType.split("_")[0];
+    const color = typeColor[sensorName] || "#21853a";
+
+    const datasets = [
+        {
+            label: `${sensorName} ${unit ? `(${unit})` : ''}`,
+            data: timestamps.map((t, i) => ({x: t, y: values[i]})),
+            borderColor: color,
+            backgroundColor: "transparent",
+            tension: 0.3,
+            fill: false,
+            pointRadius: 0
+        }
+    ];
+
+    // Add consigne step lines
+    Object.keys(consigneData).forEach((name, idx) => {
+        const changes = consigneData[name] || [];
+        const consignePoints = [];
+
+        // Sort changes by date
+        changes.sort((a,b) => new Date(a.date) - new Date(b.date));
+
+        // Start with last known value before start_time
+        let lastValue = null;
+        for (let c of changes) {
+            if (new Date(c.date) <= new Date(start_time.replace(" ", "T"))) {
+                lastValue = c.value;
+            }
+        }
+        if (lastValue !== null) {
+            consignePoints.push({x: start_time, y: lastValue});
+        }
+
+        // Add all changes inside the window
+        changes.forEach(c => {
+            if (new Date(c.date) >= new Date(start_time.replace(" ", "T")) &&
+                new Date(c.date) <= new Date(end_time.replace(" ", "T"))) {
+                consignePoints.push({x: c.date, y: c.value});
+            }
+        });
+
+        // Extend last value to end_time
+        if (consignePoints.length > 0) {
+            const lastVal = consignePoints[consignePoints.length - 1].y;
+            consignePoints.push({x: end_time, y: lastVal});
+        }
+
+        datasets.push({
+            label: `Consigne - ${name}`,
+            data: consignePoints,
+            borderColor: idx % 2 ? "#FF0000" : "#0000FF",
+            backgroundColor: "transparent",
+            borderDash: [5, 5],
+            tension: 0, // step style
+            stepped: true,
+            fill: false,
+            pointRadius: 0
+        });
+    });
+
+    // Update chart
+    chart.data.datasets = datasets;
+    chart.options.scales.x.min = start_time;
+    chart.options.scales.x.max = end_time;
+    chart.options.scales.y.title.text = unit || "";
+    chart.update();
+}
+
+
+
+    function hideSensorTypes() {
+        document.getElementById('sensorTypesContainer').style.display = 'none';
+        currentSensorType = null;
+        updateChart([], [], 'No Data');
+
+        updateNavigationButtons();
+    }
+
+    function updateChart(labels, data, label, color = '#21853a', yAxisLabel = '') {
+        console.log('updateChart called with:', {
+            labels: labels,
+            data: data,
+            label: label,
+            color: color,
+            yAxisLabel: yAxisLabel
+        });
+        
+        chart.data.labels = labels;
+        chart.data.datasets[0].data = data;
+        chart.data.datasets[0].label = label;
+        chart.data.datasets[0].borderColor = color;
+        chart.data.datasets[0].backgroundColor = 'transparent';
+        
+        // Update Y-axis title
+        chart.options.scales.y.title.text = yAxisLabel;
+        
+        
+        console.log('Chart data after update:', chart.data);
+        console.log('Chart datasets[0] after update:', chart.data.datasets[0]);
+        
+        chart.update();
+        
+        console.log('Chart update completed');
+    }
+
+    function updateTimeInfo(text) {
+        document.getElementById('timeInfo').textContent = text;
+    }
+
+    function updateNavigationButtons() {
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        
+        // Buttons enabled if equipment is selected, regardless of sensor data availability
+        prevBtn.disabled = !currentEquipment;
+        nextBtn.disabled = !currentEquipment || currentTimeOffset === 1;
+    }
+
+    function getUnit(sensorType) {
+        const units = {
+            'Temperature': '°C',
+            'Humidity': '%',
+            'Level': 'cm',
+            'GASCO2': 'ppm',
+            'Current': 'A',
+            'Pressure': 'Pa',
+            'Flow': 'L/min'
+        };
+        return units[sensorType] || '';
+    }
+</script>
+
+<script src="assets/js/navigation.js"></script>
+<!-- ====== ionicons ======= -->
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+</html>
