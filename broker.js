@@ -42,11 +42,6 @@ function attachBroker(httpServer) {
   });
 }
 
-// ---- Run after both are ready ----
-Promise.all([tcpReady, httpReady]).then(() => {
-  console.log('🚀 Both servers up, restoring retained messages...')
-  restoreRetained()
-})
 
 // ---- Restore retained messages on startup ----
 function restoreRetained() {
