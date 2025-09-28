@@ -25,7 +25,10 @@ try{
 // Initialize the app 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(httpServer, {
+  path: '/socket.io',
+  cors: { origin: '*' },
+});
 const UPLOADS_DIR = path.join(__dirname, "uploads");
 const TEMP_DIR = path.join(__dirname, "temp");
 const ProfPic_DIR = path.join(__dirname, "uploads/profilePic");
