@@ -4,6 +4,7 @@ const fs = require("fs");
 const http = require('http');
 const multer = require("multer");
 const { Server } = require('socket.io');
+const { attachBroker } = require('./broker');
 const { v4: uuidv4 } = require('uuid'); 
 const bodyParser = require('body-parser');
 const path = require('path');
@@ -25,10 +26,7 @@ try{
 // Initialize the app 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, {
-  path: '/socket.io',
-  cors: { origin: '*' },
-});
+const io = new Server(server);
 const UPLOADS_DIR = path.join(__dirname, "uploads");
 const TEMP_DIR = path.join(__dirname, "temp");
 const ProfPic_DIR = path.join(__dirname, "uploads/profilePic");
@@ -2246,7 +2244,12 @@ async function uploadEventFilles(data, res, event, sender) {
 }
 
 // Start the server
-const PORT = 3000;
-server.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+const PORT = process.env.PORT || 8888;
+server.listen(PORT, async () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+
+  // Attach broker (wait until TCP + WS ready, then restore)
+  await attachBroker(server);
+
+  console.log("✅ Broker fully ready with retained messages restored");
 });
